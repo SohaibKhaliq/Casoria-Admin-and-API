@@ -3,9 +3,9 @@
     <CardTitle :title="$t('setting_sidebar.lbl_misc_setting')" icon="fa-solid fa-screwdriver-wrench"></CardTitle>
 
     <div class="row">
-      <div class="col-md-4">
+      <!-- <div class="col-md-4">
         <InputField :label="$t('setting_analytics_page.lbl_name')" :placeholder="$t('setting_analytics_page.lbl_name')" v-model="google_analytics" :errorMessage="errors.google_analytics"></InputField>
-      </div>
+      </div> -->
       <div class="col-md-4">
         <div class="form-group">
           <label class="form-label" for="slot_duration">{{ $t('setting_booking_page.lbl_name') }}</label>
@@ -20,9 +20,7 @@
       </div>
 
       <div class="col-md-4">
-        <label class="form-label"
-          >{{ $t('setting_language_page.lbl_timezone') }} <span class="badge bg-danger">{{ $t('setting_language_page.soon') }}</span></label
-        >
+        <label class="form-label">{{ $t('setting_language_page.lbl_timezone') }} </label>
         <Multiselect id="default_time_zone" v-model="default_time_zone" :value="default_time_zone" v-bind="TimeZoneSelectOption" :options="timezone.options" class="form-group"></Multiselect>
         <span class="text-danger">{{ errors.default_time_zone }}</span>
       </div>
