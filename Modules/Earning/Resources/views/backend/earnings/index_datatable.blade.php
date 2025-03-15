@@ -13,12 +13,12 @@
         <div class="card-body">
             <x-backend.section-header>
                 <x-slot name="toolbar">
-                    
+
                     <div class="input-group flex-nowrap">
                       <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
                       <input type="text" class="form-control dt-search" placeholder="{{ __('messages.search') }}..." aria-label="Search" aria-describedby="addon-wrapping">
                     </div>
-                     
+
                   </x-slot>
                 </x-backend.section-header>
             <table id="datatable" class="table border table-responsive">
@@ -48,7 +48,7 @@
                 serverSide: true,
                 autoWidth: false,
                 responsive: true,
-              
+
                 dom: '<"row align-items-center"><"table-responsive my-3" rt><"row align-items-center" <"col-md-6" l><"col-md-6" p>><"clear">',
                 ajax: {
                     "type"   : "GET",
@@ -66,8 +66,8 @@
                     { data: 'first_name',name: 'first_name', title: "{{ __('messages.name') }}" ,  orderable: true },
                     { data: 'total_booking', name: 'total_booking', title: "{{ __('earning.lbl_tot_booking') }}",  orderable: false, searchable: false },
                     { data: 'total_service_amount', name: 'total_service_amount', title: "{{ __('earning.lbl_total_earning') }}",  orderable: true , searchable: false},
-                    { data: 'total_commission_earn', name: 'total_commission_earn', title: "{{ __('earning.lbl_total_commission') }}", orderable: true, searchable: false},
-                    { data: 'total_tips_earn', name: 'total_tips_earn', title: "{{ __('earning.lbl_total_tip') }}", orderable: true, searchable: false},
+                    // { data: 'total_commission_earn', name: 'total_commission_earn', title: "{{ __('earning.lbl_total_commission') }}", orderable: true, searchable: false},
+                    // { data: 'total_tips_earn', name: 'total_tips_earn', title: "{{ __('earning.lbl_total_tip') }}", orderable: true, searchable: false},
                     { data: 'total_pay', name: 'total_pay', title: "{{ __('earning.lbl_staff_earning') }}", orderable: false, searchable: false },
                     { data: 'action', name: 'action', title: "{{ __('earning.lbl_action') }}", orderable: false, searchable: false }
                 ]

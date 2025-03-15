@@ -190,7 +190,7 @@
                 <table class="table table-bordered border-top" data-use-parent-width="true">
                     <thead>
                         <tr class="text-center">
-                            <th>{{ __('booking.services') }}/{{ __('booking.products') }}</th>
+                            <th>{{ __('booking.services') }}</th>
                             <th>{{ __('booking.unit_price') }}</th>
                             <th>{{ __('booking.qty') }}</th>
                             <th class="text-end">{{ __('booking.total_price') }}</th>
