@@ -64,8 +64,8 @@ return [
     'composer' => [
         'vendor' => 'iqonicdesign',
         'author' => [
-            'name' => 'Iqonic Design',
-            'email' => 'hello@iqonic.design',
+            'name' => 'Sohaib Khaliq',
+            'email' => 'hello@Sohaib Khaliq',
         ],
     ],
 ];
