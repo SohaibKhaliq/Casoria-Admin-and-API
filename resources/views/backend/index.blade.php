@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-12">
+        {{-- <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3>{{ __('dashboard.lbl_performance') }}</h3>
                 <div class="d-flex  align-items-center">
@@ -19,9 +19,7 @@
                         <button type="submit" name="action" value="filter" class="btn btn-primary"
                             data-bs-toggle="tooltip"
                             data-bs-title="{{ __('messages.submit_date_filter') }}">{{ __('dashboard.lbl_submit') }}</button>
-                        {{-- <button type="submit" name="action" value="reset" class="btn btn-secondary btn-icon"
-            data-bs-toggle="tooltip" data-bs-title="Reset Filter"><i class="fa-solid fa-clock-rotate-left"></i></button>
-          --}}
+
                     </form>
                 </div>
             </div>
@@ -106,7 +104,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-xl-8">
             <div class="col-lg-12">
                 <div class="card card-block card-stretch card-height">
