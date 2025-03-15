@@ -10,9 +10,9 @@
                     </div>
                     <div>
                       @if (!isset($global_booking))
-                        @hasPermission('add_booking')
+                        {{-- @hasPermission('add_booking')
                         <a href="javascript:void(0)" class="btn btn-secondary" id="appointment-button"><i class="fa-solid fa-plus"></i> {{ __('messages.appointment') }}</a>
-                        @endhasPermission
+                        @endhasPermission --}}
                         @endif
                       @yield('banner-button')
                     </div>
