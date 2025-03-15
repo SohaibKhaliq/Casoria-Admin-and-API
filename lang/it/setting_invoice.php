@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'lbl_order_prefix' => 'Order Prefix',
-    'lbl_order_starts' => 'Order Starts',
-    'lbl_spacial_note' => 'Spacial Note',
+    'lbl_order_prefix' => 'Prefisso Ordine',
+    'lbl_order_starts' => 'Inizio Ordine',
+    'lbl_spacial_note' => 'Nota Speciale',
 ];

@@ -1,13 +1,13 @@
 <?php
 
 return [
-    'lbl_app' => 'App Name',
-    'lbl_footer' => 'Footer Text',
-    'lbl_copyright' => 'Copyright Text',
-    'lbl_uitext' => 'UI Text',
-    'lbl_contact_no' => 'Contact Number',
-    'lbl_inquiry_email' => 'Inquiry Email',
-    'lbl_site_description' => 'Site Description',
-    'business_add' => 'Business Address',
+    'lbl_app' => 'Nome App',
+    'lbl_footer' => 'Testo del Piè di Pagina',
+    'lbl_copyright' => 'Testo del Copyright',
+    'lbl_uitext' => 'Testo UI',
+    'lbl_contact_no' => 'Numero di Contatto',
+    'lbl_inquiry_email' => 'Email di Richiesta',
+    'lbl_site_description' => 'Descrizione del Sito',
+    'business_add' => 'Indirizzo Azienda',
     'branding' => 'Branding',
 ];

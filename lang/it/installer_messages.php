@@ -7,12 +7,12 @@ return [
      * Shared translations.
      *
      */
-    'title' => 'Laravel Installer',
-    'next' => 'Next Step',
-    'back' => 'Previous',
-    'finish' => 'Install',
+    'title' => 'Installatore Laravel',
+    'next' => 'Prossimo Passo',
+    'back' => 'Precedente',
+    'finish' => 'Installa',
     'forms' => [
-        'errorTitle' => 'The Following errors occurred:',
+        'errorTitle' => 'Si sono verificati i seguenti errori:',
     ],
 
     /*
@@ -21,10 +21,10 @@ return [
      *
      */
     'welcome' => [
-        'templateTitle' => 'Welcome',
-        'title' => 'Laravel Installer',
-        'message' => 'Easy Installation and Setup Wizard.',
-        'next' => 'Check Requirements',
+        'templateTitle' => 'Benvenuto',
+        'title' => 'Installatore Laravel',
+        'message' => 'Installazione e configurazione facile.',
+        'next' => 'Verifica Requisiti',
     ],
 
     /*
@@ -33,9 +33,9 @@ return [
      *
      */
     'requirements' => [
-        'templateTitle' => 'Step 1 | Server Requirements',
-        'title' => 'Server Requirements',
-        'next' => 'Check Permissions',
+        'templateTitle' => 'Passo 1 | Requisiti del Server',
+        'title' => 'Requisiti del Server',
+        'next' => 'Verifica Permessi',
     ],
 
     /*
@@ -44,9 +44,9 @@ return [
      *
      */
     'permissions' => [
-        'templateTitle' => 'Step 2 | Permissions',
-        'title' => 'Permissions',
-        'next' => 'Configure Environment',
+        'templateTitle' => 'Passo 2 | Permessi',
+        'title' => 'Permessi',
+        'next' => 'Configura Ambiente',
     ],
 
     /*
@@ -56,35 +56,35 @@ return [
      */
     'environment' => [
         'menu' => [
-            'templateTitle' => 'Step 3 | Environment Settings',
-            'title' => 'Environment Settings',
-            'desc' => 'Please select how you want to configure the apps <code>.env</code> file.',
-            'wizard-button' => 'Form Wizard Setup',
-            'classic-button' => 'Classic Text Editor',
+            'templateTitle' => 'Passo 3 | Impostazioni Ambiente',
+            'title' => 'Impostazioni Ambiente',
+            'desc' => 'Seleziona come configurare il file <code>.env</code> dell\'app.',
+            'wizard-button' => 'Configurazione Guidata',
+            'classic-button' => 'Editor di Testo Classico',
         ],
         'wizard' => [
-            'templateTitle' => 'Step 3 | Environment Settings | Guided Wizard',
-            'title' => 'Guided <code>.env</code> Wizard',
+            'templateTitle' => 'Passo 3 | Impostazioni Ambiente | Guida',
+            'title' => 'Guida <code>.env</code>',
             'tabs' => [
-                'environment' => 'Environment',
+                'environment' => 'Ambiente',
                 'database' => 'Database',
-                'application' => 'Application',
+                'application' => 'Applicazione',
             ],
             'form' => [
-                'name_required' => 'An environment name is required.',
-                'app_name_label' => 'App Name',
-                'app_name_placeholder' => 'App Name',
-                'app_environment_label' => 'App Environment',
-                'app_environment_label_local' => 'Local',
-                'app_environment_label_developement' => 'Development',
+                'name_required' => 'È richiesto un nome per l\'ambiente.',
+                'app_name_label' => 'Nome App',
+                'app_name_placeholder' => 'Nome App',
+                'app_environment_label' => 'Ambiente App',
+                'app_environment_label_local' => 'Locale',
+                'app_environment_label_developement' => 'Sviluppo',
                 'app_environment_label_qa' => 'Qa',
-                'app_environment_label_production' => 'Production',
-                'app_environment_label_other' => 'Other',
-                'app_environment_placeholder_other' => 'Enter your environment...',
-                'app_debug_label' => 'App Debug',
-                'app_debug_label_true' => 'True',
-                'app_debug_label_false' => 'False',
-                'app_log_level_label' => 'App Log Level',
+                'app_environment_label_production' => 'Produzione',
+                'app_environment_label_other' => 'Altro',
+                'app_environment_placeholder_other' => 'Inserisci il tuo ambiente...',
+                'app_debug_label' => 'Debug App',
+                'app_debug_label_true' => 'Vero',
+                'app_debug_label_false' => 'Falso',
+                'app_log_level_label' => 'Livello di Log App',
                 'app_log_level_label_debug' => 'debug',
                 'app_log_level_label_info' => 'info',
                 'app_log_level_label_notice' => 'notice',
@@ -93,82 +93,82 @@ return [
                 'app_log_level_label_critical' => 'critical',
                 'app_log_level_label_alert' => 'alert',
                 'app_log_level_label_emergency' => 'emergency',
-                'app_url_label' => 'App Url',
-                'app_url_placeholder' => 'App Url',
-                'db_connection_failed' => 'Could not connect to the database.',
-                'db_connection_label' => 'Database Connection',
+                'app_url_label' => 'URL App',
+                'app_url_placeholder' => 'URL App',
+                'db_connection_failed' => 'Impossibile connettersi al database.',
+                'db_connection_label' => 'Connessione Database',
                 'db_connection_label_mysql' => 'mysql',
                 'db_connection_label_sqlite' => 'sqlite',
                 'db_connection_label_pgsql' => 'pgsql',
                 'db_connection_label_sqlsrv' => 'sqlsrv',
-                'db_host_label' => 'Database Host',
-                'db_host_placeholder' => 'Database Host',
-                'db_port_label' => 'Database Port',
-                'db_port_placeholder' => 'Database Port',
-                'db_name_label' => 'Database Name',
-                'db_name_placeholder' => 'Database Name',
-                'db_username_label' => 'Database User Name',
-                'db_username_placeholder' => 'Database User Name',
-                'db_password_label' => 'Database Password',
-                'db_password_placeholder' => 'Database Password',
+                'db_host_label' => 'Host Database',
+                'db_host_placeholder' => 'Host Database',
+                'db_port_label' => 'Porta Database',
+                'db_port_placeholder' => 'Porta Database',
+                'db_name_label' => 'Nome Database',
+                'db_name_placeholder' => 'Nome Database',
+                'db_username_label' => 'Nome Utente Database',
+                'db_username_placeholder' => 'Nome Utente Database',
+                'db_password_label' => 'Password Database',
+                'db_password_placeholder' => 'Password Database',
 
                 'app_tabs' => [
-                    'more_info' => 'More Info',
-                    'broadcasting_title' => 'Broadcasting, Caching, Session, &amp; Queue',
-                    'broadcasting_label' => 'Broadcast Driver',
-                    'broadcasting_placeholder' => 'Broadcast Driver',
-                    'cache_label' => 'Cache Driver',
-                    'cache_placeholder' => 'Cache Driver',
-                    'session_label' => 'Session Driver',
-                    'session_placeholder' => 'Session Driver',
-                    'queue_label' => 'Queue Driver',
-                    'queue_placeholder' => 'Queue Driver',
-                    'redis_label' => 'Redis Driver',
-                    'redis_host' => 'Redis Host',
-                    'redis_password' => 'Redis Password',
-                    'redis_port' => 'Redis Port',
+                    'more_info' => 'Maggiori Informazioni',
+                    'broadcasting_title' => 'Broadcasting, Caching, Sessione, &amp; Coda',
+                    'broadcasting_label' => 'Driver di Broadcast',
+                    'broadcasting_placeholder' => 'Driver di Broadcast',
+                    'cache_label' => 'Driver di Cache',
+                    'cache_placeholder' => 'Driver di Cache',
+                    'session_label' => 'Driver di Sessione',
+                    'session_placeholder' => 'Driver di Sessione',
+                    'queue_label' => 'Driver di Coda',
+                    'queue_placeholder' => 'Driver di Coda',
+                    'redis_label' => 'Driver di Redis',
+                    'redis_host' => 'Host Redis',
+                    'redis_password' => 'Password Redis',
+                    'redis_port' => 'Porta Redis',
 
                     'mail_label' => 'Mail',
-                    'mail_driver_label' => 'Mail Driver',
-                    'mail_driver_placeholder' => 'Mail Driver',
-                    'mail_host_label' => 'Mail Host',
-                    'mail_host_placeholder' => 'Mail Host',
-                    'mail_port_label' => 'Mail Port',
-                    'mail_port_placeholder' => 'Mail Port',
-                    'mail_username_label' => 'Mail Username',
-                    'mail_username_placeholder' => 'Mail Username',
-                    'mail_password_label' => 'Mail Password',
-                    'mail_password_placeholder' => 'Mail Password',
-                    'mail_encryption_label' => 'Mail Encryption',
-                    'mail_encryption_placeholder' => 'Mail Encryption',
+                    'mail_driver_label' => 'Driver di Mail',
+                    'mail_driver_placeholder' => 'Driver di Mail',
+                    'mail_host_label' => 'Host Mail',
+                    'mail_host_placeholder' => 'Host Mail',
+                    'mail_port_label' => 'Porta Mail',
+                    'mail_port_placeholder' => 'Porta Mail',
+                    'mail_username_label' => 'Nome Utente Mail',
+                    'mail_username_placeholder' => 'Nome Utente Mail',
+                    'mail_password_label' => 'Password Mail',
+                    'mail_password_placeholder' => 'Password Mail',
+                    'mail_encryption_label' => 'Crittografia Mail',
+                    'mail_encryption_placeholder' => 'Crittografia Mail',
 
                     'pusher_label' => 'Pusher',
-                    'pusher_app_id_label' => 'Pusher App Id',
-                    'pusher_app_id_palceholder' => 'Pusher App Id',
-                    'pusher_app_key_label' => 'Pusher App Key',
-                    'pusher_app_key_palceholder' => 'Pusher App Key',
-                    'pusher_app_secret_label' => 'Pusher App Secret',
-                    'pusher_app_secret_palceholder' => 'Pusher App Secret',
+                    'pusher_app_id_label' => 'ID App Pusher',
+                    'pusher_app_id_palceholder' => 'ID App Pusher',
+                    'pusher_app_key_label' => 'Chiave App Pusher',
+                    'pusher_app_key_palceholder' => 'Chiave App Pusher',
+                    'pusher_app_secret_label' => 'Segreto App Pusher',
+                    'pusher_app_secret_palceholder' => 'Segreto App Pusher',
                 ],
                 'buttons' => [
-                    'setup_database' => 'Setup Database',
-                    'setup_application' => 'Setup Application',
-                    'install' => 'Install',
+                    'setup_database' => 'Configura Database',
+                    'setup_application' => 'Configura Applicazione',
+                    'install' => 'Installa',
                 ],
             ],
         ],
         'classic' => [
-            'templateTitle' => 'Step 3 | Environment Settings | Classic Editor',
-            'title' => 'Classic Environment Editor',
-            'save' => 'Save .env',
-            'back' => 'Use Form Wizard',
-            'install' => 'Save and Install',
+            'templateTitle' => 'Passo 3 | Impostazioni Ambiente | Editor Classico',
+            'title' => 'Editor Ambiente Classico',
+            'save' => 'Salva .env',
+            'back' => 'Usa Configurazione Guidata',
+            'install' => 'Salva e Installa',
         ],
-        'success' => 'Your .env file settings have been saved.',
-        'errors' => 'Unable to save the .env file, Please create it manually.',
+        'success' => 'Le impostazioni del file .env sono state salvate.',
+        'errors' => 'Impossibile salvare il file .env, crealo manualmente.',
     ],
 
-    'install' => 'Install',
+    'install' => 'Installa',
 
     /*
      *
@@ -176,7 +176,7 @@ return [
      *
      */
     'installed' => [
-        'success_log_message' => 'Laravel Installer successfully INSTALLED on ',
+        'success_log_message' => 'Installatore Laravel installato con successo il ',
     ],
 
     /*
@@ -185,17 +185,16 @@ return [
      *
      */
     'final' => [
-        'title' => 'Installation Finished',
-        'templateTitle' => 'Installation Finished',
-        'finished' => 'Application has been successfully installed.',
-        'migration' => 'Migration &amp; Seed Console Output:',
-        'console' => 'Application Console Output:',
-        'log' => 'Installation Log Entry:',
-        'env' => 'Final .env File:',
-        'exit' => 'Click here to exit',
-        'user_website' => 'User Website',
-        'admin_panel' => 'Admin Panel',
-
+        'title' => 'Installazione Completata',
+        'templateTitle' => 'Installazione Completata',
+        'finished' => 'L\'applicazione è stata installata con successo.',
+        'migration' => 'Output Console Migrazione &amp; Seed:',
+        'console' => 'Output Console Applicazione:',
+        'log' => 'Voce di Log Installazione:',
+        'env' => 'File .env Finale:',
+        'exit' => 'Clicca qui per uscire',
+        'user_website' => 'Sito Utente',
+        'admin_panel' => 'Pannello Admin',
     ],
 
     /*
@@ -209,7 +208,7 @@ return [
          * Shared translations.
          *
          */
-        'title' => 'Laravel Updater',
+        'title' => 'Aggiornamento Laravel',
 
         /*
          *
@@ -217,19 +216,19 @@ return [
          *
          */
         'welcome' => [
-            'title' => 'Welcome To The Updater',
-            'message' => 'Welcome to the update wizard.',
+            'title' => 'Benvenuto nell\'Aggiornamento',
+            'message' => 'Benvenuto nella guida all\'aggiornamento.',
         ],
 
         /*
          *
-         * Welcome page translations for update feature.
+         * Overview page translations for update feature.
          *
          */
         'overview' => [
-            'title' => 'Overview',
-            'message' => 'There is 1 update.|There are :number updates.',
-            'install_updates' => 'Install Updates',
+            'title' => 'Panoramica',
+            'message' => 'C\'è 1 aggiornamento.|Ci sono :number aggiornamenti.',
+            'install_updates' => 'Installa Aggiornamenti',
         ],
 
         /*
@@ -238,13 +237,13 @@ return [
          *
          */
         'final' => [
-            'title' => 'Finished',
-            'finished' => 'Application\'s database has been successfully updated.',
-            'exit' => 'Click here to exit',
+            'title' => 'Completato',
+            'finished' => 'Il database dell\'applicazione è stato aggiornato con successo.',
+            'exit' => 'Clicca qui per uscire',
         ],
 
         'log' => [
-            'success_message' => 'Laravel Installer successfully UPDATED on ',
+            'success_message' => 'Installatore Laravel aggiornato con successo il ',
         ],
     ],
 ];

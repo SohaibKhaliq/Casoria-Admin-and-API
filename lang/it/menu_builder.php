@@ -1,15 +1,14 @@
 <?php
 
 return [
-    'lbl_title' => 'Title',
-    'lbl_add_menu' => 'New Menu',
-    'lbl_edit_menu' => 'Edit Menu',
-    'lbl_icon' => 'Icon',
-    'lbl_menu_type' => 'Menu Type',
-    'lbl_is_route' => 'App Router',
+    'lbl_title' => 'Titolo',
+    'lbl_add_menu' => 'Nuovo Menu',
+    'lbl_edit_menu' => 'Modifica Menu',
+    'lbl_icon' => 'Icona',
+    'lbl_menu_type' => 'Tipo di Menu',
+    'lbl_is_route' => 'Router App',
     'lbl_url' => 'URL',
-    'lbl_target' => 'Open in tab',
-    'lbl_status' => 'Status',
-    'lbl_disable' => 'Disabled',
-
+    'lbl_target' => 'Apri in scheda',
+    'lbl_status' => 'Stato',
+    'lbl_disable' => 'Disabilitato',
 ];

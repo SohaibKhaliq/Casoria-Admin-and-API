@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'title' => 'Order Report',
-    'payment_status' => 'Payment Status',
-    'paid' => 'Paid',
-    'unpaid' => 'Unpaid',
-    'delivery_status' => 'Delivery Status',
-    'order_placed' => 'Order Placed',
-    'pending' => 'Pending',
-    'processing' => 'Processing',
-    'delivered' => 'Delivered',
-    'cancelled' => 'Cancelled',
+    'title' => 'Rapporto Ordini',
+    'payment_status' => 'Stato del Pagamento',
+    'paid' => 'Pagato',
+    'unpaid' => 'Non Pagato',
+    'delivery_status' => 'Stato della Consegna',
+    'order_placed' => 'Ordine Effettuato',
+    'pending' => 'In Attesa',
+    'processing' => 'In Elaborazione',
+    'delivered' => 'Consegnato',
+    'cancelled' => 'Annullato',
 ];
