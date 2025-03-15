@@ -23,7 +23,7 @@ return [
                 'label' => 'Footer Text', // you know what label it is
                 'rules' => 'required|min:2', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'Built with ♥ from <a href="https://iqonic.design" target="_blank">IQONIC DESIGN.</a>', // default value if you want
+                'value' => 'Built with ♥ from <a href="https://Sohaib Khaliq" target="_blank">Sohaib Khaliq.</a>', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -50,7 +50,7 @@ return [
                 'label' => 'UI Text', // you know what label it is
                 'rules' => 'required|min:2', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'UI Powered By <a href="https://hopeui.iqonic.design/" target="_blank">HOPE UI</a>', // default value if you want
+                'value' => 'UI Powered By <a href="https://Sohaib KhaliqSohaib Khaliq/" target="_blank">HOPE UI</a>', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -59,7 +59,7 @@ return [
                 'label' => 'Inquiry Email', // you know what label it is
                 'rules' => 'required|min:2', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'frezka@admin.com', // default value if you want
+                'value' => 'casoria@admin.com', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -454,7 +454,7 @@ return [
                 'label' => 'integration', // you know what label it is
                 'rules' => 'required|max:191', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'frezka-app', // default value if you want
+                'value' => 'casoria-app', // default value if you want
                 'help' => 'Paste the only the Measurement Id of Google Analytics stream.', // Help text for the input field.
             ],
             [
@@ -716,7 +716,7 @@ return [
                 'label' => 'From Name', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'Frezka', // default value if you wantPassword
+                'value' => 'casoria', // default value if you wantPassword
             ],
         ],
 
