@@ -68,8 +68,8 @@
                     { data: 'total_service_amount', name: 'total_service_amount', title: "{{ __('earning.lbl_total_earning') }}",  orderable: true , searchable: false},
                     // { data: 'total_commission_earn', name: 'total_commission_earn', title: "{{ __('earning.lbl_total_commission') }}", orderable: true, searchable: false},
                     // { data: 'total_tips_earn', name: 'total_tips_earn', title: "{{ __('earning.lbl_total_tip') }}", orderable: true, searchable: false},
-                    { data: 'total_pay', name: 'total_pay', title: "{{ __('earning.lbl_staff_earning') }}", orderable: false, searchable: false },
-                    { data: 'action', name: 'action', title: "{{ __('earning.lbl_action') }}", orderable: false, searchable: false }
+                    // { data: 'total_pay', name: 'total_pay', title: "{{ __('earning.lbl_staff_earning') }}", orderable: false, searchable: false },
+                    // { data: 'action', name: 'action', title: "{{ __('earning.lbl_action') }}", orderable: false, searchable: false }
                 ]
             });
         })
