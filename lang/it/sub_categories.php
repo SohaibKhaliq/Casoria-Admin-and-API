@@ -1,6 +1,5 @@
 <?php
 
 return [
-    'title' => 'Sub Categories',
-
+    'title' => 'Sottocategorie',
 ];

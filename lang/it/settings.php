@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'title' => 'Settings',
-    'save_setting' => 'Setting Updated!',
-    'horizontal' => 'Horizontal',
-    'vertical' => 'Vertical',
-    'purge_cache' => 'Purge Cache',
+    'title' => 'Impostazioni',
+    'save_setting' => 'Impostazione Aggiornata!',
+    'horizontal' => 'Orizzontale',
+    'vertical' => 'Verticale',
+    'purge_cache' => 'Svuota Cache',
 ];

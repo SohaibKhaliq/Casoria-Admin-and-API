@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'title' => 'Tags',
+    'title' => 'Tag',
     'singular_title' => 'Tag',
 ];

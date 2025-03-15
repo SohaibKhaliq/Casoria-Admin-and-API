@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'title' => 'States',
-    'singule_title' => 'State',
-    'enter_name' => 'Enter Name',
-    'select_country' => 'Select Country',
-    'select_state' => 'Select State',
+    'title' => 'Stati',
+    'singule_title' => 'Stato',
+    'enter_name' => 'Inserisci Nome',
+    'select_country' => 'Seleziona Paese',
+    'select_state' => 'Seleziona Stato',
 ];
