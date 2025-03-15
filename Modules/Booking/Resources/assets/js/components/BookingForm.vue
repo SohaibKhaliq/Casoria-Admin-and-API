@@ -109,7 +109,7 @@
               <a v-if="!filterStatus(status).is_disabled && !is_paid && start_date_time" href="javascript:void(0)" @click="addNewService" class="btnw-100"><i class="fa-solid fa-circle-plus"></i> {{ $t('booking.lbl_add_service') }}</a>
             </template>
           </div>
-          <div v-if="selectPurchasePackages.length == 0 && selectedCustomer && employee_id" class="text-center bg-soft-primary p-5 iq-package mt-3" @click="purchasePackageModel">
+          <!-- <div v-if="selectPurchasePackages.length == 0 && selectedCustomer && employee_id" class="text-center bg-soft-primary p-5 iq-package mt-3" @click="purchasePackageModel">
             <div class="d-flex justify-content-center mb-3">
               <div class="avatar avatar-60 rounded-pill bg-soft-secondary">
                 <i class="fa-solid fa-gift"></i>
@@ -117,7 +117,7 @@
             </div>
             <h5>{{ filteredPackages.length }} {{ $t('booking.lbl_package_available') }}</h5>
             <h6 class="text-primary">View all</h6>
-          </div>
+          </div> -->
           <div v-if="selectPurchasePackages.length > 0 && selectedCustomer && employee_id">
             <ul class="form-group list-group list-group-flush iq-package-list">
               <div class="d-flex align-items-center justify-content-between">
@@ -361,9 +361,9 @@
                   <div class="multiselect-multiple-label">Select Product</div>
                 </template>
               </Multiselect>
-              <template v-else>
+              <!-- <template v-else>
                 <a href="javascript:void(0)" v-if="!is_paid" @click="addNewProduct" class="btnw-100"><i class="fa-solid fa-circle-plus"></i> Add Product</a>
-              </template>
+              </template> -->
             </div>
           </div>
         </div>
@@ -521,7 +521,7 @@
       </div>
     </div>
 
-    <div class="modal fade modal-xl" id="purchasePackageModel" aria-labelledby="purchasePackageModelLabel" aria-hidden="true">
+    <!-- <div class="modal fade modal-xl" id="purchasePackageModel" aria-labelledby="purchasePackageModelLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -583,7 +583,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </form>
 
   <CustomerCreate :data="newCustomerData" @submit="externalFormCreation"></CustomerCreate>
