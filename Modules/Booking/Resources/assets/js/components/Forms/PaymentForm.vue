@@ -14,7 +14,7 @@
         <strong>+ {{ formatCurrencyVue(tax.value) }}</strong>
       </template>
     </div>
-    <div class="form-group row">
+    <!-- <div class="form-group row">
       <div class="col-8">
         <label for="">Tips: <span class="gap-1" @click="addTip(18)">18%</span> <span class="gap-1" @click="addTip(20)">20%</span> <span class="gap-1" @click="addTip(22)">22%</span></label>
       </div>
@@ -26,7 +26,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <hr />
 
     <div class="form-group d-flex align-items-center justify-content-between">
