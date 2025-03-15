@@ -1,6 +1,6 @@
 <?php
 
 return [
-   'title'=>'Variaciones',
-   'singular_title'=>'Variación',
+    'title' => 'Variaciones',
+    'singular_title' => 'Variación',
 ];

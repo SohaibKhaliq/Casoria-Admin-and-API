@@ -7,20 +7,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Address;
 // Traits
 use App\Models\Business;
-use Modules\BussinessHour\Models\BussinessHour;
-use Modules\Holiday\Models\Holiday;
-// Listing Models
 use App\Models\User;
 use App\Notifications\UserAccountCreated;
+// Listing Models
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Modules\Booking\Models\Booking;
-// Events
 use Modules\Booking\Trait\BookingTrait;
+// Events
+use Modules\BussinessHour\Models\BussinessHour;
+use Modules\Holiday\Models\Holiday;
+use Modules\Service\Models\Service;
 use Modules\Service\Transformers\ServiceResource;
 use Modules\Tax\Models\Tax;
-use Carbon\Carbon;
-use Modules\Service\Models\Service;
 
 class QuickBookingsController extends Controller
 {
@@ -56,7 +56,6 @@ class QuickBookingsController extends Controller
 
         return $this->sendResponse($slots, $businessHours, __('booking.booking_timeslot'));
     }
-
 
     public function slot_date_list(Request $request)
     {

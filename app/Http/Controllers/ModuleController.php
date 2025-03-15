@@ -51,7 +51,7 @@ class ModuleController extends Controller
 
         $datatable = $datatable->eloquent($query)
             ->addColumn('check', function ($row) {
-                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-' . $row->id . '"  name="datatable_ids[]" value="' . $row->id . '" onclick="dataTableRowCheck(' . $row->id . ')">';
+                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-'.$row->id.'"  name="datatable_ids[]" value="'.$row->id.'" onclick="dataTableRowCheck('.$row->id.')">';
             })
 
             ->addColumn('action', function ($data) use ($module_name) {
@@ -66,7 +66,7 @@ class ModuleController extends Controller
 
                 return '
                 <div class="form-check form-switch ">
-                    <input type="checkbox" data-url="' . route('backend.module.update_status', $row->id) . '" data-token="' . csrf_token() . '" class="switch-status-change form-check-input"  id="datatable-row-' . $row->id . '"  name="status" value="' . $row->id . '" ' . $checked . '>
+                    <input type="checkbox" data-url="'.route('backend.module.update_status', $row->id).'" data-token="'.csrf_token().'" class="switch-status-change form-check-input"  id="datatable-row-'.$row->id.'"  name="status" value="'.$row->id.'" '.$checked.'>
                 </div>
                ';
             })

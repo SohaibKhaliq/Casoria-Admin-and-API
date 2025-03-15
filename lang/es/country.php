@@ -1,6 +1,6 @@
 <?php
 
 return [
-   'title'=>'Países',
-   'singular_title'=>'País',
+    'title' => 'Países',
+    'singular_title' => 'País',
 ];

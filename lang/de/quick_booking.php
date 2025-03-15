@@ -42,5 +42,5 @@ return [
     'lbl_service' => 'Dienstleistungen',
     'lbl_price' => 'Gesamtpreis',
     'lbl_more_appointment' => 'Weitere Termine buchen',
-    'lbl_pdf' => 'Als PDF drucken'
+    'lbl_pdf' => 'Als PDF drucken',
 ];

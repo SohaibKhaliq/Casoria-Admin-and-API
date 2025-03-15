@@ -20,7 +20,7 @@ return [
     'lbl_services' => 'الخدمات',
     'lbl_package_price' => 'سعر الحزمة',
     'lbl_service_price' => 'سعر الخدمة في الحزمة',
-    "no_services" => "لم تتم إضافة أي خدمات. يرجى إضافة خدمة.",
+    'no_services' => 'لم تتم إضافة أي خدمات. يرجى إضافة خدمة.',
     'no_of_services' => 'عدد الخدمات',
 
 ];

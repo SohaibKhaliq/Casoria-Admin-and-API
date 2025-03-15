@@ -248,5 +248,4 @@ return [
     'personal_information' => 'Información Personal',
     'business_setting' => 'Configuración de Sucursal',
 
-
 ];

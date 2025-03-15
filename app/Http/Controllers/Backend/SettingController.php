@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
+
 class SettingController extends Controller
 {
     public function __construct()
@@ -74,7 +75,7 @@ class SettingController extends Controller
             $fileName = $file->getClientOriginalName();
             $directoryPath = storage_path('app/data');
 
-            if (!File::isDirectory($directoryPath)) {
+            if (! File::isDirectory($directoryPath)) {
                 File::makeDirectory($directoryPath, 0777, true, true);
             }
 

@@ -28,7 +28,7 @@ return [
     'new' => 'Νέο',
     'category_list' => 'Λίστα Κατηγοριών',
     'all_categories' => 'Όλες οι Κατηγορίες',
-    "placeholder_name"=> "Εισάγετε το όνομα της κατηγορίας",
-    "placeholder_parent_category"=> "Επιλέξτε γονική κατηγορία",
-    "placeholder_parent_brand"=> "Επιλέξτε γονικές μάρκες"
+    'placeholder_name' => 'Εισάγετε το όνομα της κατηγορίας',
+    'placeholder_parent_category' => 'Επιλέξτε γονική κατηγορία',
+    'placeholder_parent_brand' => 'Επιλέξτε γονικές μάρκες',
 ];

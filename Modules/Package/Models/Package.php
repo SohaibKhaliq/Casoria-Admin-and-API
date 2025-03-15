@@ -3,10 +3,9 @@
 namespace Modules\Package\Models;
 
 use App\Models\BaseModel;
+use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Business;
-use Carbon\Carbon;
 
 class Package extends BaseModel
 {
@@ -14,8 +13,6 @@ class Package extends BaseModel
     use SoftDeletes;
 
     protected $table = 'packages';
-
-
 
     const CUSTOM_FIELD_MODEL = 'Modules\Package\Models\Package';
 
@@ -33,8 +30,6 @@ class Package extends BaseModel
     {
         return $this->belongsTo(Business::class, 'business_id');
     }
-
-
 
     public function scopeBusiness($query)
     {

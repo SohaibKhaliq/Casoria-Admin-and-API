@@ -20,8 +20,7 @@ return [
     'lbl_services' => 'Dienstleistungen',
     'lbl_package_price' => 'Paketpreis',
     'lbl_service_price' => 'Dienstleistungspaketpreis',
-    "no_services" => "Keine Dienste hinzugefügt. Bitte fügen Sie einen Dienst hinzu.",
+    'no_services' => 'Keine Dienste hinzugefügt. Bitte fügen Sie einen Dienst hinzu.',
     'no_of_services' => 'Anzahl der Dienstleistungen',
-
 
 ];

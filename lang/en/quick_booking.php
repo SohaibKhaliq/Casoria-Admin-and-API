@@ -39,8 +39,8 @@ return [
     'lbl_staff' => 'Staff',
     'lbl_date' => 'Date',
     'lbl_time' => 'Time',
-    'lbl_service' => "Services",
+    'lbl_service' => 'Services',
     'lbl_price' => 'Total Price',
     'lbl_more_appointment' => 'Book More Appointments',
-    'lbl_pdf' => 'Print to PDF'
+    'lbl_pdf' => 'Print to PDF',
 ];

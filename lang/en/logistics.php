@@ -2,6 +2,6 @@
 
 return [
     'title' => 'Logistics',
-    'singular_title'=>'Logistic'
+    'singular_title' => 'Logistic',
 
 ];

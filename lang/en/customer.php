@@ -15,10 +15,10 @@ return [
     'msg_verified' => 'Verified',
     'msg_unverified' => 'Need To Verify',
     'lbl_action' => 'Action',
-    'first_name'=>'Enter first name',
-    'last_name'=>'Enter last name',
-    'email_address'=>'Enter email address',
-    'password'=>'Enter password',
-    'confirm_password'=>'Enter Confirm password',
+    'first_name' => 'Enter first name',
+    'last_name' => 'Enter last name',
+    'email_address' => 'Enter email address',
+    'password' => 'Enter password',
+    'confirm_password' => 'Enter Confirm password',
 
 ];

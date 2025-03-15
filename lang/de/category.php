@@ -28,7 +28,7 @@ return [
     'new' => 'Neu',
     'category_list' => 'Kategorieliste',
     'all_categories' => 'Alle Kategorien',
-    "placeholder_name"=> "Geben Sie den Kategorienamen ein",
-    "placeholder_parent_category"=> "Elternkategorie auswählen",
-    "placeholder_parent_brand"=> "Elternmarken auswählen"
+    'placeholder_name' => 'Geben Sie den Kategorienamen ein',
+    'placeholder_parent_category' => 'Elternkategorie auswählen',
+    'placeholder_parent_brand' => 'Elternmarken auswählen',
 ];

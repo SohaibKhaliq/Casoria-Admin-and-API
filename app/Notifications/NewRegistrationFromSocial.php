@@ -25,9 +25,7 @@ class NewRegistrationFromSocial extends Notification
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Get the notification's delivery channels.
@@ -53,14 +51,14 @@ class NewRegistrationFromSocial extends Notification
         if ($user->email_verified_at == '') {
             $verificationUrl = $this->verificationUrl($notifiable);
 
-            return (new MailMessage())
+            return (new MailMessage)
                 ->subject('Thank you for registration!')
                 ->line('Please click the button below to verify your email address.')
                 ->action('Verify Email Address', $verificationUrl)
                 ->line('If you did not create an account, no further action is required.');
         }
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->subject('Thank you for registration!')
             ->line('Thank you for registration at '.app_name().'.')
             ->action('Vist Application', url('/'))

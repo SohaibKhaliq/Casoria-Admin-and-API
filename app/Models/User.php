@@ -16,6 +16,7 @@ use Modules\Booking\Models\BookingService;
 use Modules\Commission\Models\CommissionEarning;
 use Modules\Commission\Models\EmployeeCommission;
 use Modules\Earning\Models\EmployeeEarning;
+use Modules\Employee\Models\BranchEmployee;
 use Modules\Employee\Models\EmployeeRating;
 use Modules\Package\Models\BookingPackages;
 use Modules\Service\Models\ServiceEmployee;
@@ -23,7 +24,6 @@ use Modules\Subscriptions\Models\Subscription;
 use Modules\Tip\Models\TipEarning;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Traits\HasRoles;
-use Modules\Employee\Models\BranchEmployee;
 
 class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
@@ -70,7 +70,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     public function getFullNameAttribute() // notice that the attribute name is in CamelCase.
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return $this->first_name.' '.$this->last_name;
     }
 
     /**
@@ -141,7 +141,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
         $media = $this->getFirstMediaUrl('profile_image');
 
-        return isset($media) && !empty($media) ? $media : asset(config('app.avatar_base_path') . 'avatar.png');
+        return isset($media) && ! empty($media) ? $media : asset(config('app.avatar_base_path').'avatar.png');
     }
 
     // Employee Relations
@@ -179,10 +179,12 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
         return $this->hasMany(BookingService::class, 'employee_id');
     }
+
     public function bookingPackages()
     {
         return $this->hasMany(BookingPackages::class, 'employee_id');
     }
+
     public function employeeEarnings()
     {
         return $this->hasMany(EmployeeEarning::class, 'employee_id');
@@ -234,8 +236,6 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
         return $this->hasManyThrough(Booking::class, BookingService::class, 'booking_id', 'id', 'id', 'employee_id');
     }
-
-
 
     public function profile()
     {

@@ -38,7 +38,7 @@ export const GET_URL = () => {
   return { path: `business-info`, method: 'GET' }
 }
 
-export const UPDATE_BRANCH_SETTING = () => {
+export const UPDATE_BUSINESS_SETTING = () => {
   return { path: `business/business-setting`, method: 'POST' }
 }
 

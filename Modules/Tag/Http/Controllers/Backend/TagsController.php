@@ -44,8 +44,8 @@ class TagsController extends Controller
         ];
 
         $module_action = 'List';
-        $columns = CustomFieldGroup::columnJsonValues(new Tag());
-        $customefield = CustomField::exportCustomFields(new Tag());
+        $columns = CustomFieldGroup::columnJsonValues(new Tag);
+        $customefield = CustomField::exportCustomFields(new Tag);
 
         $export_import = true;
         $export_columns = [
@@ -94,7 +94,7 @@ class TagsController extends Controller
         }
         $datatable = $datatable->eloquent($query)
             ->addColumn('check', function ($row) {
-                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-' . $row->id . '"  name="datatable_ids[]" value="' . $row->id . '" onclick="dataTableRowCheck(' . $row->id . ')">';
+                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-'.$row->id.'"  name="datatable_ids[]" value="'.$row->id.'" onclick="dataTableRowCheck('.$row->id.')">';
             })
             ->addColumn('action', function ($data) {
                 return view('tag::backend.tags.action_column', compact('data'));
@@ -107,7 +107,7 @@ class TagsController extends Controller
 
                 return '
                               <div class="form-check form-switch ">
-                                  <input type="checkbox" data-url="' . route('backend.tags.update_status', $row->id) . '" data-token="' . csrf_token() . '" class="switch-status-change form-check-input"  id="datatable-row-' . $row->id . '"  name="status" value="' . $row->id . '" ' . $checked . '>
+                                  <input type="checkbox" data-url="'.route('backend.tags.update_status', $row->id).'" data-token="'.csrf_token().'" class="switch-status-change form-check-input"  id="datatable-row-'.$row->id.'"  name="status" value="'.$row->id.'" '.$checked.'>
                               </div>
                           ';
             })

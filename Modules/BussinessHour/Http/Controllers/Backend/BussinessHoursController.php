@@ -188,7 +188,7 @@ class BussinessHoursController extends Controller
         if (request()->wantsJson()) {
             return response()->json(['message' => $message, 'status' => true], 200);
         } else {
-            flash('<i class="fas fa-check"></i> ' . label_case($this->module_name) . ' Deleted Successfully!')->success()->important();
+            flash('<i class="fas fa-check"></i> '.label_case($this->module_name).' Deleted Successfully!')->success()->important();
 
             return redirect("app//notification/$this->module_name");
         }

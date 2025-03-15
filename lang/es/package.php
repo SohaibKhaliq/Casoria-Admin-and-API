@@ -20,12 +20,7 @@ return [
     'lbl_services' => 'Servicios',
     'lbl_package_price' => 'Precio del Paquete',
     'lbl_service_price' => 'Precio del Servicio en el Paquete',
-    "no_services" => "No se han añadido servicios. Por favor, añada un servicio.",
+    'no_services' => 'No se han añadido servicios. Por favor, añada un servicio.',
     'no_of_services' => 'Número de servicios',
 
-
 ];
-
-
-
-

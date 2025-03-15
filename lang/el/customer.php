@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Πελάτες', 
+    'title' => 'Πελάτες',
     'singular_title' => 'Πελάτης',
     'lbl_profile_image' => 'Εικόνα προφίλ',
     'lbl_first_name' => 'Όνομα',

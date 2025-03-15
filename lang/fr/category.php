@@ -28,7 +28,7 @@ return [
     'new' => 'Nouveau',
     'category_list' => 'Liste des catégories',
     'all_categories' => 'Toutes les catégories',
-    "placeholder_name"=> "Entrez le nom de la catégorie",
-    "placeholder_parent_category"=> "Sélectionner la catégorie parent",
-    "placeholder_parent_brand"=> "Sélectionner les marques parentes"
+    'placeholder_name' => 'Entrez le nom de la catégorie',
+    'placeholder_parent_category' => 'Sélectionner la catégorie parent',
+    'placeholder_parent_brand' => 'Sélectionner les marques parentes',
 ];

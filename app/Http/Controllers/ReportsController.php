@@ -98,7 +98,7 @@ class ReportsController extends Controller
             [
                 'value' => 'total_admin_earnings',
                 'text' => 'Total Amount',
-            ]
+            ],
 
         ];
         $export_url = route('backend.reports.order_booking_report_review');
@@ -150,12 +150,13 @@ class ReportsController extends Controller
         return $datatable->eloquent($orders)
             ->addIndexColumn()
             ->editColumn('order_code', function ($data) {
-                return setting('inv_prefix') . $data->orderGroup->order_code;
+                return setting('inv_prefix').$data->orderGroup->order_code;
             })
             ->editColumn('customer_name', function ($data) {
                 $Profile_image = optional($data->user)->profile_image ?? default_user_avatar();
                 $name = optional($data->user)->full_name ?? default_user_name();
                 $email = optional($data->user)->email ?? '--';
+
                 return view('booking::backend.bookings.datatable.user_id', compact('Profile_image', 'name', 'email'));
                 // return view('product::backend.order.columns.customer_column', compact('data'));
             })
@@ -178,18 +179,18 @@ class ReportsController extends Controller
                 return Currency::format($data->total_admin_earnings);
             })
             ->filterColumn('customer_name', function ($query, $keyword) {
-                if (!empty($keyword)) {
+                if (! empty($keyword)) {
                     $query->whereHas('user', function ($q) use ($keyword) {
-                        $q->where('first_name', 'like', '%' . $keyword . '%');
-                        $q->orWhere('last_name', 'like', '%' . $keyword . '%');
-                        $q->orWhere('email', 'like', '%' . $keyword . '%');
+                        $q->where('first_name', 'like', '%'.$keyword.'%');
+                        $q->orWhere('last_name', 'like', '%'.$keyword.'%');
+                        $q->orWhere('email', 'like', '%'.$keyword.'%');
                     });
                 }
             })
             ->filterColumn('phone', function ($query, $keyword) {
-                if (!empty($keyword)) {
+                if (! empty($keyword)) {
                     $query->whereHas('user', function ($q) use ($keyword) {
-                        $q->where('mobile', 'like', '%' . $keyword . '%');
+                        $q->where('mobile', 'like', '%'.$keyword.'%');
                     });
                 }
             })
@@ -209,27 +210,27 @@ class ReportsController extends Controller
     public function daily_booking_report_index_data(Datatables $datatable, Request $request)
     {
         $query = Booking::dailyReport();
-        
+
         $data = $request->all();
-    
+
         $filter = $request->filter;
         if (isset($filter['booking_date'])) {
             $bookingDates = explode(' to ', $filter['booking_date']);
-    
+
             if (count($bookingDates) >= 2) {
                 $startDate = date('Y-m-d 00:00:00', strtotime($bookingDates[0]));
                 $endDate = date('Y-m-d 23:59:59', strtotime($bookingDates[1]));
-    
+
                 $query->where('bookings.start_date_time', '>=', $startDate)
                     ->where('bookings.start_date_time', '<=', $endDate);
             } elseif (count($bookingDates) === 1) {
                 $singleDate = date('Y-m-d', strtotime($bookingDates[0]));
-                $startDate = $singleDate . ' 00:00:00';
-                $endDate = $singleDate . ' 23:59:59';
+                $startDate = $singleDate.' 00:00:00';
+                $endDate = $singleDate.' 23:59:59';
                 $query->whereBetween('bookings.start_date_time', [$startDate, $endDate]);
             }
         }
-    
+
         return $datatable->eloquent($query)
             ->editColumn('start_date_time', function ($data) {
                 return customDate($data->start_date_time);
@@ -256,7 +257,6 @@ class ReportsController extends Controller
             ->rawColumns([])
             ->toJson();
     }
-    
 
     public function overall_booking_report(Request $request)
     {
@@ -335,8 +335,8 @@ class ReportsController extends Controller
                     ->where('bookings.start_date_time', '<=', $endDate);
             } elseif (count($bookingDates) === 1) {
                 $singleDate = date('Y-m-d', strtotime($bookingDates[0]));
-                $startDate = $singleDate . ' 00:00:00';
-                $endDate = $singleDate . ' 23:59:59';
+                $startDate = $singleDate.' 00:00:00';
+                $endDate = $singleDate.' 23:59:59';
                 $query->whereBetween('bookings.start_date_time', [$startDate, $endDate]);
             }
         }
@@ -347,15 +347,12 @@ class ReportsController extends Controller
             });
         }
 
-
-
-
         return $datatable->eloquent($query)
             ->editColumn('start_date_time', function ($data) {
                 return customDate($data->start_date_time);
             })
             ->editColumn('id', function ($data) {
-                return setting('booking_invoice_prifix') . $data->id;
+                return setting('booking_invoice_prifix').$data->id;
             })
             ->editColumn('employee_id', function ($data) {
                 // return $data->services->first()->employee?->full_name ?? '-';
@@ -388,7 +385,6 @@ class ReportsController extends Controller
             ->rawColumns([])
             ->toJson();
     }
-
 
     public function payout_report(Request $request)
     {
@@ -444,8 +440,8 @@ class ReportsController extends Controller
                     ->where('payment_date', '<=', $endDate);
             } elseif (count($bookingDates) === 1) {
                 $singleDate = date('Y-m-d', strtotime($bookingDates[0]));
-                $startDate = $singleDate . ' 00:00:00';
-                $endDate = $singleDate . ' 23:59:59';
+                $startDate = $singleDate.' 00:00:00';
+                $endDate = $singleDate.' 23:59:59';
                 $query->whereBetween('payment_date', [$startDate, $endDate]);
             }
         }
@@ -464,6 +460,7 @@ class ReportsController extends Controller
                 $Profile_image = optional($data->employee)->profile_image ?? default_user_avatar();
                 $name = optional($data->employee)->full_name ?? default_user_name();
                 $email = optional($data->employee)->email ?? '--';
+
                 return view('booking::backend.bookings.datatable.employee_id', compact('Profile_image', 'name', 'email'));
             })
             ->editColumn('commission_amount', function ($data) {
@@ -560,6 +557,7 @@ class ReportsController extends Controller
                 $Profile_image = optional($data)->profile_image ?? default_user_avatar();
                 $name = optional($data)->full_name ?? default_user_name();
                 $email = optional($data)->email ?? '--';
+
                 return view('booking::backend.bookings.datatable.employee_id', compact('Profile_image', 'name', 'email'));
             })
             ->orderColumn('first_name', function ($query, $order) {
@@ -579,7 +577,7 @@ class ReportsController extends Controller
                 return Currency::format($data->tip_earning_sum_tip_amount ?? 0);
             })
             ->editColumn('total_earning', function ($data) {
-                return Currency::format( $data->commission_earning_sum_commission_amount + $data->tip_earning_sum_tip_amount);
+                return Currency::format($data->commission_earning_sum_commission_amount + $data->tip_earning_sum_tip_amount);
             })
             ->editColumn('updated_at', function ($data) {
                 $module_name = $this->module_name;
@@ -655,11 +653,11 @@ class ReportsController extends Controller
 
         return $this->export($request);
     }
+
     public function order_booking_report_review(Request $request)
     {
         $this->exportClass = '\App\Exports\OrderReportsExport';
 
         return $this->export($request);
     }
-
 }

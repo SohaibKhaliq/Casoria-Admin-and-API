@@ -65,26 +65,26 @@ class SearchController extends Controller
 
                 $items = $items->limit(50)->get();
                 break;
-                case 'earning_payment_method':
-                    $query = Constant::getAllConstant()
-                        ->where('type', 'EARNING_PAYMENT_TYPE');
-                    foreach ($query as $key => $data) {
-                        if ($data->name === 'Cash') { // Add condition for cash only
-                            if ($keyword != '') {
-                                if (strpos($data->name, str_replace(' ', '_', strtolower($keyword))) !== false) {
-                                    $items[] = [
-                                        'id' => $data->name,
-                                        'text' => $data->value,
-                                    ];
-                                }
-                            } else {
+            case 'earning_payment_method':
+                $query = Constant::getAllConstant()
+                    ->where('type', 'EARNING_PAYMENT_TYPE');
+                foreach ($query as $key => $data) {
+                    if ($data->name === 'Cash') { // Add condition for cash only
+                        if ($keyword != '') {
+                            if (strpos($data->name, str_replace(' ', '_', strtolower($keyword))) !== false) {
                                 $items[] = [
                                     'id' => $data->name,
                                     'text' => $data->value,
                                 ];
                             }
+                        } else {
+                            $items[] = [
+                                'id' => $data->name,
+                                'text' => $data->value,
+                            ];
                         }
                     }
+                }
                 break;
 
             case 'booking_status':

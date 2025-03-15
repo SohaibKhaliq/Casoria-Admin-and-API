@@ -15,7 +15,7 @@ class BusinessReviewResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'username' => $this->user->first_name . ' ' . $this->user->last_name,
+            'username' => $this->user->first_name.' '.$this->user->last_name,
             'review_msg' => $this->review_msg,
             'rating' => $this->rating,
 

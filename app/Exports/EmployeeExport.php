@@ -94,6 +94,7 @@ class EmployeeExport implements FromCollection, WithHeadings, WithStyles
 
         return $newQuery;
     }
+
     public function styles(Worksheet $sheet)
     {
         applyExcelStyles($sheet);

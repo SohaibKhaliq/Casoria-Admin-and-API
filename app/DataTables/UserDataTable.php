@@ -18,14 +18,14 @@ class UserDataTable extends DataTable
     /**
      * Build DataTable class.
      *
-     * @param  QueryBuilder  $query Results from query() method.
+     * @param  QueryBuilder  $query  Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         $business_for_list = Constant::getTypeDataKeyValue('BRANCH_SERVICE_GENDER');
         $datatable = (new EloquentDataTable($query))
             ->addColumn('check', function ($row) {
-                return '<input type="checkbox" class="form-check-input select-table-row "  id="datatable-row-' . $row->id . '"  name="datatable_ids[]" value="' . $row->id . '" onclick="dataTableRowCheck(' . $row->id . ')">';
+                return '<input type="checkbox" class="form-check-input select-table-row "  id="datatable-row-'.$row->id.'"  name="datatable_ids[]" value="'.$row->id.'" onclick="dataTableRowCheck('.$row->id.')">';
             })
             ->addColumn('action', function ($data) {
                 $module_name = 'business';
@@ -35,28 +35,28 @@ class UserDataTable extends DataTable
             ->filterColumn('address.city', function ($query, $keyword) {
                 if (! empty($keyword)) {
                     $query->whereHas('address', function ($q) use ($keyword) {
-                        $q->where('city', 'like', '%' . $keyword . '%');
+                        $q->where('city', 'like', '%'.$keyword.'%');
                     });
                 }
             })
             ->filterColumn('address.postal_code', function ($query, $keyword) {
                 if (! empty($keyword)) {
                     $query->whereHas('address', function ($q) use ($keyword) {
-                        $q->where('postal_code', 'like', '%' . $keyword . '%');
+                        $q->where('postal_code', 'like', '%'.$keyword.'%');
                     });
                 }
             })
             ->filterColumn('manager_id', function ($query, $keyword) {
                 if (! empty($keyword)) {
                     $query->whereHas('employee', function ($q) use ($keyword) {
-                        $q->where('first_name', 'like', '%' . $keyword . '%');
-                        $q->orWhere('last_name', 'like', '%' . $keyword . '%');
+                        $q->where('first_name', 'like', '%'.$keyword.'%');
+                        $q->orWhere('last_name', 'like', '%'.$keyword.'%');
                     });
                 }
             })
             ->filterColumn('business_for', function ($query, $keyword) {
                 if (! empty($keyword)) {
-                    $query->where('business_for', 'like', $keyword . '%');
+                    $query->where('business_for', 'like', $keyword.'%');
                 }
             })
             ->editColumn('status', function ($row) {
@@ -67,12 +67,12 @@ class UserDataTable extends DataTable
 
                 return '
               <div class="form-check form-switch  ">
-                  <input type="checkbox" data-url="' . route('backend.business.update_status', $row->id) . '" data-token="' . csrf_token() . '" class="switch-status-change form-check-input"  id="datatable-row-' . $row->id . '"  name="status" value="' . $row->id . '" ' . $checked . '>
+                  <input type="checkbox" data-url="'.route('backend.business.update_status', $row->id).'" data-token="'.csrf_token().'" class="switch-status-change form-check-input"  id="datatable-row-'.$row->id.'"  name="status" value="'.$row->id.'" '.$checked.'>
               </div>
               ';
             })
             ->addColumn('image', function ($data) {
-                return '<img src=' . $data->feature_image . " class='avatar avatar-50 rounded-pill'>";
+                return '<img src='.$data->feature_image." class='avatar avatar-50 rounded-pill'>";
             })
             ->editColumn('address.city', function ($data) {
                 return $data->address->city ?? '';
@@ -162,6 +162,6 @@ class UserDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'User_' . date('YmdHis');
+        return 'User_'.date('YmdHis');
     }
 }

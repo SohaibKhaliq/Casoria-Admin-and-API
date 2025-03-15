@@ -4,11 +4,11 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Modules\Category\Models\Category;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Modules\Category\Models\Category;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class CategoryExport implements FromCollection, WithHeadings,WithStyles
+class CategoryExport implements FromCollection, WithHeadings, WithStyles
 {
     public array $columns;
 
@@ -56,9 +56,9 @@ class CategoryExport implements FromCollection, WithHeadings,WithStyles
                             $selectedData[$column] = 'active';
                         }
                         break;
-                        case 'Date':
-                            $selectedData[$column] = customDate($row->created_at) ?? '-';
-                            break;
+                    case 'Date':
+                        $selectedData[$column] = customDate($row->created_at) ?? '-';
+                        break;
                     default:
                         $selectedData[$column] = $row[$column];
                         break;
@@ -70,6 +70,7 @@ class CategoryExport implements FromCollection, WithHeadings,WithStyles
 
         return $newQuery;
     }
+
     public function styles(Worksheet $sheet)
     {
         applyExcelStyles($sheet);

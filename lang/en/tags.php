@@ -2,5 +2,5 @@
 
 return [
     'title' => 'Tags',
-    'singular_title'=>'Tag',
+    'singular_title' => 'Tag',
 ];

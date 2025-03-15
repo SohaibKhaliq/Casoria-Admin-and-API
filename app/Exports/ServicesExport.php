@@ -4,8 +4,8 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Modules\Service\Models\Service;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Modules\Service\Models\Service;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ServicesExport implements FromCollection, WithHeadings, WithStyles
@@ -65,7 +65,7 @@ class ServicesExport implements FromCollection, WithHeadings, WithStyles
                         break;
 
                     case 'duration_min':
-                        $selectedData[$column] = $row->duration_min . ' Min';
+                        $selectedData[$column] = $row->duration_min.' Min';
                         break;
 
                     case 'businesses':
@@ -79,7 +79,7 @@ class ServicesExport implements FromCollection, WithHeadings, WithStyles
                     case 'category':
                         $category = isset($row->category->name) ? $row->category->name : '-';
                         if (isset($row->sub_category->name)) {
-                            $category = $category . ' > ' . $row->sub_category->name;
+                            $category = $category.' > '.$row->sub_category->name;
                         }
                         $selectedData[$column] = $category;
                         break;
@@ -95,6 +95,7 @@ class ServicesExport implements FromCollection, WithHeadings, WithStyles
 
         return $newQuery;
     }
+
     public function styles(Worksheet $sheet)
     {
         applyExcelStyles($sheet);

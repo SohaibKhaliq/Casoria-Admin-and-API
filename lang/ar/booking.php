@@ -86,5 +86,4 @@ return [
     'business_name' => 'اسم الفرع',
     'invoice_time' => 'وقت الفاتورة',
 
-
 ];

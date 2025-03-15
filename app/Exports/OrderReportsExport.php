@@ -5,10 +5,11 @@ namespace App\Exports;
 use Currency;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Modules\Product\Models\Order;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Modules\Product\Models\Order;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-class  OrderReportsExport implements FromCollection, WithHeadings,WithStyles
+
+class OrderReportsExport implements FromCollection, WithHeadings, WithStyles
 {
     public array $columns;
 
@@ -37,7 +38,7 @@ class  OrderReportsExport implements FromCollection, WithHeadings,WithStyles
      */
     public function collection()
     {
-        $query = Order::with('orderGroup','user');
+        $query = Order::with('orderGroup', 'user');
 
         $query->whereDate('orders.created_at', '>=', $this->dateRange[0]);
 
@@ -51,7 +52,7 @@ class  OrderReportsExport implements FromCollection, WithHeadings,WithStyles
             foreach ($this->columns as $column) {
                 switch ($column) {
                     case 'order_code':
-                        $selectedData[$column] =  setting('inv_prefix').$row->orderGroup->order_code;
+                        $selectedData[$column] = setting('inv_prefix').$row->orderGroup->order_code;
                         break;
 
                     case 'customer_name':
@@ -63,11 +64,11 @@ class  OrderReportsExport implements FromCollection, WithHeadings,WithStyles
                         break;
 
                     case 'items':
-                        $selectedData[$column] =$row->orderItems()->count();
+                        $selectedData[$column] = $row->orderItems()->count();
                         break;
 
                     case 'total_admin_earnings':
-                        $selectedData[$column] = Currency::format($row->total_admin_earnings);;
+                        $selectedData[$column] = Currency::format($row->total_admin_earnings);
                         break;
 
                     default:
@@ -81,6 +82,7 @@ class  OrderReportsExport implements FromCollection, WithHeadings,WithStyles
 
         return $newQuery;
     }
+
     public function styles(Worksheet $sheet)
     {
         applyExcelStyles($sheet);

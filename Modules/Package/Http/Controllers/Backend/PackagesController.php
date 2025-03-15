@@ -10,16 +10,15 @@ use Modules\CustomField\Models\CustomField;
 use Modules\CustomField\Models\CustomFieldGroup;
 use Modules\Package\Models\Package;
 use Modules\Package\Models\PackageService;
-use Modules\Package\Models\userPackageServices;
+use Modules\Package\Models\UserPackage;
 use Modules\Service\Models\Service;
 use Yajra\DataTables\DataTables;
-use Modules\Package\Models\UserPackage;
-use App\Models\User;
 
 class PackagesController extends Controller
 {
     // use Authorizable;
     protected string $exportClass = '\App\Exports\PackageExport';
+
     public function __construct()
     {
         // Page Title
@@ -45,14 +44,13 @@ class PackagesController extends Controller
     public function index(Request $request)
     {
 
-
         $filter = [
             'status' => $request->status,
         ];
 
         $module_action = 'List';
-        $columns = CustomFieldGroup::columnJsonValues(new Package());
-        $customefield = CustomField::exportCustomFields(new Package());
+        $columns = CustomFieldGroup::columnJsonValues(new Package);
+        $customefield = CustomField::exportCustomFields(new Package);
 
         $export_import = true;
         $export_columns = [
@@ -117,7 +115,7 @@ class PackagesController extends Controller
                             'duration_min' => $service->services->duration_min,
                             'service_price' => $service->service_price,
                             'purchase_date' => $row->start_date,
-                            'discount_price' => $service->discounted_price
+                            'discount_price' => $service->discounted_price,
                         ];
                     }
                 }
@@ -140,7 +138,6 @@ class PackagesController extends Controller
 
         return response()->json($data);
     }
-
 
     public function userPackageList(Request $request, $user_id)
     {
@@ -166,7 +163,7 @@ class PackagesController extends Controller
                         'end_date' => $row->package->end_date,
                         'business_name' => $row->package->business->name,
                         'business_id' => $row->package->business_id,
-                        'discount_price' => $service->packageService->discounted_price
+                        'discount_price' => $service->packageService->discounted_price,
                     ];
                 }
             }
@@ -206,10 +203,9 @@ class PackagesController extends Controller
             });
         }
 
-
         return Datatables::of($query)
             ->addColumn('check', function ($data) {
-                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-' . $data->id . '"  name="datatable_ids[]" value="' . $data->id . '" onclick="dataTableRowCheck(' . $data->id . ')">';
+                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-'.$data->id.'"  name="datatable_ids[]" value="'.$data->id.'" onclick="dataTableRowCheck('.$data->id.')">';
             })
             ->addColumn('action', function ($data) {
                 return view('package::backend.packages.action_column', compact('data'));
@@ -222,7 +218,7 @@ class PackagesController extends Controller
 
                 return '
                                         <div class="form-check form-switch  ">
-                                            <input type="checkbox" data-url="' . route('backend.package.update_status', $data->id) . '" data-token="' . csrf_token() . '" class="switch-status-change form-check-input"  id="datatable-row-' . $data->id . '"  name="status" value="' . $data->id . '" ' . $checked . '>
+                                            <input type="checkbox" data-url="'.route('backend.package.update_status', $data->id).'" data-token="'.csrf_token().'" class="switch-status-change form-check-input"  id="datatable-row-'.$data->id.'"  name="status" value="'.$data->id.'" '.$checked.'>
                                         </div>
                                       ';
             })
@@ -241,7 +237,7 @@ class PackagesController extends Controller
 
             ->editColumn('package_price', function ($data) {
 
-                return '<span>' . \Currency::format($data->package_price) . '</span>';
+                return '<span>'.\Currency::format($data->package_price).'</span>';
             })
             ->editColumn('updated_at', function ($data) {
                 $module_name = $this->module_name;
@@ -290,10 +286,9 @@ class PackagesController extends Controller
     public function store(Request $request)
     {
 
-        $request['services'] = is_string($request->services) && !empty(is_string($request->services)) ? json_decode($request->services) : [];
-        $request['employee_id'] = is_string($request->employee_id) && !empty($request->employee_id) ? explode(',', $request->employee_id) : [];
-        $request['category_id'] = is_string($request->category_id) && !empty($request->category_id) ? explode(',', $request->category_id) : [];
-
+        $request['services'] = is_string($request->services) && ! empty(is_string($request->services)) ? json_decode($request->services) : [];
+        $request['employee_id'] = is_string($request->employee_id) && ! empty($request->employee_id) ? explode(',', $request->employee_id) : [];
+        $request['category_id'] = is_string($request->category_id) && ! empty($request->category_id) ? explode(',', $request->category_id) : [];
 
         $totalprice = 0;
         foreach ($request['services'] as $serviceItem) {
@@ -317,8 +312,6 @@ class PackagesController extends Controller
         $data->services()->sync($service);
 
         $message = 'New Package Added';
-
-
 
         $message = __('messages.create_form', ['form' => __('package.singular_title')]);
 
@@ -348,12 +341,11 @@ class PackagesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request['services'] = is_string($request->services) && !empty(is_string($request->services)) ? json_decode($request->services) : [];
-        $request['employee_id'] = is_string($request->employee_id) && !empty($request->employee_id) ? explode(',', $request->employee_id) : [];
-        $request['category_id'] = is_string($request->category_id) && !empty($request->category_id) ? explode(',', $request->category_id) : [];
+        $request['services'] = is_string($request->services) && ! empty(is_string($request->services)) ? json_decode($request->services) : [];
+        $request['employee_id'] = is_string($request->employee_id) && ! empty($request->employee_id) ? explode(',', $request->employee_id) : [];
+        $request['category_id'] = is_string($request->category_id) && ! empty($request->category_id) ? explode(',', $request->category_id) : [];
 
         $data = Package::findOrFail($id);
-
 
         $data->employees()->sync($request['employee_id']);
         $totalprice = 0;
@@ -364,8 +356,6 @@ class PackagesController extends Controller
             $PackageService = $PackageService->whereNotIn('service_id', $serviceId);
         }
         $PackageService->delete();
-
-
 
         foreach ($request['services'] as $serviceItem) {
             $filteredService = [];
@@ -387,11 +377,8 @@ class PackagesController extends Controller
             );
         }
 
-
-
         $request['package_price'] = $totalprice;
         $data->update($request->all());
-
 
         $message = 'Packages Updated Successfully';
 
@@ -484,8 +471,8 @@ class PackagesController extends Controller
         ];
 
         $module_action = 'List';
-        $columns = CustomFieldGroup::columnJsonValues(new Package());
-        $customefield = CustomField::exportCustomFields(new Package());
+        $columns = CustomFieldGroup::columnJsonValues(new Package);
+        $customefield = CustomField::exportCustomFields(new Package);
 
         $export_import = true;
         $export_columns = [
@@ -506,13 +493,14 @@ class PackagesController extends Controller
 
         return Datatables::of($query)
             ->addColumn('check', function ($data) {
-                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-' . $data->id . '"  name="datatable_ids[]" value="' . $data->id . '" onclick="dataTableRowCheck(' . $data->id . ')">';
+                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-'.$data->id.'"  name="datatable_ids[]" value="'.$data->id.'" onclick="dataTableRowCheck('.$data->id.')">';
             })
             ->addColumn('username', function ($data) {
                 $user = optional($data->user);
                 $Profile_image = $user->profile_image ?? default_user_avatar();
                 $name = $user->full_name ?? default_user_name();
                 $email = $user->email ?? '--';
+
                 return view('booking::backend.bookings.datatable.user_id', compact('Profile_image', 'name', 'email'));
             })
             ->orderColumn('username', function ($query, $order) {
@@ -540,7 +528,7 @@ class PackagesController extends Controller
             })
             ->editColumn('package_price', function ($data) {
 
-                return '<span>' . \Currency::format($data->package->package_price) . '</span>';
+                return '<span>'.\Currency::format($data->package->package_price).'</span>';
             })
             ->orderColumn('package_price', function ($query, $order) {
                 $query->select('user_packages.*')
@@ -557,6 +545,7 @@ class PackagesController extends Controller
             })
             ->addColumn('expirydate', function ($data) {
                 $expiryDate = date('Y-m-d', strtotime($data->package->end_date));
+
                 return $expiryDate;
             })
             ->orderColumn('expirydate', function ($query, $order) {
@@ -577,7 +566,6 @@ class PackagesController extends Controller
     {
 
         $data = UserPackage::where('id', $id)->with('booking.user', 'package.service', 'userPackageServices.packageService')->first();
-
 
         return response()->json(['data' => $data, 'status' => true]);
     }

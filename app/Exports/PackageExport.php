@@ -4,11 +4,11 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Modules\Package\Models\Package;
-use Modules\Service\Models\Service;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Modules\Package\Models\Package;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-class PackageExport implements FromCollection, WithHeadings,WithStyles
+
+class PackageExport implements FromCollection, WithHeadings, WithStyles
 {
     public array $columns;
 
@@ -51,8 +51,6 @@ class PackageExport implements FromCollection, WithHeadings,WithStyles
 
         $query = $query->get();
 
-
-
         $newQuery = $query->map(function ($row) {
             $selectedData = [];
             foreach ($this->columns as $column) {
@@ -74,12 +72,8 @@ class PackageExport implements FromCollection, WithHeadings,WithStyles
                         }
                         break;
 
-
-
-
-
                     default:
-                    $selectedData[$column] = $row[$column] ;
+                        $selectedData[$column] = $row[$column];
                         break;
                 }
             }
@@ -89,6 +83,7 @@ class PackageExport implements FromCollection, WithHeadings,WithStyles
 
         return $newQuery;
     }
+
     public function styles(Worksheet $sheet)
     {
         applyExcelStyles($sheet);

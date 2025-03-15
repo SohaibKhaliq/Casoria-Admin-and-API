@@ -8,10 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Cache;
 use Modules\Booking\Models\Booking;
 use Modules\BussinessHour\Models\BussinessHour;
-use Modules\Employee\Models\BusinessEmployee;
+use Modules\Employee\Models\BranchEmployee;
 use Modules\Service\Models\Service;
 use Modules\Service\Models\ServiceBusinesses;
-use Modules\Employee\Models\BranchEmployee;
 
 class Business extends BaseModel
 {

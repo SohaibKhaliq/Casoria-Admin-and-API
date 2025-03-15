@@ -45,7 +45,7 @@ Route::group(['prefix' => 'app', 'as' => 'backend.', 'middleware' => ['auth']], 
         Route::get('/services-index_list', [PackagesController::class, 'services_index_list'])->name('services_index_list');
         Route::get('clientPackage', [PackagesController::class, 'clientView'])->name('clientPackage');
         Route::get('clientpackagedata', [PackagesController::class, 'clientPackageData'])->name('clientPackageData');
-        Route::get('{id}/client_package',[PackagesController::class, 'clientPackageView'])->name('clientPackageView');
+        Route::get('{id}/client_package', [PackagesController::class, 'clientPackageView'])->name('clientPackageView');
         Route::get('user_package_list/{user_id}', [PackagesController::class, 'userPackageList'])->name('user_package_list');
     });
     Route::resource('package', PackagesController::class);

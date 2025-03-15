@@ -63,14 +63,13 @@ class AuthController extends Controller
         // $user = User::withTrashed()->where('id', (int)$request->input('user_id'))->first();
         $is_user_authorized = false;
 
-        if (!empty($user)) {
+        if (! empty($user)) {
             if ($user->status === 0) {
                 $is_user_authorized = false;
             } elseif ($user->status === 1) {
-                $is_user_authorized = !$user->trashed();
+                $is_user_authorized = ! $user->trashed();
             }
-        }
-        else {
+        } else {
             return $this->sendError(__('messages.not_matched'), ['error' => __('messages.unauthorised')], 200);
         }
 
@@ -142,7 +141,7 @@ class AuthController extends Controller
             $input['display_name'] = $input['first_name'].' '.$input['last_name'];
             $input['password'] = Hash::make($password);
             $input['user_type'] = isset($input['user_type']) ? $input['user_type'] : 'user';
-            
+
             $user = User::create($input);
             $user->assignRole('user');
 
@@ -156,7 +155,6 @@ class AuthController extends Controller
             $message = trans('messages.save_form', ['form' => $input['user_type']]);
         }
 
-        
         $user_data['api_token'] = $user_data->createToken('auth_token')->plainTextToken;
 
         $socialLogin = new SocialLoginResource($user_data);

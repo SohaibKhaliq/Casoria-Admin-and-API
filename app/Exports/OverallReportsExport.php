@@ -5,10 +5,11 @@ namespace App\Exports;
 use Currency;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Modules\Booking\Models\Booking;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Modules\Booking\Models\Booking;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-class OverallReportsExport implements FromCollection, WithHeadings,WithStyles
+
+class OverallReportsExport implements FromCollection, WithHeadings, WithStyles
 {
     public array $columns;
 
@@ -89,6 +90,7 @@ class OverallReportsExport implements FromCollection, WithHeadings,WithStyles
 
         return $newQuery;
     }
+
     public function styles(Worksheet $sheet)
     {
         applyExcelStyles($sheet);

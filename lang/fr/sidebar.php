@@ -52,6 +52,6 @@ return [
     'promotion' => 'Promotion',
     'package' => 'Forfait',
     'client_packages' => 'Forfaits Clients',
-    'customer_packages' => 'Forfaits Clients'
+    'customer_packages' => 'Forfaits Clients',
 
 ];

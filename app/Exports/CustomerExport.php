@@ -7,7 +7,8 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-class CustomerExport implements FromCollection, WithHeadings,WithStyles
+
+class CustomerExport implements FromCollection, WithHeadings, WithStyles
 {
     public array $columns;
 
@@ -83,6 +84,7 @@ class CustomerExport implements FromCollection, WithHeadings,WithStyles
 
         return $newQuery;
     }
+
     public function styles(Worksheet $sheet)
     {
         applyExcelStyles($sheet);

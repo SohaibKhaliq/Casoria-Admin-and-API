@@ -68,8 +68,8 @@ class BusinessController extends Controller
         ];
 
         $assets = ['select-picker'];
-        $columns = CustomFieldGroup::columnJsonValues(new Business());
-        $customefield = CustomField::exportCustomFields(new Business());
+        $columns = CustomFieldGroup::columnJsonValues(new Business);
+        $customefield = CustomField::exportCustomFields(new Business);
 
         return view('backend.business.index_datatable', compact('module_action', 'filter', 'select_data', 'assets', 'columns', 'customefield'));
     }
@@ -160,32 +160,32 @@ class BusinessController extends Controller
 
         $datatable = $datatable->eloquent($query)
             ->addColumn('check', function ($row) {
-                return '<input type="checkbox" class="form-check-input select-table-row "  id="datatable-row-' . $row->id . '"  name="datatable_ids[]" value="' . $row->id . '" onclick="dataTableRowCheck(' . $row->id . ')">';
+                return '<input type="checkbox" class="form-check-input select-table-row "  id="datatable-row-'.$row->id.'"  name="datatable_ids[]" value="'.$row->id.'" onclick="dataTableRowCheck('.$row->id.')">';
             })
             ->addColumn('action', function ($data) use ($module_name) {
                 return view('backend.business.action_column', compact('module_name', 'data'));
             })
             ->filterColumn('address.city', function ($query, $keyword) {
-                if (!empty($keyword)) {
+                if (! empty($keyword)) {
                     $query->whereHas('address', function ($q) use ($keyword) {
-                        $q->where('city', 'like', '%' . $keyword . '%');
+                        $q->where('city', 'like', '%'.$keyword.'%');
                     });
                 }
             })
             ->filterColumn('address.postal_code', function ($query, $keyword) {
-                if (!empty($keyword)) {
+                if (! empty($keyword)) {
                     $query->whereHas('address', function ($q) use ($keyword) {
-                        $q->where('postal_code', 'like', '%' . $keyword . '%');
+                        $q->where('postal_code', 'like', '%'.$keyword.'%');
                     });
                 }
             })
 
             ->filterColumn('manager_id', function ($query, $keyword) {
-                if (!empty($keyword)) {
+                if (! empty($keyword)) {
                     $query->whereHas('employee', function ($q) use ($keyword) {
-                        $q->where('first_name', 'like', '%' . $keyword . '%');
-                        $q->orWhere('last_name', 'like', '%' . $keyword . '%');
-                        $q->orWhere('email', 'like', '%' . $keyword . '%');
+                        $q->where('first_name', 'like', '%'.$keyword.'%');
+                        $q->orWhere('last_name', 'like', '%'.$keyword.'%');
+                        $q->orWhere('email', 'like', '%'.$keyword.'%');
                     });
                 }
             })
@@ -195,14 +195,14 @@ class BusinessController extends Controller
                     ->orderBy('users.first_name', $order);
             })
             ->filterColumn('business_for', function ($query, $keyword) {
-                if (!empty($keyword)) {
-                    $query->where('business_for', 'like', $keyword . '%');
+                if (! empty($keyword)) {
+                    $query->where('business_for', 'like', $keyword.'%');
                 }
             })
             ->filterColumn('name', function ($query, $keyword) {
-                if (!empty($keyword)) {
-                    $query->Where('name', 'like', '%' . $keyword . '%');
-                    $query->orWhere('contact_email', 'like', '%' . $keyword . '%');
+                if (! empty($keyword)) {
+                    $query->Where('name', 'like', '%'.$keyword.'%');
+                    $query->orWhere('contact_email', 'like', '%'.$keyword.'%');
                 }
             })
             ->editColumn('status', function ($row) {
@@ -213,12 +213,13 @@ class BusinessController extends Controller
 
                 return '
              <div class="form-check form-switch  ">
-                 <input type="checkbox" data-url="' . route('backend.business.update_status', $row->id) . '" data-token="' . csrf_token() . '" class="switch-status-change form-check-input"  id="datatable-row-' . $row->id . '"  name="status" value="' . $row->id . '" ' . $checked . '>
+                 <input type="checkbox" data-url="'.route('backend.business.update_status', $row->id).'" data-token="'.csrf_token().'" class="switch-status-change form-check-input"  id="datatable-row-'.$row->id.'"  name="status" value="'.$row->id.'" '.$checked.'>
              </div>
             ';
             })
             ->editColumn('name', function ($data) {
                 $email = optional($data)->contact_email ?? '--';
+
                 return view('backend.business.business_id', compact('data', 'email'));
             })
             ->editColumn('address.city', function ($data) {
@@ -231,6 +232,7 @@ class BusinessController extends Controller
                 $Profile_image = optional($data->employee)->profile_image ?? default_user_avatar();
                 $name = optional($data->employee)->full_name ?? default_user_name();
                 $email = optional($data->employee)->email ?? '--';
+
                 return view('booking::backend.bookings.datatable.employee_id', compact('Profile_image', 'name', 'email'));
             })
             ->editColumn('business_for', function ($data) use ($business_for_list) {
@@ -294,7 +296,7 @@ class BusinessController extends Controller
             BussinessHour::create($val);
         }
 
-        if (!empty($request->address) && is_string($data['address'])) {
+        if (! empty($request->address) && is_string($data['address'])) {
             $request->address = json_decode($data['address'], true);
             $query->address()->save(new Address($request->address));
         }
@@ -348,7 +350,7 @@ class BusinessController extends Controller
 
         $data['service_id'] = $service_id;
 
-        if (!is_null($data)) {
+        if (! is_null($data)) {
             $custom_field_data = $data->withCustomFields();
             $data['custom_field_data'] = $custom_field_data->custom_fields_data->toArray();
         }
@@ -375,7 +377,7 @@ class BusinessController extends Controller
 
         $query->update($data);
 
-        if (!empty($request->address) && is_string($request['address'])) {
+        if (! empty($request->address) && is_string($request['address'])) {
             $request->address = json_decode($request['address'], true);
             $query->address()->update($request->address);
         }
@@ -407,7 +409,6 @@ class BusinessController extends Controller
 
         return response()->json(['message' => $message, 'status' => true], 200);
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -482,10 +483,10 @@ class BusinessController extends Controller
         $term = $request->q;
         $role = $request->role;
         $query_data = BusinessEmployee::select('*', 'id as employee_id')->where(function ($q) use ($term, $role) {
-            if (!empty($term)) {
+            if (! empty($term)) {
                 $q->orWhere('name', 'LIKE', "%$term%");
             }
-            if (!empty($role)) {
+            if (! empty($role)) {
                 $q->role($role);
             }
         })->get();
@@ -556,7 +557,7 @@ class BusinessController extends Controller
 
             $data['service_id'] = $service_id;
 
-            if (!is_null($data)) {
+            if (! is_null($data)) {
                 $custom_field_data = $data->withCustomFields();
                 $data['custom_field_data'] = $custom_field_data->custom_fields_data->toArray();
             }
@@ -578,7 +579,7 @@ class BusinessController extends Controller
 
         $query->update($data);
 
-        if (!empty($request->address) && is_string($request['address'])) {
+        if (! empty($request->address) && is_string($request['address'])) {
             $request->address = json_decode($request['address'], true);
             $query->address()->update($request->address);
         }

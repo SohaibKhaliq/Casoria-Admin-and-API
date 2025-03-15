@@ -1,4 +1,5 @@
 <?php
+
 return [
     'title' => 'Gutscheine',
     'singular_title' => 'Gutschein',

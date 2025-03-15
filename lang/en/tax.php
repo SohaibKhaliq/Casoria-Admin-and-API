@@ -9,9 +9,9 @@ return [
     'lbl_status' => 'Status',
     'lbl_action' => 'Action',
     'lbl_module_type' => 'Module Type',
-    'enter_title'=>'Enter Title',
-    'enter_value'=>'Enter Value',
-    'select_type'=>'Select Type',
-    'module_type'=>'Select module type',
+    'enter_title' => 'Enter Title',
+    'enter_value' => 'Enter Value',
+    'select_type' => 'Select Type',
+    'module_type' => 'Select module type',
 
 ];

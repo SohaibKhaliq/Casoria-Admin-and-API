@@ -9,8 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Modules\Booking\Models\Booking;
 use Modules\Booking\Models\BookingService;
-use Modules\Package\Models\BookingPackages;
 use Modules\Booking\Models\BookingTransaction;
+use Modules\Package\Models\BookingPackages;
 use Modules\Product\Models\Order;
 use Modules\Product\Models\OrderGroup;
 
@@ -46,7 +46,7 @@ class BackendController extends Controller
             $endDate = Carbon::now()->toDateString();
         }
 
-        $date_range = $startDate . ' to ' . $endDate;
+        $date_range = $startDate.' to '.$endDate;
         $data = [
             'total_appointments' => 0,
             'total_commission' => 0,
@@ -100,7 +100,6 @@ class BackendController extends Controller
 
         $datetime = Carbon::now()->setTimezone(setting('default_time_zone') ?? 'UTC');
 
-
         $data['upcomming_appointments'] = Booking::with('business', 'user', 'services')
             ->where('start_date_time', '>=', $datetime)->orderBy('start_date_time')
             ->whereHas('user', function ($q) {
@@ -152,6 +151,7 @@ class BackendController extends Controller
             $orders->where('created_at', '>=', $startDate)
                 ->whereDate('created_at', '<=', $endDate)->sum('total_admin_earnings')
         );
+
         return view('backend.index', compact('data', 'date_range', 'global_booking'));
     }
 

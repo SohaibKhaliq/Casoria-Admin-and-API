@@ -54,9 +54,9 @@ class MailMailableSend extends Mailable
         $this->templateData = $this->mailable->defaultNotificationTemplateMap->template_detail;
 
         foreach ($this->data as $key => $value) {
-          //  if(is_string($this->data[$key])) {
-                $this->templateData = str_replace('[[ '.$key.' ]]', $this->data[$key], $this->templateData);
-          //  }
+            //  if(is_string($this->data[$key])) {
+            $this->templateData = str_replace('[[ '.$key.' ]]', $this->data[$key], $this->templateData);
+            //  }
         }
 
         return new Content(
@@ -67,10 +67,10 @@ class MailMailableSend extends Mailable
     public function attachments()
     {
         $files = [];
-        if($this->type == 'complete_booking') {
+        if ($this->type == 'complete_booking') {
             \Log::info($this->data);
-            $pdf = Pdf::loadHTML(view("mail.invoice-templates.".setting('template'), ['data' => $this->data])->render());
-            $files[0] = Attachment::fromData(function() use($pdf) {
+            $pdf = Pdf::loadHTML(view('mail.invoice-templates.'.setting('template'), ['data' => $this->data])->render());
+            $files[0] = Attachment::fromData(function () use ($pdf) {
                 return $pdf->output();
             }, 'Invoice.pdf')
                 ->withMime('application/pdf');

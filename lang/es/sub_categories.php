@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'title'=>'Subcategas',
+    'title' => 'Subcategas',
 
 ];

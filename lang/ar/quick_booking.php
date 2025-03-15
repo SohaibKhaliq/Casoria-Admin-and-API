@@ -42,5 +42,5 @@ return [
     'lbl_service' => 'الخدمات',
     'lbl_price' => 'السعر الإجمالي',
     'lbl_more_appointment' => 'احجز مواعيد إضافية',
-    'lbl_pdf' => 'طباعة إلى PDF'
+    'lbl_pdf' => 'طباعة إلى PDF',
 ];

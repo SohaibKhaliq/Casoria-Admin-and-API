@@ -80,5 +80,4 @@ return [
     'review_msg' => 'Mensaje de revisión',
     'already_in_cart' => 'El producto ya está en el carrito.',
 
-
 ];

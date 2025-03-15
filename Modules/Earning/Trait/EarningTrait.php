@@ -6,7 +6,7 @@ trait EarningTrait
 {
     public function getUnpaidAmount($data, $type = null)
     {
-        $classData = new \stdClass();
+        $classData = new \stdClass;
         switch ($type) {
             case 'tip':
                 return $data->tip_earning->where('tip_status', 'unpaid')->sum('tip_amount');

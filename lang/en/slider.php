@@ -10,7 +10,7 @@ return [
     'lbl_status' => 'Status',
     'lbl_feature_image' => 'Feature Image',
     'lbl_action' => 'Action',
-    'enter_name'=> 'Enter Name',
-    'enter_url'=> 'Enter URL',
-    'select_type'=>'Select Type'
+    'enter_name' => 'Enter Name',
+    'enter_url' => 'Enter URL',
+    'select_type' => 'Select Type',
 ];

@@ -24,6 +24,6 @@ return [
     'coupons_list' => 'Coupon List',
     'promotion_and_coupons_details' => 'Promotion Details',
     'coupon_not_found' => 'Coupon Not Found',
-    'coupon_price' => 'Coupon Price'
+    'coupon_price' => 'Coupon Price',
 
 ];

@@ -6,7 +6,6 @@ use App\Models\Setting;
 use Illuminate\Database\Seeder;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Schema;
-use Modules\Service\Models\ServiceBusinesses;
 
 class DatabaseSeeder extends Seeder
 {

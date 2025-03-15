@@ -61,5 +61,4 @@ return [
     'select_employee' => 'Select an employee',
     'singular_title_manager' => 'Manager',
 
-
 ];

@@ -91,7 +91,7 @@ class UserController extends Controller
 
                 return redirect()->back();
             } else {
-                flash($user->name . ', You already confirmed your email address at ' . $user->email_verified_at->isoFormat('LL'))->success()->important();
+                flash($user->name.', You already confirmed your email address at '.$user->email_verified_at->isoFormat('LL'))->success()->important();
 
                 return redirect()->back();
             }
@@ -108,14 +108,14 @@ class UserController extends Controller
 
         if ($role == 'employee') {
             $query_data = User::role(['manager', 'employee'])->with('media')->where(function ($q) {
-                if (!empty($term)) {
+                if (! empty($term)) {
                     $q->orWhere('first_name', 'LIKE', "%$term%")->
                     $q->orWhere('last_name', 'LIKE', "%$term%");
                 }
             })->where('is_show_calender', 1)->get();
         } elseif ($role == 'user') {
             $query_data = User::role(['user'])->where(function ($q) {
-                if (!empty($term)) {
+                if (! empty($term)) {
                     $q->orWhere('first_name', 'LIKE', "%$term%")->
                     $q->orWhere('last_name', 'LIKE', "%$term%");
                 }
@@ -127,7 +127,7 @@ class UserController extends Controller
         foreach ($query_data as $row) {
             $data[] = [
                 'id' => $row->id,
-                'full_name' => $row->first_name . ' ' . $row->last_name,
+                'full_name' => $row->first_name.' '.$row->last_name,
                 'email' => $row->email,
                 'mobile' => $row->mobile,
                 'profile_image' => $row->profile_image,
@@ -147,7 +147,7 @@ class UserController extends Controller
         ]);
 
         $data_array = $request->except('_token', 'roles', 'permissions', 'password_confirmation');
-        $data_array['name'] = $request->first_name . ' ' . $request->last_name;
+        $data_array['name'] = $request->first_name.' '.$request->last_name;
 
         if ($request->confirmed == 1) {
             $data_array = Arr::add($data_array, 'email_verified_at', Carbon::now());
@@ -187,8 +187,6 @@ class UserController extends Controller
         return response()->json(['data' => $user, 'message' => $message, 'status' => true]);
     }
 
-
-
     public function myProfile()
     {
         return view('backend.profile.index');
@@ -197,6 +195,7 @@ class UserController extends Controller
     public function authData()
     {
         $defaultImage = default_user_avatar();
+
         return response()->json(['data' => auth()->user(), 'defaultImage' => $defaultImage, 'status' => true]);
     }
 
@@ -230,7 +229,6 @@ class UserController extends Controller
         return response()->json(['message' => $message, 'status' => true], 200);
     }
 
-
     public function change_password(Request $request)
     {
         if (env('IS_DEMO')) {
@@ -244,7 +242,7 @@ class UserController extends Controller
 
         $request_data = $request->only('old_password', 'new_password', 'confirm_password');
 
-        if (!Hash::check($request->old_password, $data->password)) {
+        if (! Hash::check($request->old_password, $data->password)) {
             return response()->json(['message' => __('messages.old_password_mismatch'), 'errors' => ['old_password' => __('messages.old_password_mismatch')], 'status' => false], 403);
         }
 

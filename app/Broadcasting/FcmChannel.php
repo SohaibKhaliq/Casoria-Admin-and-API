@@ -2,9 +2,8 @@
 
 namespace App\Broadcasting;
 
-use Illuminate\Notifications\Notification;
-
 use App\Models\User;
+use Illuminate\Notifications\Notification;
 
 class FcmChannel
 {
@@ -21,7 +20,6 @@ class FcmChannel
     /**
      * Authenticate the user's access to the channel.
      *
-     * @param  \App\Models\User  $user
      * @return array|bool
      */
     public function join(User $user)

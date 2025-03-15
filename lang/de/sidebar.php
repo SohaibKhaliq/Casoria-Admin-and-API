@@ -52,6 +52,6 @@ return [
     'promotion' => 'Förderung',
     'package' => 'Paket',
     'client_packages' => 'Kundenpakete',
-    'customer_packages' => 'Kundenpakete'
+    'customer_packages' => 'Kundenpakete',
 
 ];

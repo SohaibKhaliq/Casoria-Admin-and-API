@@ -2,27 +2,20 @@
 
 namespace Modules\Package\Http\Controllers\Backend\API;
 
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Package\Models\Package;
-use Modules\Package\Models\PackageService;
-use Modules\Service\Models\Service;
-use Modules\Package\Models\UserPackage;
-use Modules\Package\Transformers\UserPackagesResource;
 use Modules\Package\Transformers\PackageResource;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Modules\Service\Models\Service;
 
 class PackagesController extends Controller
 {
-
     public function Package(Request $request)
     {
         $today = Carbon::today();
         $nextWeek = $today->copy()->addWeek();
         $data = Package::with('service', 'service.services', 'business')->whereDate('end_date', '>=', $today);
-
 
         // Filter by service_id
         if ($request->has('service_id')) {
@@ -44,7 +37,7 @@ class PackagesController extends Controller
             })->exists();
 
             $data->whereHas('userPackage.bookingTransaction');
-            if (!$activePackage) {
+            if (! $activePackage) {
                 return response()->json(['status' => true, 'data' => [], 'message' => 'No active package for this user'], 200);
             }
         } else {

@@ -1,11 +1,11 @@
 <?php
 
+use Google\Client as Google_Client;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Google\Client as Google_Client;
-use Illuminate\Support\Facades\File;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Illuminate\Support\Facades\DB;
 
 function randomString($length)
 {
@@ -24,7 +24,7 @@ function mail_footer($type, $notify_message)
         'logged_in_user_role' => auth()->user() ? auth()->user()->getRoleNames()->first()->name ?? '-' : '',
         'company_name' => setting('app_name'),
         'company_contact_info' => implode('', [
-            setting('helpline_number') . PHP_EOL,
+            setting('helpline_number').PHP_EOL,
             setting('inquriy_email'),
         ]),
     ];
@@ -142,10 +142,10 @@ function fcm($fields)
     $projectID = $otherSetting->val ?? null;
     $access_token = getAccessToken();
     $headers = [
-        'Authorization: Bearer ' . $access_token,
+        'Authorization: Bearer '.$access_token,
         'Content-Type: application/json',
     ];
-    $ch = curl_init('https://fcm.googleapis.com/v1/projects/' . $projectID . '/messages:send');
+    $ch = curl_init('https://fcm.googleapis.com/v1/projects/'.$projectID.'/messages:send');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -158,11 +158,11 @@ function fcm($fields)
 function getAccessToken()
 {
     $directory = storage_path('app/data');
-    $credentialsFiles = File::glob($directory . '/*.json');
+    $credentialsFiles = File::glob($directory.'/*.json');
     if (empty($credentialsFiles)) {
         throw new Exception('No JSON credentials found in the specified directory.');
     }
-    $client = new Google_Client();
+    $client = new Google_Client;
     $client->setAuthConfig($credentialsFiles[0]);
     $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
 
@@ -206,7 +206,7 @@ function dateAgo($date, $type2 = '')
         return $diff_time;
     }
 
-    return $diff_time1 . ' on ' . $diff_time;
+    return $diff_time1.' on '.$diff_time;
 }
 
 function customDate($date, $format = 'd-m-Y h:i A')
@@ -261,8 +261,8 @@ function formatOffset($offset)
         $sign = ' ';
     }
 
-    return 'GMT' . $sign . str_pad($hour, 2, '0', STR_PAD_LEFT)
-        . ':' . str_pad($minutes, 2, '0');
+    return 'GMT'.$sign.str_pad($hour, 2, '0', STR_PAD_LEFT)
+        .':'.str_pad($minutes, 2, '0');
 }
 
 function timeZoneList()
@@ -273,7 +273,7 @@ function timeZoneList()
     $data = $offset = $added = [];
     foreach ($list as $abbr => $info) {
         foreach ($info as $zone) {
-            if (!empty($zone['timezone_id']) and !in_array($zone['timezone_id'], $added) and in_array($zone['timezone_id'], $idents)) {
+            if (! empty($zone['timezone_id']) and ! in_array($zone['timezone_id'], $added) and in_array($zone['timezone_id'], $idents)) {
                 $z = new \DateTimeZone($zone['timezone_id']);
                 $c = new \DateTime(null, $z);
                 $zone['time'] = $c->format('H:i a');
@@ -287,7 +287,7 @@ function timeZoneList()
     array_multisort($offset, SORT_ASC, $data);
     $options = [];
     foreach ($data as $key => $row) {
-        $options[$row['timezone_id']] = $row['time'] . ' - ' . formatOffset($row['offset']) . ' ' . $row['timezone_id'];
+        $options[$row['timezone_id']] = $row['time'].' - '.formatOffset($row['offset']).' '.$row['timezone_id'];
     }
 
     return $options;
@@ -296,7 +296,7 @@ function timeZoneList()
 /*
  * Global helpers file with misc functions.
  */
-if (!function_exists('app_name')) {
+if (! function_exists('app_name')) {
     /**
      * Helper to grab the application name.
      *
@@ -310,51 +310,51 @@ if (!function_exists('app_name')) {
 /**
  * Avatar Find By Gender
  */
-if (!function_exists('default_user_avatar')) {
+if (! function_exists('default_user_avatar')) {
     function default_user_avatar()
     {
-        return asset(config('app.avatar_base_path') . 'avatar.png');
+        return asset(config('app.avatar_base_path').'avatar.png');
     }
     function default_user_name()
     {
-        return env('APP_NAME') . ' User';
+        return env('APP_NAME').' User';
     }
 }
-if (!function_exists('user_avatar')) {
+if (! function_exists('user_avatar')) {
     function user_avatar()
     {
         if (auth()->user()->profile_image ?? null) {
             return auth()->user()->profile_image;
         } else {
-            return asset(config('app.avatar_base_path') . 'avatar.png');
+            return asset(config('app.avatar_base_path').'avatar.png');
         }
     }
 }
 
-if (!function_exists('default_feature_image')) {
+if (! function_exists('default_feature_image')) {
     function default_feature_image()
     {
-        return asset(config('app.image_path') . 'default.png');
+        return asset(config('app.image_path').'default.png');
     }
 }
 
-if (!function_exists('product_feature_image')) {
+if (! function_exists('product_feature_image')) {
     function product_feature_image()
     {
-        return asset(config('app.image_path') . 'default2.png');
+        return asset(config('app.image_path').'default2.png');
     }
 }
 
-if (!function_exists('promotion_image')) {
+if (! function_exists('promotion_image')) {
     function promotion_image()
     {
-        return asset(config('app.image_path') . 'No_Image_Available.png');
+        return asset(config('app.image_path').'No_Image_Available.png');
     }
 }
 /*
  * Global helpers file with misc functions.
  */
-if (!function_exists('user_registration')) {
+if (! function_exists('user_registration')) {
     /**
      * Helper to grab the application name.
      *
@@ -377,7 +377,7 @@ if (!function_exists('user_registration')) {
  * !USAGE
  * return jdd($id);
  */
-if (!function_exists('jdd')) {
+if (! function_exists('jdd')) {
     function jdd($data)
     {
         return response()->json($data, 500);
@@ -391,7 +391,7 @@ if (!function_exists('jdd')) {
  *
  * ------------------------------------------------------------------------
  */
-if (!function_exists('label_case')) {
+if (! function_exists('label_case')) {
     /**
      * Prepare the Column Name for Lables.
      */
@@ -414,7 +414,7 @@ if (!function_exists('label_case')) {
  *
  * ------------------------------------------------------------------------
  */
-if (!function_exists('show_column_value')) {
+if (! function_exists('show_column_value')) {
     /**
      * Return Column values as Raw and formatted.
      *
@@ -448,10 +448,10 @@ if (!function_exists('show_column_value')) {
             $img_path = asset($value);
 
             $return_text = '<figure class="figure">
-                                <a href="' . $img_path . '" data-lightbox="image-set" data-title="Path: ' . $value . '">
-                                    <img src="' . $img_path . '" style="max-width:200px;" class="figure-img img-fluid rounded img-thumbnail" alt="">
+                                <a href="'.$img_path.'" data-lightbox="image-set" data-title="Path: '.$value.'">
+                                    <img src="'.$img_path.'" style="max-width:200px;" class="figure-img img-fluid rounded img-thumbnail" alt="">
                                 </a>
-                                <figcaption class="figure-caption">Path: ' . $value . '</figcaption>
+                                <figcaption class="figure-caption">Path: '.$value.'</figcaption>
                             </figure>';
         } else {
             $return_text = $value;
@@ -468,7 +468,7 @@ if (!function_exists('show_column_value')) {
  *
  * ------------------------------------------------------------------------
  */
-if (!function_exists('fielf_required')) {
+if (! function_exists('fielf_required')) {
     /**
      * Prepare the Column Name for Lables.
      */
@@ -489,11 +489,11 @@ if (!function_exists('fielf_required')) {
  *
  * @var [type]
  */
-if (!function_exists('setting')) {
+if (! function_exists('setting')) {
     function setting($key, $default = null)
     {
         if (is_null($key)) {
-            return new App\Models\Setting();
+            return new App\Models\Setting;
         }
 
         if (is_array($key)) {
@@ -511,7 +511,7 @@ if (!function_exists('setting')) {
  *
  * @var [type]
  */
-if (!function_exists('humanFilesize')) {
+if (! function_exists('humanFilesize')) {
     function humanFilesize($size, $precision = 2)
     {
         $units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -523,7 +523,7 @@ if (!function_exists('humanFilesize')) {
             $i++;
         }
 
-        return round($size, $precision) . $units[$i];
+        return round($size, $precision).$units[$i];
     }
 }
 
@@ -533,7 +533,7 @@ if (!function_exists('humanFilesize')) {
  *
  * ------------------------------------------------------------------------
  */
-if (!function_exists('encode_id')) {
+if (! function_exists('encode_id')) {
     /**
      * Prepare the Column Name for Lables.
      */
@@ -552,7 +552,7 @@ if (!function_exists('encode_id')) {
  *
  * ------------------------------------------------------------------------
  */
-if (!function_exists('decode_id')) {
+if (! function_exists('decode_id')) {
     /**
      * Prepare the Column Name for Lables.
      */
@@ -576,7 +576,7 @@ if (!function_exists('decode_id')) {
  *
  * ------------------------------------------------------------------------
  */
-if (!function_exists('slug_format')) {
+if (! function_exists('slug_format')) {
     /**
      * Format a string to Slug.
      */
@@ -603,13 +603,13 @@ if (!function_exists('slug_format')) {
  *
  * ------------------------------------------------------------------------
  */
-if (!function_exists('icon')) {
+if (! function_exists('icon')) {
     /**
      * Format a string to Slug.
      */
     function icon($string = 'fas fa-check')
     {
-        $return_string = "<i class='" . $string . "'></i>";
+        $return_string = "<i class='".$string."'></i>";
 
         return $return_string;
     }
@@ -621,7 +621,7 @@ if (!function_exists('icon')) {
  *
  * ------------------------------------------------------------------------
  */
-if (!function_exists('generate_rgb_code')) {
+if (! function_exists('generate_rgb_code')) {
     /**
      * Prepare the Column Name for Lables.
      */
@@ -645,7 +645,7 @@ if (!function_exists('generate_rgb_code')) {
  *
  * ------------------------------------------------------------------------
  */
-if (!function_exists('date_today')) {
+if (! function_exists('date_today')) {
     /**
      * Return Date with weekday.
      *
@@ -661,7 +661,7 @@ if (!function_exists('date_today')) {
     }
 }
 
-if (!function_exists('language_direction')) {
+if (! function_exists('language_direction')) {
     /**
      * return direction of languages.
      *
@@ -700,7 +700,7 @@ if (!function_exists('language_direction')) {
     }
 }
 
-if (!function_exists('module_exist')) {
+if (! function_exists('module_exist')) {
     /**
      * return value for module exist or not.
      *
@@ -777,14 +777,14 @@ function formatCurrency($number, $noOfDecimal, $decimalSeparator, $thousandSepar
         $currencyString .= $integerPart;
         // Add decimal part and decimal separator if applicable
         if ($noOfDecimal > 0) {
-            $currencyString .= $decimalSeparator . $decimalPart;
+            $currencyString .= $decimalSeparator.$decimalPart;
         }
     }
 
     if ($currencyPosition == 'right' || $currencyPosition == 'right_with_space') {
         // Add decimal part and decimal separator if applicable
         if ($noOfDecimal > 0) {
-            $currencyString .= $integerPart . $decimalSeparator . $decimalPart;
+            $currencyString .= $integerPart.$decimalSeparator.$decimalPart;
         }
         if ($currencyPosition == 'right_with_space') {
             $currencyString .= ' ';
@@ -849,7 +849,7 @@ function checkInWishList($product_id, $user_id)
 {
     $product = \Modules\Product\Models\WishList::where('product_id', $product_id)->where('user_id', $user_id)->first();
 
-    if (!$product) {
+    if (! $product) {
         return 0;
     } else {
         return 1;
@@ -860,7 +860,7 @@ function checkInCart($product_variation_id, $user_id)
 {
     $cart = \Modules\Product\Models\Cart::where('user_id', $user_id)->where('product_variation_id', $product_variation_id)->first();
 
-    if (!$cart) {
+    if (! $cart) {
         return 0;
     } else {
         return 1;
@@ -871,7 +871,7 @@ function checkIsLike($review_id, $user_id)
 {
     $review = \Modules\Product\Models\Review::find($review_id);
 
-    if (!$review) {
+    if (! $review) {
         return 0; // Review not found
     }
 
@@ -887,7 +887,7 @@ function checkIsdisLike($review_id, $user_id)
 {
     $review = \Modules\Product\Models\Review::find($review_id);
 
-    if (!$review) {
+    if (! $review) {
         return 0; // Review not found
     }
 
@@ -933,7 +933,7 @@ function getDiscountedPrice($data)
     return $sumOfDiscountedPrices;
 }
 
-if (!function_exists('variationDiscountedPrice')) {
+if (! function_exists('variationDiscountedPrice')) {
     // return discounted price of a variation
     function variationDiscountedPrice($product, $variation, $addTax = false)
     {
@@ -1006,7 +1006,7 @@ function getDiscountAmount($data)
     return $sumOfDiscountedPrices;
 }
 
-if (!function_exists('getSubTotal')) {
+if (! function_exists('getSubTotal')) {
     // return sub total price
     function getSubTotal($carts, $couponDiscount = true, $couponCode = '', $addTax = true)
     {
@@ -1026,7 +1026,7 @@ if (!function_exists('getSubTotal')) {
     }
 }
 
-if (!function_exists('generateVariationOptions')) {
+if (! function_exists('generateVariationOptions')) {
     //  generate combinations based on variations
     function generateVariationOptions($options)
     {
@@ -1039,7 +1039,7 @@ if (!function_exists('generateVariationOptions')) {
             if (isset($variation_ids[$option->variation_id])) {
                 $value_ids = $variation_ids[$option->variation_id];
             }
-            if (!in_array($option->variation_value_id, $value_ids)) {
+            if (! in_array($option->variation_value_id, $value_ids)) {
                 array_push($value_ids, $option->variation_value_id);
             }
             $variation_ids[$option->variation_id] = $value_ids;
@@ -1196,14 +1196,10 @@ function getBookingTaxamount($amount, $couponAmount, $tax_data)
     ];
 }
 
-
-
-
-if (!function_exists('applyExcelStyles')) {
+if (! function_exists('applyExcelStyles')) {
     /**
      * Apply common styles to an Excel worksheet.
      *
-     * @param Worksheet $sheet
      * @return void
      */
     function applyExcelStyles(Worksheet $sheet)
@@ -1221,11 +1217,11 @@ if (!function_exists('applyExcelStyles')) {
             // Example logic to adjust column width
             if ($totalColumns <= 3) {
                 $width = 22;
-            } else if ($totalColumns <= 5) {
+            } elseif ($totalColumns <= 5) {
                 $width = 15; // Wider columns for fewer columns
-            } else if ($totalColumns <= 7) {
+            } elseif ($totalColumns <= 7) {
                 $width = 12; // Wider columns for fewer columns
-            } else if ($totalColumns <= 10) {
+            } elseif ($totalColumns <= 10) {
                 $width = 10; // Wider columns for fewer columns
             } elseif ($totalColumns <= 20) {
                 $width = 8; // Medium width for moderate number of columns
@@ -1282,7 +1278,7 @@ if (!function_exists('applyExcelStyles')) {
         $sheet->getPageSetup()->setPrintArea("A1:{$columnCount}{$rowCount}");
     }
 
-    if (!function_exists('datatableTranslations')) {
+    if (! function_exists('datatableTranslations')) {
         function datatableTranslations()
         {
             return [
@@ -1299,7 +1295,7 @@ if (!function_exists('applyExcelStyles')) {
                     'last' => __('messages.paginate.last'),
                     'next' => __('messages.paginate.next'),
                     'previous' => __('messages.paginate.previous'),
-                ]
+                ],
             ];
         }
     }
@@ -1309,13 +1305,14 @@ function dbConnectionStatus(): bool
 {
     try {
         DB::connection()->getPdo();
+
         return true;
     } catch (Exception $e) {
         return false;
     }
 }
 
-if (!function_exists('isActive')) {
+if (! function_exists('isActive')) {
     /**
      * Returns 'active' or 'done' class based on the current step.
      *

@@ -11,8 +11,6 @@ use Modules\Category\Models\Category;
 use Modules\CustomField\Models\CustomField;
 use Modules\CustomField\Models\CustomFieldGroup;
 use Yajra\DataTables\DataTables;
-use Illuminate\Database\Query\Expression;
-use Illuminate\Support\Facades\DB;
 
 class CategoriesController extends Controller
 {
@@ -49,8 +47,8 @@ class CategoriesController extends Controller
         ];
         $module_name = $this->module_name;
         $module_action = 'List';
-        $columns = CustomFieldGroup::columnJsonValues(new Category());
-        $customefield = CustomField::exportCustomFields(new Category());
+        $columns = CustomFieldGroup::columnJsonValues(new Category);
+        $customefield = CustomField::exportCustomFields(new Category);
 
         $export_import = true;
         $export_columns = [
@@ -160,23 +158,24 @@ class CategoriesController extends Controller
 
         $datatable = $datatable->eloquent($query)
             ->addColumn('check', function ($row) {
-                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-' . $row->id . '"  name="datatable_ids[]" value="' . $row->id . '" onclick="dataTableRowCheck(' . $row->id . ')">';
+                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-'.$row->id.'"  name="datatable_ids[]" value="'.$row->id.'" onclick="dataTableRowCheck('.$row->id.')">';
             })
             // ->editColumn('name', function ($row) use ($module_name) {
             //     return "<a href='".route('backend.'.$module_name.'.index_nested', ['category_id' => $row->id])."'>$row->name</a>";
             // })
             ->editColumn('name', function ($row) use ($module_name) {
-                $link = route('backend.' . $module_name . '.index_nested', ['category_id' => $row->id]);
+                $link = route('backend.'.$module_name.'.index_nested', ['category_id' => $row->id]);
                 $data = $row;
                 $image = optional($data)->feature_image ?? default_user_avatar();
                 $name = optional($data)->name ?? default_user_name();
+
                 return view('product::backend.category.category_id', compact('image', 'link', 'name'));
             })
             ->addColumn('action', function ($data) use ($module_name) {
                 return view('category::backend.categories.action_column', compact('module_name', 'data'));
             })
             ->addColumn('image', function ($data) {
-                return "<img src='" . $data->feature_image . "' class='avatar avatar-50 rounded-pill'>";
+                return "<img src='".$data->feature_image."' class='avatar avatar-50 rounded-pill'>";
             })
             ->editColumn('status', function ($row) {
                 $checked = '';
@@ -186,7 +185,7 @@ class CategoriesController extends Controller
 
                 return '
                     <div class="form-check form-switch ">
-                        <input type="checkbox" data-url="' . route('backend.categories.update_status', $row->id) . '" data-token="' . csrf_token() . '" class="switch-status-change form-check-input"  id="datatable-row-' . $row->id . '"  name="status" value="' . $row->id . '" ' . $checked . '>
+                        <input type="checkbox" data-url="'.route('backend.categories.update_status', $row->id).'" data-token="'.csrf_token().'" class="switch-status-change form-check-input"  id="datatable-row-'.$row->id.'"  name="status" value="'.$row->id.'" '.$checked.'>
                     </div>
                 ';
             })
@@ -233,8 +232,8 @@ class CategoriesController extends Controller
         $module_action = 'List';
 
         $module_title = 'category.sub_categories';
-        $columns = CustomFieldGroup::columnJsonValues(new Category());
-        $customefield = CustomField::exportCustomFields(new Category());
+        $columns = CustomFieldGroup::columnJsonValues(new Category);
+        $customefield = CustomField::exportCustomFields(new Category);
 
         $export_import = true;
         $export_columns = [
@@ -283,7 +282,7 @@ class CategoriesController extends Controller
 
         $datatable = $datatable->eloquent($query)
             ->addColumn('check', function ($row) {
-                return '<input type="checkbox" class="form-check-input select-table-row" id="datatable-row-' . $row->id . '" name="datatable_ids[]" value="' . $row->id . '" onclick="dataTableRowCheck(' . $row->id . ')">';
+                return '<input type="checkbox" class="form-check-input select-table-row" id="datatable-row-'.$row->id.'" name="datatable_ids[]" value="'.$row->id.'" onclick="dataTableRowCheck('.$row->id.')">';
             })
             ->addColumn('action', function ($data) use ($module_name) {
                 return view('category::backend.categories.sub_action_column', compact('module_name', 'data'));
@@ -309,7 +308,7 @@ class CategoriesController extends Controller
 
                 return '
                     <div class="form-check form-switch ">
-                        <input type="checkbox" data-url="' . route('backend.categories.update_status', $row->id) . '" data-token="' . csrf_token() . '" class="switch-status-change form-check-input" id="datatable-row-' . $row->id . '" name="status" value="' . $row->id . '" ' . $checked . '>
+                        <input type="checkbox" data-url="'.route('backend.categories.update_status', $row->id).'" data-token="'.csrf_token().'" class="switch-status-change form-check-input" id="datatable-row-'.$row->id.'" name="status" value="'.$row->id.'" '.$checked.'>
                     </div>
                 ';
             })
@@ -339,7 +338,6 @@ class CategoriesController extends Controller
         return $datatable->rawColumns(array_merge(['action', 'status', 'image', 'check'], $customFieldColumns))
             ->toJson();
     }
-
 
     /**
      * Store a newly created resource in storage.

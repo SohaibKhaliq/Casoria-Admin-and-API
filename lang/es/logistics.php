@@ -1,8 +1,7 @@
 <?php
 
 return [
-    'title'=> 'Logistics',
+    'title' => 'Logistics',
     'singular_title' => 'Logística',
-
 
 ];

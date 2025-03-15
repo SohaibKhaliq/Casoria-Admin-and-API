@@ -20,9 +20,7 @@ return [
     'lbl_services' => 'Services',
     'lbl_package_price' => 'Prix du forfait',
     'lbl_service_price' => 'Prix du service dans le forfait',
-    "no_services" => "Aucun service ajouté. Veuillez ajouter un service.",
+    'no_services' => 'Aucun service ajouté. Veuillez ajouter un service.',
     'no_of_services' => 'Nombre de services',
-
-
 
 ];

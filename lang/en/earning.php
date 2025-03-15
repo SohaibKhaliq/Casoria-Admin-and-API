@@ -25,5 +25,5 @@ return [
     'tip_earn' => 'Tip Earn',
     'total_pay' => 'Total Pay',
     'select_method' => 'Select Method',
-    'enter_decription' => 'Enter Description'
+    'enter_decription' => 'Enter Description',
 ];

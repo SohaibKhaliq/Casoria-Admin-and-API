@@ -1,6 +1,6 @@
 <?php
 
 return [
-   'title'=>'Unidades',
-   'singular_title'=>'Unidades',
+    'title' => 'Unidades',
+    'singular_title' => 'Unidades',
 ];

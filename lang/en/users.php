@@ -13,7 +13,7 @@ return [
     'address_not_found' => 'Address Not Found',
     'address_deleted' => 'Address Deleted',
     'address_updated' => 'Address Updated',
-    'old_password'=>'Enter your old password',
-    'new_password' =>'Enter your new password',
-    'confirm_password'=>'Confirm your new password',
+    'old_password' => 'Enter your old password',
+    'new_password' => 'Enter your new password',
+    'confirm_password' => 'Confirm your new password',
 ];

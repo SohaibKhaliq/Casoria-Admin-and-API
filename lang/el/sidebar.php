@@ -52,6 +52,6 @@ return [
     'promotion' => 'Προώθηση',
     'package' => 'Πακέτο',
     'client_packages' => 'Πακέτα πελατών',
-    'customer_packages' => 'Πακέτα πελατών'
+    'customer_packages' => 'Πακέτα πελατών',
 
 ];

@@ -73,7 +73,7 @@ class EarningsController extends Controller
         foreach ($query_data as $row) {
             $data[] = [
                 'id' => $row->id,
-                'text' => $row->name . ' (Slug: ' . $row->slug . ')',
+                'text' => $row->name.' (Slug: '.$row->slug.')',
             ];
         }
 
@@ -91,7 +91,6 @@ class EarningsController extends Controller
     {
         $module_name = $this->module_name;
 
-
         // dd(
         //     User::select('users.id', 'users.first_name', 'users.last_name', 'users.email')
         //         ->join('commission_earnings', 'users.id', '=', 'commission_earnings.employee_id')
@@ -107,7 +106,7 @@ class EarningsController extends Controller
                 'commission_earning as totalBookings' => function ($q) {
                     $q->where('commission_status', 'unpaid')
                         ->groupBy('employee_id');
-                }
+                },
             ])
             // ->withCount([
             //     'bookingPackages as totalPackageBookings' => function ($q) {
@@ -129,7 +128,7 @@ class EarningsController extends Controller
                         ->selectRaw('COUNT(DISTINCT id) as totalBookings')
                         ->selectRaw('COALESCE(SUM(package_price), 0) as total_package_amount')
                         ->groupBy('employee_id');
-                }
+                },
             ])
             ->with('commission_earning')
             ->with('tip_earning')
@@ -153,6 +152,7 @@ class EarningsController extends Controller
                 $Profile_image = optional($data)->profile_image ?? default_user_avatar();
                 $name = optional($data)->full_name ?? default_user_name();
                 $email = optional($data)->email ?? '--';
+
                 return view('booking::backend.bookings.datatable.employee_id', compact('Profile_image', 'name', 'email'));
             })
             ->filterColumn('first_name', function ($query, $keyword) {
@@ -170,6 +170,7 @@ class EarningsController extends Controller
             })
             ->editColumn('total_booking', function ($data) {
                 $totalBookings = ($data->totalBookings ?? 0) + ($data->totalPackageBookings ?? 0);
+
                 return $totalBookings;
             })
             ->editColumn('total_service_amount', function ($data) {
@@ -232,7 +233,7 @@ class EarningsController extends Controller
             ->withCount([
                 'employeeBooking as totalBookings' => function ($q) {
                     $q->groupBy('employee_id');
-                }
+                },
             ])
             ->with([
                 'employeeBooking' => function ($q) {
@@ -240,7 +241,7 @@ class EarningsController extends Controller
                         ->selectRaw('COUNT(DISTINCT booking_id) as totalBookings')
                         ->selectRaw('SUM(service_price) as total_service_amount')
                         ->groupBy('employee_id');
-                }
+                },
             ])
             ->with('commission_earning')
             ->with('tip_earning')

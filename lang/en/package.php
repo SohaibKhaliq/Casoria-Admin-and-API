@@ -21,7 +21,7 @@ return [
     'lbl_package_price' => 'Package Price',
     'lbl_service_price' => 'Service Package Price',
     'discount_price' => 'Discounted Price',
-    'lbl_no_name' => "Total Services",
+    'lbl_no_name' => 'Total Services',
     'no_packages_found' => 'No packages expiring within the next week were found.',
     'package_list' => 'Package list retrieved successfully.',
     'package_not_available' => 'No packages available.',
@@ -35,12 +35,7 @@ return [
     'lbl_expiration_date' => 'Expiration Date',
     'lbl_Client' => 'Client',
     'view_package' => 'View Package',
-    "no_services" => "No services added. Please add a service.",
+    'no_services' => 'No services added. Please add a service.',
     'no_of_services' => 'No of services',
-
-
-
-
-
 
 ];

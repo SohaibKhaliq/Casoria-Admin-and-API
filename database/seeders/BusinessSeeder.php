@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Arr;
 use App\Models\Address;
 use App\Models\Business;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
 use Modules\BussinessHour\Models\BussinessHour;
-use Modules\Service\Models\ServiceBusinesses;
 
 class BusinessSeeder extends Seeder
 {

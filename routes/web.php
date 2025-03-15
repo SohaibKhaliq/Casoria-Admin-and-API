@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Auth Routes
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
 Route::get('storage-link', function () {
     return Artisan::call('storage:link');
 });

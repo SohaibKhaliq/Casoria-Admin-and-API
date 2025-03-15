@@ -52,6 +52,6 @@ return [
     'promotion' => 'ترويج',
     'package' => 'حزم',
     'client_packages' => 'حزم العملاء',
-    'customer_packages' => 'حزم الزبائن'
+    'customer_packages' => 'حزم الزبائن',
 
 ];

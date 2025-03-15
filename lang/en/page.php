@@ -2,7 +2,7 @@
 
 return [
     'title' => 'Pages',
-    'singular_title'=>'Page',
+    'singular_title' => 'Page',
     'lbl_title' => 'Title',
     'lbl_description' => 'Description',
     'lbl_sequence' => 'Sequence',
@@ -12,8 +12,8 @@ return [
     'lbl_more_permission' => 'Add More Permissions',
     'lbl_role' => 'Role',
     'lbl_import' => 'Import From Role',
-    'enter_title'=>'Enter Title',
-    'enter_decsription'=>'Enter Description',
-    'select_sequence'=>'Select Sequence',
+    'enter_title' => 'Enter Title',
+    'enter_decsription' => 'Enter Description',
+    'select_sequence' => 'Select Sequence',
 
 ];

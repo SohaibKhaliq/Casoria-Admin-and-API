@@ -87,7 +87,7 @@ class CountryController extends Controller
 
         return $datatable->eloquent($query)
             ->addColumn('check', function ($data) {
-                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-' . $data->id . '"  name="datatable_ids[]" value="' . $data->id . '" onclick="dataTableRowCheck(' . $data->id . ')">';
+                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-'.$data->id.'"  name="datatable_ids[]" value="'.$data->id.'" onclick="dataTableRowCheck('.$data->id.')">';
             })
             ->addColumn('action', function ($data) {
                 return view('world::backend.country.action_column', compact('data'));
@@ -101,7 +101,7 @@ class CountryController extends Controller
 
                 return '
                                 <div class="form-check form-switch ">
-                                    <input type="checkbox" data-url="' . route('backend.country.update_status', $data->id) . '" data-token="' . csrf_token() . '" class="switch-status-change form-check-input"  id="datatable-row-' . $data->id . '"  name="status" value="' . $data->id . '" ' . $checked . '>
+                                    <input type="checkbox" data-url="'.route('backend.country.update_status', $data->id).'" data-token="'.csrf_token().'" class="switch-status-change form-check-input"  id="datatable-row-'.$data->id.'"  name="status" value="'.$data->id.'" '.$checked.'>
                                 </div>
                             ';
             })

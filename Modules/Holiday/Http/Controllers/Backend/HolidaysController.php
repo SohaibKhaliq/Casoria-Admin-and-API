@@ -75,7 +75,6 @@ class HolidaysController extends Controller
     {
         $business_id = $request->business_id;
 
-
         $isHoliday = Holiday::where('business_id', $business_id)
             ->get();
 

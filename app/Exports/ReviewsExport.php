@@ -4,10 +4,11 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Modules\Employee\Models\EmployeeRating;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Modules\Employee\Models\EmployeeRating;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-class ReviewsExport implements FromCollection, WithHeadings,WithStyles
+
+class ReviewsExport implements FromCollection, WithHeadings, WithStyles
 {
     public array $columns;
 
@@ -79,6 +80,7 @@ class ReviewsExport implements FromCollection, WithHeadings,WithStyles
 
         return $newQuery;
     }
+
     public function styles(Worksheet $sheet)
     {
         applyExcelStyles($sheet);

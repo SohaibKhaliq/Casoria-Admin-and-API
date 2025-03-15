@@ -132,7 +132,7 @@ class CustomFieldController extends Controller
             $values = explode(',', $data['values']);
 
             foreach ($values as $key => $value) {
-            $inputFields[] = ['value' => $value];
+                $inputFields[] = ['value' => $value];
             }
         }
 
@@ -144,7 +144,6 @@ class CustomFieldController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
      * @param  int  $id
      * @return Response
      */
@@ -152,7 +151,6 @@ class CustomFieldController extends Controller
     {
         try {
             $customField = CustomField::findOrFail($id);
-
 
             $validatedData = $request->validate([
                 'Module' => 'required',
@@ -182,7 +180,7 @@ class CustomFieldController extends Controller
 
             ];
 
-            if (!empty($updatedValues)) {
+            if (! empty($updatedValues)) {
                 $values = [];
                 foreach ($updatedValues as $value) {
                     if (isset($value['value'])) {
@@ -195,12 +193,12 @@ class CustomFieldController extends Controller
             $customField->update($data);
 
             $message = __('messages.customfield_updated');
+
             return response()->json(['message' => $message, 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => false], 500);
         }
     }
-
 
     /**
      * Remove the specified resource from storage.

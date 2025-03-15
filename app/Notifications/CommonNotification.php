@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Broadcasting\CustomWebhook;
+use App\Broadcasting\FcmChannel;
 use App\Mail\MailMailableSend;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,8 +11,6 @@ use Illuminate\Notifications\Notification;
 use Modules\NotificationTemplate\Models\NotificationTemplate;
 use Modules\NotificationTemplate\Models\NotificationTemplateContentMapping;
 use Spatie\WebhookServer\WebhookCall;
-use App\Broadcasting\FcmChannel;
-use Illuminate\Support\Facades\Log;
 
 class CommonNotification extends Notification implements ShouldQueue
 {
@@ -51,13 +50,12 @@ class CommonNotification extends Notification implements ShouldQueue
         $templateData = $notify_data->where('user_type', $userType)->first();
         $templateDetail = $templateData->mail_template_detail ?? null;
         foreach ($this->data as $key => $value) {
-            $templateDetail = str_replace('[[ ' . $key . ' ]]', $this->data[$key], $templateDetail);
+            $templateDetail = str_replace('[[ '.$key.' ]]', $this->data[$key], $templateDetail);
         }
         $this->data['type'] = $templateData->subject ?? 'None';
         $this->data['message'] = $templateDetail ?? __('messages.default_notification_body');
         $this->appData = $notifications->channels;
     }
-
 
     /**
      * Get the notification's delivery channels.
@@ -98,10 +96,9 @@ class CommonNotification extends Notification implements ShouldQueue
                 }
             }
         }
+
         return array_merge($notification_settings, ['database']);
     }
-
-
 
     public function toFcm($notifiable)
     {
@@ -115,39 +112,41 @@ class CommonNotification extends Notification implements ShouldQueue
             $type = $this->data['type'];
         }
 
-        $heading =  $this->data['type'] ?? '';
+        $heading = $this->data['type'] ?? '';
 
         $additionalData = json_encode($this->data);
+
         return fcm([
-            "message" => [
-                "topic" => 'user_'.$notifiable->id,
-                "notification" => [
-                    "title" => $heading,
-                    "body" => $msg,
+            'message' => [
+                'topic' => 'user_'.$notifiable->id,
+                'notification' => [
+                    'title' => $heading,
+                    'body' => $msg,
                 ],
-                "data" => [
-                    "sound"=>"default",
-                    "story_id" => "story_12345",
-                    "type" => $type,
-                    "additional_data" => $additionalData,
-                    "click_action"=> "FLUTTER_NOTIFICATION_CLICK",
+                'data' => [
+                    'sound' => 'default',
+                    'story_id' => 'story_12345',
+                    'type' => $type,
+                    'additional_data' => $additionalData,
+                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                 ],
-                "android" => [
-                    "priority" => "high",
-                    "notification" => [
-                        "click_action"=> "FLUTTER_NOTIFICATION_CLICK",
+                'android' => [
+                    'priority' => 'high',
+                    'notification' => [
+                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                     ],
                 ],
-                "apns" => [
-                    "payload" => [
-                        "aps" => [
-                            "category" => "NEW_MESSAGE_CATEGORY",
+                'apns' => [
+                    'payload' => [
+                        'aps' => [
+                            'category' => 'NEW_MESSAGE_CATEGORY',
                         ],
                     ],
                 ],
             ],
         ]);
     }
+
     /**
      * Get mail notification
      *
@@ -197,6 +196,7 @@ class CommonNotification extends Notification implements ShouldQueue
             'data' => $this->data,
         ];
     }
+
     public function Types($type)
     {
         switch ($type) {
@@ -235,5 +235,4 @@ class CommonNotification extends Notification implements ShouldQueue
                 break;
         }
     }
-
 }

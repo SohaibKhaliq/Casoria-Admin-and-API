@@ -42,5 +42,5 @@ return [
     'lbl_service' => 'Υπηρεσίες',
     'lbl_price' => 'Συνολική Τιμή',
     'lbl_more_appointment' => 'Κάντε Περισσότερες Κρατήσεις',
-    'lbl_pdf' => 'Εκτύπωση σε PDF'
+    'lbl_pdf' => 'Εκτύπωση σε PDF',
 ];

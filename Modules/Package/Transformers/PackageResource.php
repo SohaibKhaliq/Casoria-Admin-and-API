@@ -2,7 +2,6 @@
 
 namespace Modules\Package\Transformers;
 
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PackageResource extends JsonResource
@@ -16,7 +15,6 @@ class PackageResource extends JsonResource
     public function toArray($request)
     {
 
-
         $filteredUserPackages = $this->userPackage->filter(function ($userPackage) use ($request) {
             return $userPackage->user->id == $request->user_id;
         });
@@ -27,7 +25,6 @@ class PackageResource extends JsonResource
         $uniqueUsers = $filteredUserPackages->unique(function ($userPackage) {
             return $userPackage->booking->user->id;
         });
-
 
         // Determine which services to include
         $services = [];
@@ -126,7 +123,6 @@ class UserResource extends JsonResource
         ];
     }
 }
-
 
 class UserPackageServiceResource extends JsonResource
 {

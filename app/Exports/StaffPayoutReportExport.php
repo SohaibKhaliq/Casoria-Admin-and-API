@@ -5,10 +5,11 @@ namespace App\Exports;
 use Currency;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Modules\Earning\Models\EmployeeEarning;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Modules\Earning\Models\EmployeeEarning;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-class StaffPayoutReportExport implements FromCollection, WithHeadings,  WithStyles
+
+class StaffPayoutReportExport implements FromCollection, WithHeadings, WithStyles
 {
     public array $columns;
 
@@ -81,6 +82,7 @@ class StaffPayoutReportExport implements FromCollection, WithHeadings,  WithStyl
 
         return $newQuery;
     }
+
     public function styles(Worksheet $sheet)
     {
         applyExcelStyles($sheet);

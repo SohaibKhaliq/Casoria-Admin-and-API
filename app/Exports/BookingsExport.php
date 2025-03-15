@@ -4,9 +4,9 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStyles;
 use Modules\Booking\Models\Booking;
 use Modules\Constant\Models\Constant;
-use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class BookingsExport implements FromCollection, WithHeadings, WithStyles
@@ -70,7 +70,7 @@ class BookingsExport implements FromCollection, WithHeadings, WithStyles
                         break;
 
                     case 'service_duration':
-                        $selectedData[$column] = $row->services->sum('duration_min') . ' Min';
+                        $selectedData[$column] = $row->services->sum('duration_min').' Min';
                         break;
 
                     case 'services':
