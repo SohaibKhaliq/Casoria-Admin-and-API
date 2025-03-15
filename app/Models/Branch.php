@@ -11,6 +11,7 @@ use Modules\BussinessHour\Models\BussinessHour;
 use Modules\Employee\Models\BusinessEmployee;
 use Modules\Service\Models\Service;
 use Modules\Service\Models\ServiceBusinesses;
+use Modules\Employee\Models\BranchEmployee;
 
 class Business extends BaseModel
 {
@@ -89,7 +90,7 @@ class Business extends BaseModel
 
     public function businessEmployee()
     {
-        return $this->hasMany(BusinessEmployee::class, 'business_id');
+        return $this->hasMany(BranchEmployee::class, 'business_id');
     }
 
     protected function getFeatureImageAttribute()
