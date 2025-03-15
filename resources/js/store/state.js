@@ -4,7 +4,7 @@ export const initialState = {
   "storeKey": "frekza-setting",
   "setting": {
     "app_name": {
-      "value": "Frezka"
+      "value": "casoria"
     },
     "theme_scheme_direction": {
       "value": "ltr"
@@ -46,7 +46,7 @@ export const initialState = {
       "value": []
     },
     "sidebar_show": {
-      "value":"sidebar"
+      "value": "sidebar"
     },
     "navbar_show": {
       "value": "iq-navbar",
@@ -78,7 +78,7 @@ export const defaultState = {
       target: '[data-setting="app_name"]',
       choices: [],
       type: "text",
-      value: "Frezka",
+      value: "casoria",
     },
     theme_scheme_direction: {
       target: "html",
@@ -183,11 +183,11 @@ export const defaultState = {
       value: 'sidebar',
     },
     navbar_show: {
-          target: '.navbar',
-          choices: ["iq-navbar-none","iq-navbar"],
-          type: "defaultChecked",
-          value: 'iq-navbar',
-        },
+      target: '.navbar',
+      choices: ["iq-navbar-none", "iq-navbar"],
+      type: "defaultChecked",
+      value: 'iq-navbar',
+    },
     sidebar_menu_style: {
       target: '[data-toggle="main-sidebar"]',
       choices: [
@@ -203,7 +203,7 @@ export const defaultState = {
     },
     card_style: {
       target: "body",
-      choices: ["card-default", "card-glass", "card-transparent" ],
+      choices: ["card-default", "card-glass", "card-transparent"],
       type: "layout_design",
       value: "card-default"
     },

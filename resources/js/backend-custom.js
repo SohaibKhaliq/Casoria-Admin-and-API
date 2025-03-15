@@ -1,8 +1,8 @@
 /*
  * Version: 1.1.0
  * Template: Hope-Ui - Responsive Bootstrap 5 Admin Dashboard Template
- * Author: iqonic.design
- * Design and Developed by: iqonic.design
+ * Author: Sohaib Khaliq
+ * Design and Developed by: Sohaib Khaliq
  * NOTE: This file contains the script for initialize & listener Template.
  */
 /*----------------------------------------------
@@ -29,7 +29,7 @@ Index Of Script
 ------------------------------------------------
 Index Of Script
 ----------------------------------------------*/
-;(function () {
+; (function () {
   'use strict'
   /*------------LoaderInit----------------*/
   const loaderInit = () => {

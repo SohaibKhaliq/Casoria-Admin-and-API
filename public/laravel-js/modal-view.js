@@ -1,8 +1,8 @@
 /*
 * Version: 1.1.0
 * Template: Hope-Ui - Responsive Bootstrap 5 Admin Dashboard Template
-* Author: iqonic.design
-* Design and Developed by: iqonic.design
+* Author: Sohaib Khaliq
+* Design and Developed by: Sohaib Khaliq
 * NOTE: This file contains the script for initialize & listener Template.
 */
 
@@ -26,7 +26,7 @@
  *
  * @returns {object}
  * */
- $(document).on('click', '[data-iq-modal="open"]', function (e) {
+$(document).on('click', '[data-iq-modal="open"]', function (e) {
     e.preventDefault();
     resetModals();
     openModal({
@@ -50,7 +50,7 @@ function resetModals() {
  *
  * @param {options} options contains all the data required to open the modal
  */
-function openModal(options, __this){
+function openModal(options, __this) {
     const app_title = options.title;
     const app_size = options.size;
     const fullscreen = options.fullscreen;
@@ -131,7 +131,7 @@ function openModal(options, __this){
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    if($(target).length){
+                    if ($(target).length) {
                         $(target).html(data.data);
                     } else {
                         $('[data-iq-modal="renderer"] [data-iq-modal="body"]').html(data.data);
@@ -140,6 +140,6 @@ function openModal(options, __this){
                     }
                 }
             });
-        break;
+            break;
     }
 }

@@ -28,7 +28,6 @@ const routes = [
   }
 ]
 
-
 export const router = createRouter({
   linkActiveClass: '',
   linkExactActiveClass: 'active',

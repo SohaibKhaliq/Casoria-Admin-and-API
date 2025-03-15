@@ -1,9 +1,9 @@
 /*
 * Version: 1.1.0
 * Template: Hope-Ui - Responsive Bootstrap 5 Admin Dashboard Template
-* Author: iqonic.design
-* Author URL: https://iqonic.design/
-* Design and Developed by: iqonic.design
+* Author: Sohaib Khaliq
+* Author URL: https://Sohaib Khaliq/
+* Design and Developed by: Sohaib Khaliq
 * Description: This file contains the script for initialize & listener Template.
 */
 
@@ -124,7 +124,7 @@
             switch (storages[i]) {
                 case 'localStorage':
                     if (this.checkStorageKey(key)) {
-                        if(window.localStorage.getItem(key) !== 'none') {
+                        if (window.localStorage.getItem(key) !== 'none') {
                             result = true;
                             obj.storage = 'localStorage';
                         }
@@ -133,7 +133,7 @@
 
                 case 'sessionStorage':
                     if (this.checkSessionStorageKey(key)) {
-                        if(window.sessionStorage.getItem(key) !== 'none') {
+                        if (window.sessionStorage.getItem(key) !== 'none') {
                             result = true;
                             obj.storage = 'sessionStorage';
                         }
@@ -149,7 +149,7 @@
                     break;
 
                 case 'none':
-                    if(window.sessionStorage.getItem(key) == 'none' && window.localStorage.getItem(key) == 'none') {
+                    if (window.sessionStorage.getItem(key) == 'none' && window.localStorage.getItem(key) == 'none') {
                         result = true;
                         obj.storage = 'none'
                     }
@@ -191,25 +191,25 @@
 
     this.IQUtils.setContent = function (selector, content) {
         let _newElem = selector
-        if(_.isString(_newElem)){
+        if (_.isString(_newElem)) {
             _newElem = IQUtils.getElems(selector);;
         }
-        if(typeof _newElem.length !== typeof undefined){
+        if (typeof _newElem.length !== typeof undefined) {
             _.forEach(_newElem, function (elem) {
                 const leftJoin = elem.getAttribute('data-leftJoin') !== null ? elem.getAttribute('data-leftJoin') : '';
                 const rightJoin = elem.getAttribute('data-rightJoin') !== null ? elem.getAttribute('data-rightJoin') : '';
-                elem.innerHTML =  leftJoin + content +  rightJoin;
+                elem.innerHTML = leftJoin + content + rightJoin;
             });
         }
     }
 
     // class add function
-    this.IQUtils.addClass = function (elem,...className) {
+    this.IQUtils.addClass = function (elem, ...className) {
         let _newElem = elem
-        if(_.isString(_newElem)){
+        if (_.isString(_newElem)) {
             _newElem = IQUtils.getElems(elem);;
         }
-        if(_newElem.length !== undefined){
+        if (_newElem.length !== undefined) {
             _.forEach(_newElem, function (elem) {
                 _.forEach(className, function (newClassName) {
                     elem.classList.add(newClassName);
@@ -224,12 +224,12 @@
     }
 
     // class remove function
-    this.IQUtils.removeClass = function (elem,...className) {
+    this.IQUtils.removeClass = function (elem, ...className) {
         let _newElem = elem
-        if(_.isString(_newElem)){
+        if (_.isString(_newElem)) {
             _newElem = IQUtils.getElems(elem);;
         }
-        if(_newElem.length !== undefined){
+        if (_newElem.length !== undefined) {
             _.forEach(_newElem, function (elem) {
                 _.forEach(className, function (className) {
                     elem.classList.remove(className);
@@ -243,24 +243,24 @@
     }
 
     // class toggle function
-    this.IQUtils.toggleClass = function (elem,className) {
+    this.IQUtils.toggleClass = function (elem, className) {
         elem.classList.toggle(className);
     }
 
     // class has function
-    this.IQUtils.hasClass = function (elem,className) {
+    this.IQUtils.hasClass = function (elem, className) {
         return elem.classList.contains(className);
     }
 
     // get attribute value
-    this.IQUtils.getAttr = function (elem,attr) {
+    this.IQUtils.getAttr = function (elem, attr) {
         return elem.getAttribute(attr);
     }
 
     // set attribute value
-    this.IQUtils.setAttr = function (elems,object) {
+    this.IQUtils.setAttr = function (elems, object) {
         let _newElem = elems
-        if(_.isString(_newElem)){
+        if (_.isString(_newElem)) {
             _newElem = IQUtils.getElems(elems);;
         }
         _.forEach(_newElem, function (elem) {
@@ -269,15 +269,15 @@
     }
 
     // remove attribute value
-    this.IQUtils.removeAttr = function (elem,attr) {
+    this.IQUtils.removeAttr = function (elem, attr) {
         elem.removeAttribute(attr);
     }
 
     // update style value
-    this.IQUtils.setStyle = function (elems,object) {
+    this.IQUtils.setStyle = function (elems, object) {
         for (var key in object) {
             let _newElem = elems
-            if(_.isString(_newElem)){
+            if (_.isString(_newElem)) {
                 _newElem = IQUtils.getElems(elems);;
             }
             _.forEach(_newElem, function (elem) {
@@ -324,12 +324,12 @@
 
         if (_.isObject(target) && _.isObject(source)) {
             for (const key in source) {
-            if (_.isObject(source[key])) {
-                if (!target[key]) Object.assign(target, { [key]: {} });
-                IQUtils.mergeDeep(target[key], source[key]);
-            } else {
-                Object.assign(target, { [key]: source[key] });
-            }
+                if (_.isObject(source[key])) {
+                    if (!target[key]) Object.assign(target, { [key]: {} });
+                    IQUtils.mergeDeep(target[key], source[key]);
+                } else {
+                    Object.assign(target, { [key]: source[key] });
+                }
             }
         }
 
@@ -339,9 +339,9 @@
     // get style root variables function
     this.IQUtils.getRootVars = (property, elem = document.body) => {
         let _newElem = elem
-            if(_.isString(_newElem)){
-                _newElem = IQUtils.getElems(elems);;
-            }
+        if (_.isString(_newElem)) {
+            _newElem = IQUtils.getElems(elems);;
+        }
         return getComputedStyle(elem).getPropertyValue(property).trim() || null;
 
     }
@@ -368,15 +368,15 @@
     this.IQUtils.colorMix = (color_1, color_2, weight) => {
         function d2h(d) { return d.toString(16); }  // convert a decimal value to hex
         function h2d(h) { return parseInt(h, 16); } // convert a hex value to decimal
-        weight = (typeof(weight) !== 'undefined') ? weight : 50; // set the weight to 50%, if that argument is omitted
+        weight = (typeof (weight) !== 'undefined') ? weight : 50; // set the weight to 50%, if that argument is omitted
         var color = "#";
-        for(var i = 0; i <= 5; i += 2) { // loop through each of the 3 hex pairs—red, green, and blue
+        for (var i = 0; i <= 5; i += 2) { // loop through each of the 3 hex pairs—red, green, and blue
             var v1 = h2d(color_1.substr(i, 2)) // extract the current pairs
             var v2 = h2d(color_2.substr(i, 2))
             // combine the current pairs from each source color, according to the specified weight
             var val = d2h(Math.floor(v2 + (v1 - v2) * (weight / 100.0)));
 
-            while(val.length < 2) { val = '0' + val; } // prepend a '0' if val results in a single digit
+            while (val.length < 2) { val = '0' + val; } // prepend a '0' if val results in a single digit
 
             color += val; // concatenate val to our new color string
         }
@@ -386,7 +386,7 @@
 
     // tint color function
     this.IQUtils.tintColor = (color, weight) => {
-        weight = (typeof(weight) !== 'undefined') ? weight : 50; // set the weight to 50%, if that argument is omitted
+        weight = (typeof (weight) !== 'undefined') ? weight : 50; // set the weight to 50%, if that argument is omitted
         var color = color;
         var color_1 = color.substr(1); // strip the '#' character from the beginning
         var color_2 = 'FFFFFF';
@@ -395,7 +395,7 @@
 
     // shade color function
     this.IQUtils.shadeColor = (color, weight) => {
-        weight = (typeof(weight) !== 'undefined') ? weight : 50; // set the weight to 50%, if that argument is omitted
+        weight = (typeof (weight) !== 'undefined') ? weight : 50; // set the weight to 50%, if that argument is omitted
         var color = color;
         var color_1 = color.substr(1); // strip the '#' character from the beginning
         var color_2 = '000000';
@@ -412,34 +412,34 @@
     // get color shade & tint Functions
     this.IQUtils.getColorShadeTint = (color, value, dark) => {
         let colors = {}
-        if(dark) {
-          colors[`${color}-shade-80`] = IQUtils.tintColor(value, 80);
-          colors[`${color}-shade-60`] = IQUtils.tintColor(value, 60);
-          colors[`${color}-shade-40`] = IQUtils.tintColor(value, 40);
-          colors[`${color}-shade-20`] = IQUtils.tintColor(value, 20);
-          colors[`${color}-shade-10`] = IQUtils.tintColor(value, 10);
-          colors[`${color}-tint-10`] = IQUtils.shadeColor(value, 10);
-          colors[`${color}-tint-20`] = IQUtils.shadeColor(value, 20);
-          colors[`${color}-tint-40`] = IQUtils.shadeColor(value, 40);
-          colors[`${color}-tint-60`] = IQUtils.shadeColor(value, 60);
-          colors[`${color}-tint-80`] = IQUtils.shadeColor(value, 80);
-          colors[`${color}-tint-90`] = IQUtils.shadeColor(value, 90);
-          colors[`${color}-rgb`] = IQUtils.hexToRgb(value);
-          colors[color] = value;
+        if (dark) {
+            colors[`${color}-shade-80`] = IQUtils.tintColor(value, 80);
+            colors[`${color}-shade-60`] = IQUtils.tintColor(value, 60);
+            colors[`${color}-shade-40`] = IQUtils.tintColor(value, 40);
+            colors[`${color}-shade-20`] = IQUtils.tintColor(value, 20);
+            colors[`${color}-shade-10`] = IQUtils.tintColor(value, 10);
+            colors[`${color}-tint-10`] = IQUtils.shadeColor(value, 10);
+            colors[`${color}-tint-20`] = IQUtils.shadeColor(value, 20);
+            colors[`${color}-tint-40`] = IQUtils.shadeColor(value, 40);
+            colors[`${color}-tint-60`] = IQUtils.shadeColor(value, 60);
+            colors[`${color}-tint-80`] = IQUtils.shadeColor(value, 80);
+            colors[`${color}-tint-90`] = IQUtils.shadeColor(value, 90);
+            colors[`${color}-rgb`] = IQUtils.hexToRgb(value);
+            colors[color] = value;
         } else {
-          colors[`${color}-shade-80`] = IQUtils.shadeColor(value, 80);
-          colors[`${color}-shade-60`] = IQUtils.shadeColor(value, 60);
-          colors[`${color}-shade-40`] = IQUtils.shadeColor(value, 40);
-          colors[`${color}-shade-20`] = IQUtils.shadeColor(value, 20);
-          colors[`${color}-shade-10`] = IQUtils.shadeColor(value, 10);
-          colors[`${color}-tint-10`] = IQUtils.tintColor(value, 10);
-          colors[`${color}-tint-20`] = IQUtils.tintColor(value, 20);
-          colors[`${color}-tint-40`] = IQUtils.tintColor(value, 40);
-          colors[`${color}-tint-60`] = IQUtils.tintColor(value, 60);
-          colors[`${color}-tint-80`] = IQUtils.tintColor(value, 80);
-          colors[`${color}-tint-90`] = IQUtils.tintColor(value, 90);
-          colors[`${color}-rgb`] = IQUtils.hexToRgb(value);
-          colors[color] = value;
+            colors[`${color}-shade-80`] = IQUtils.shadeColor(value, 80);
+            colors[`${color}-shade-60`] = IQUtils.shadeColor(value, 60);
+            colors[`${color}-shade-40`] = IQUtils.shadeColor(value, 40);
+            colors[`${color}-shade-20`] = IQUtils.shadeColor(value, 20);
+            colors[`${color}-shade-10`] = IQUtils.shadeColor(value, 10);
+            colors[`${color}-tint-10`] = IQUtils.tintColor(value, 10);
+            colors[`${color}-tint-20`] = IQUtils.tintColor(value, 20);
+            colors[`${color}-tint-40`] = IQUtils.tintColor(value, 40);
+            colors[`${color}-tint-60`] = IQUtils.tintColor(value, 60);
+            colors[`${color}-tint-80`] = IQUtils.tintColor(value, 80);
+            colors[`${color}-tint-90`] = IQUtils.tintColor(value, 90);
+            colors[`${color}-rgb`] = IQUtils.hexToRgb(value);
+            colors[color] = value;
         }
 
         return colors
@@ -460,16 +460,16 @@
         if (prefix) {
             prefix = prefix.trim()
         }
-        if(type !== null){
+        if (type !== null) {
             document.documentElement.style.setProperty(`--${prefix}${type}-font-family`, fontFamily)
         }
     }
 
     this.IQUtils.debounce = (func, wait, immediate) => {
         let timeout
-        return function() {
+        return function () {
             const context = this, args = arguments
-            const later = function() {
+            const later = function () {
                 timeout = null
                 if (!immediate) func.apply(context, args)
             }
@@ -481,22 +481,22 @@
     }
 
     this.IQUtils.getVariableColor = () => {
-      let prefix = getComputedStyle(document.body).getPropertyValue('--prefix') || 'bs-';
-      if (prefix) {
-        prefix = prefix.trim()
-      }
-      const color1 = getComputedStyle(document.body).getPropertyValue(`--${prefix}primary`);
-      const color2 = getComputedStyle(document.body).getPropertyValue(`--${prefix}info`);
-      const color3 = getComputedStyle(document.body).getPropertyValue(`--${prefix}primary-tint-20`);
-      const color4 = getComputedStyle(document.body).getPropertyValue(`--${prefix}warning`);
-      const color5 = getComputedStyle(document.body).getPropertyValue(`--${prefix}secondary`);
-      return {
-        primary: color1.trim(),
-        info: color2.trim(),
-        warning: color4.trim(),
-        primary_light: color3.trim(),
-        secondary: color5.trim()
-      };
+        let prefix = getComputedStyle(document.body).getPropertyValue('--prefix') || 'bs-';
+        if (prefix) {
+            prefix = prefix.trim()
+        }
+        const color1 = getComputedStyle(document.body).getPropertyValue(`--${prefix}primary`);
+        const color2 = getComputedStyle(document.body).getPropertyValue(`--${prefix}info`);
+        const color3 = getComputedStyle(document.body).getPropertyValue(`--${prefix}primary-tint-20`);
+        const color4 = getComputedStyle(document.body).getPropertyValue(`--${prefix}warning`);
+        const color5 = getComputedStyle(document.body).getPropertyValue(`--${prefix}secondary`);
+        return {
+            primary: color1.trim(),
+            info: color2.trim(),
+            warning: color4.trim(),
+            primary_light: color3.trim(),
+            secondary: color5.trim()
+        };
     }
 
     return this.IQUtils;
