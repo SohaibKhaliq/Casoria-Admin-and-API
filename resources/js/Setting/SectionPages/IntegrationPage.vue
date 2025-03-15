@@ -3,15 +3,15 @@
     <div>
       <CardTitle :title="$t('setting_sidebar.lbl_integration')" icon="fa-solid fa-sliders"></CardTitle>
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="category-is_google_login">{{ $t('setting_integration_page.lbl_google_login') }} </label>
         <div class="form-check form-switch">
           <input class="form-check-input" :true-value="1" :false-value="0" :value="is_google_login" :checked="is_google_login == 1 ? true : false" name="is_google_login" id="category-is_google_login" type="checkbox" v-model="is_google_login" />
         </div>
       </div>
-    </div>
-    <div v-if="is_google_login == 1">
+    </div> -->
+    <!-- <div v-if="is_google_login == 1">
       <div class="row">
         <div class="col-md-6">
           <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_integration_page.lbl_secret_key')" placeholder="" v-model="google_secretkey" :error-message="errors['google_secretkey']" :error-messages="errorMessages['google_secretkey']"></InputField>
@@ -20,8 +20,8 @@
           <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_integration_page.lbl_public_key')" placeholder="" v-model="google_publickey" :error-message="errors['google_publickey']" :error-messages="errorMessages['google_publickey']"></InputField>
         </div>
       </div>
-    </div>
-    <div class="form-group">
+    </div> -->
+    <!-- <div class="form-group">
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="category-is_custom_webhook_notification">{{ $t('setting_integration_page.lbl_webhook') }} </label>
         <div class="form-check form-switch">
@@ -38,7 +38,7 @@
           <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_integration_page.lbl_custom_webhook_url')" placeholder="" v-model="custom_webhook_url" :error-message="errors['custom_webhook_url']" :error-messages="errorMessages['custom_webhook_url']"></InputField>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="form-group">
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="category-is_map_key">{{ $t('setting_integration_page.lbl_google') }}</label>
@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <!-- <div class="form-group">
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="category-isForceUpdate">{{ $t('setting_integration_page.lbl_isforceupdate') }}</label>
         <div class="form-check form-switch">
@@ -123,7 +123,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <SubmitButton :IS_SUBMITED="IS_SUBMITED"></SubmitButton>
   </form>
 </template>
