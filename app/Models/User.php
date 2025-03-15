@@ -16,7 +16,6 @@ use Modules\Booking\Models\BookingService;
 use Modules\Commission\Models\CommissionEarning;
 use Modules\Commission\Models\EmployeeCommission;
 use Modules\Earning\Models\EmployeeEarning;
-use Modules\Employee\Models\BusinessEmployee;
 use Modules\Employee\Models\EmployeeRating;
 use Modules\Package\Models\BookingPackages;
 use Modules\Service\Models\ServiceEmployee;
@@ -24,6 +23,7 @@ use Modules\Subscriptions\Models\Subscription;
 use Modules\Tip\Models\TipEarning;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Traits\HasRoles;
+use Modules\Employee\Models\BranchEmployee;
 
 class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
@@ -157,17 +157,17 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     public function businesses()
     {
-        return $this->hasMany(BusinessEmployee::class, 'employee_id');
+        return $this->hasMany(BranchEmployee::class, 'employee_id');
     }
 
     public function business()
     {
-        return $this->hasOne(BusinessEmployee::class, 'employee_id')->with('getBusiness');
+        return $this->hasOne(BranchEmployee::class, 'employee_id')->with('getBusiness');
     }
 
     public function mainBusiness()
     {
-        return $this->hasManyThrough(Business::class, BusinessEmployee::class, 'employee_id', 'id', 'id', 'business_id');
+        return $this->hasManyThrough(Business::class, BranchEmployee::class, 'employee_id', 'id', 'id', 'business_id');
     }
 
     public function services()
