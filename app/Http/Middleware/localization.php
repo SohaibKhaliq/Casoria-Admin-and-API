@@ -18,7 +18,7 @@ class localization
         // Check header request and determine localizaton
         $sessionLocal = session()->get('locale') ? session()->get('locale') : 'en';
 
-        $local = ($request->hasHeader('frezka-localization')) ? $request->header('frezka-localization') : $sessionLocal;
+        $local = ($request->hasHeader('casoria-localization')) ? $request->header('casoria-localization') : $sessionLocal;
         // set laravel localization
         app()->setLocale($local);
 
