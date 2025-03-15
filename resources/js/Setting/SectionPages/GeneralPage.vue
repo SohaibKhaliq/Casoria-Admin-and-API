@@ -6,13 +6,13 @@
     </div>
     <InputField :label="$t('setting_general_page.lbl_app')" :value="app_name" v-model="app_name" :errorMessage="errors.app_name"></InputField>
 
-    <InputField :label="$t('setting_general_page.lbl_footer')" :value="footer_text" v-model="footer_text" :errorMessage="errors.footer_text"></InputField>
+    <!-- <InputField :label="$t('setting_general_page.lbl_footer')" :value="footer_text" v-model="footer_text" :errorMessage="errors.footer_text"></InputField> -->
     <InputField :label="$t('setting_general_page.lbl_copyright')" :value="copyright_text" v-model="copyright_text" :errorMessage="errors.copyright_text"></InputField>
     <InputField :label="$t('setting_general_page.lbl_uitext')" :value="ui_text" v-model="ui_text" :errorMessage="errors.ui_text"></InputField>
     <InputField :label="$t('setting_general_page.lbl_contact_no')" :value="helpline_number" v-model="helpline_number" :errorMessage="errors.helpline_number"></InputField>
 
     <InputField :label="$t('setting_general_page.lbl_inquiry_email')" :value="inquriy_email" v-model="inquriy_email" :errorMessage="errors.inquriy_email"></InputField>
-    <InputField :label="$t('setting_general_page.lbl_site_description')" :value="site_description" v-model="site_description" :errorMessage="errors.site_description"></InputField>
+    <!-- <InputField :label="$t('setting_general_page.lbl_site_description')" :value="site_description" v-model="site_description" :errorMessage="errors.site_description"></InputField> -->
 
     <div class="row">
       <h5 class="mb-3">{{ $t('setting_general_page.business_add') }}</h5>
