@@ -10,7 +10,7 @@
       <InputField class="col" :is-required="true" :label="$t('setting_mail_page.lbl_username')" placeholder="youremail@gmail.com" v-model="mail_username" :error-message="errors.mail_username"></InputField>
       <InputField class="col" :is-required="true" :label="$t('setting_mail_page.lbl_password')" type="password" placeholder="Password" v-model="mail_password" :error-message="errors.mail_password"></InputField>
       <InputField class="col" :is-required="true" :label="$t('setting_mail_page.lbl_mail')" placeholder="youremail@gmail.com" v-model="mail_from" :error-message="errors.mail_from"></InputField>
-      <InputField class="col" :is-required="true" :label="$t('setting_mail_page.lbl_from_name')" placeholder="Frezka" v-model="from_name" :error-message="errors.from_name"></InputField>
+      <InputField class="col" :is-required="true" :label="$t('setting_mail_page.lbl_from_name')" placeholder="casoria" v-model="from_name" :error-message="errors.from_name"></InputField>
     </div>
     <div class="d-grid d-md-flex gap-3 align-items-center">
       <SubmitButton :IS_SUBMITED="IS_SUBMITED" v-if="isEmailVerified"></SubmitButton>
@@ -20,7 +20,7 @@
           Verifing...
         </template>
         <template v-else>
-          {{$t('messages.verify_email')}}
+          {{ $t('messages.verify_email') }}
         </template>
       </button>
       <span v-if="isEmailVerified" class="badge bg-soft-success">{{ VARIFY_MESSAGE }}</span>
@@ -134,7 +134,7 @@ const verifyEmail = () => {
     [email, mail_driver, mail_host, mail_port, mail_encryption, mail_username, mail_password, mail_from, from_name],
     () => {
       isEmailVerified.value = false // Reset isEmailVerified when any input field changes
-      VARIFY_MESSAGE.value = "Please reverify the changed SMTP configuration."
+      VARIFY_MESSAGE.value = 'Please reverify the changed SMTP configuration.'
     },
     { deep: true }
   )
