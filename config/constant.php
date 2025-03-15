@@ -45,7 +45,7 @@ return [
             'is_custom_permission' => 0,
         ],
         [
-            'module_name' => 'Page',
+            'module_name' => 'Privacy Policy & T&C',
             'is_custom_permission' => 0,
         ],
         [
@@ -68,52 +68,52 @@ return [
             'module_name' => 'Review',
             'is_custom_permission' => 0,
         ],
-        [
-            'module_name' => 'Menu Builder',
-            'more_permission' => ['sidebar', 'header'],
-            'is_custom_permission' => 0,
-        ],
+        // [
+        //     'module_name' => 'Menu Builder',
+        //     'more_permission' => ['sidebar', 'header'],
+        //     'is_custom_permission' => 0,
+        // ],
         [
             'module_name' => 'Tax',
             'is_custom_permission' => 0,
         ],
-        [
-            'module_name' => 'Commission',
-            'is_custom_permission' => 0,
-        ],
-        [
-            'module_name' => 'Custom Field',
-            'is_custom_permission' => 0,
-        ],
+        // [
+        //     'module_name' => 'Commission',
+        //     'is_custom_permission' => 0,
+        // ],
+        // [
+        //     'module_name' => 'Custom Field',
+        //     'is_custom_permission' => 0,
+        // ],
         [
             'module_name' => 'Setting',
-            'more_permission' => ['general', 'misc', 'customization', 'mail', 'notification', 'intigrations', 'currency', 'holiday', 'bussiness_hours', 'language', 'menu_builder', 'invoice'],
+            'more_permission' => ['general', 'misc', 'mail', 'notification', 'intigrations', 'currency', 'holiday', 'bussiness_hours', 'language'],
             'is_custom_permission' => 1,
         ],
-        [
-            'module_name' => 'Product',
-            'more_permission' => ['stock', 'gallary'],
-            'is_custom_permission' => 0,
-        ],
-        [
-            'module_name' => 'Product Variations',
-            'is_custom_permission' => 0,
-        ],
-        [
-            'module_name' => 'Product Category',
-            'is_custom_permission' => 0,
-        ],
-        [
-            'module_name' => 'Product Brand',
-            'is_custom_permission' => 0,
-        ],
-        [
-            'module_name' => 'Product Units',
-            'is_custom_permission' => 0,
-        ],
-        [
-            'module_name' => 'Product Orders',
-            'is_custom_permission' => 0,
-        ],
+        // [
+        //     'module_name' => 'Product',
+        //     'more_permission' => ['stock', 'gallary'],
+        //     'is_custom_permission' => 0,
+        // ],
+        // [
+        //     'module_name' => 'Product Variations',
+        //     'is_custom_permission' => 0,
+        // ],
+        // [
+        //     'module_name' => 'Product Category',
+        //     'is_custom_permission' => 0,
+        // ],
+        // [
+        //     'module_name' => 'Product Brand',
+        //     'is_custom_permission' => 0,
+        // ],
+        // [
+        //     'module_name' => 'Product Units',
+        //     'is_custom_permission' => 0,
+        // ],
+        // [
+        //     'module_name' => 'Product Orders',
+        //     'is_custom_permission' => 0,
+        // ],
     ],
 ];
