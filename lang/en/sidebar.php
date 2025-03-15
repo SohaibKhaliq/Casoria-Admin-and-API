@@ -25,7 +25,7 @@ return [
     'staffs_services' => 'Staffs Services',
     'system' => 'System',
     'settings' => 'Settings',
-    'pages' => 'Pages',
+    'pages' => 'Privacy Policy & T&C',
     'notifications' => 'Notifications',
     'templates' => 'Templates',
     'app_banner' => 'App Banner',
