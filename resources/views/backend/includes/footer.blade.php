@@ -6,9 +6,9 @@
           <a href="{{ route('backend.home') }}">{{setting('app_name')}}</a>.
           {{ setting('copyright_text') }}
       </div>
-      <div class="center-panel">
+      {{-- <div class="center-panel">
           {!! setting('footer_text') !!}
-      </div>
+      </div> --}}
       <div class="end-panel">
         {!! setting('ui_text') !!}
       </div>
