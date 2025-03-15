@@ -22,7 +22,7 @@ const { storeRequest } = useRequest()
 
 // Components
 import NotFound from './NotFound.vue'
-import SelectBusiness from '../BookingComponent/SelectBusiness.vue'
+import SelectBusiness from './BookingComponent/SelectBusiness.vue'
 import SelectDateTime from './BookingComponent/SelectDateTime.vue'
 import SelectService from './BookingComponent/SelectService.vue'
 import SelectStaff from './BookingComponent/SelectStaff.vue'
