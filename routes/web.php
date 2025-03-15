@@ -138,9 +138,9 @@ Route::group(['prefix' => 'app', 'middleware' => 'auth'], function () {
     * --------------------------------------------------------------------
     */
 
-    Route::middleware(['checkInstallation'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
 
-        Route::group(['as' => 'backend.', 'middleware' => ['auth']], function () {
+        Route::group(['as' => 'backend.'], function () {
             /**
              * Backend Dashboard
              * Namespaces indicate folder structure.
