@@ -246,7 +246,7 @@ return [
         'next' => 'Next',
         'previous' => 'Previous',
     ],
-    'add_manager' => 'Add Manager',
+    'add_admin' => 'Add admin',
     'personal_information' => 'Personal Information',
     'business_setting' => 'Business Setting',
     'mail_template' => 'Email Templete',

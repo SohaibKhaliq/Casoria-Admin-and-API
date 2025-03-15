@@ -11,8 +11,8 @@ return [
     'lbl_confirm_password' => 'Confirm Password',
     'lbl_gender' => 'Gender',
     'lbl_show_in_calender' => 'Show In Calendar',
-    'lbl_is_manager' => 'Is Manager',
-    'lbl_create_manager' => 'Create Manager',
+    'lbl_is_admin' => 'Is admin',
+    'lbl_create_admin' => 'Create admin',
     'lbl_select_commission' => 'Select Commission',
     'lbl_select_business' => 'Select Business',
     'lbl_select_service' => 'Select Service',
@@ -59,6 +59,6 @@ return [
     'Twitter_link' => 'Enter Twitter Link',
     'dribble_link' => 'Enter Dribbble Link',
     'select_employee' => 'Select an employee',
-    'singular_title_manager' => 'Manager',
+    'singular_title_admin' => 'admin',
 
 ];
