@@ -87,7 +87,7 @@ return [
         ],
         [
             'module_name' => 'Setting',
-            'more_permission' => ['general', 'misc', 'quick_booking', 'custom_code', 'customization', 'mail', 'notification', 'intigrations', 'custom_fields', 'currency', 'commission', 'holiday', 'bussiness_hours', 'payment_method', 'language', 'menu_builder', 'invoice'],
+            'more_permission' => ['general', 'misc', 'customization', 'mail', 'notification', 'intigrations', 'currency', 'holiday', 'bussiness_hours', 'language', 'menu_builder', 'invoice'],
             'is_custom_permission' => 1,
         ],
         [
