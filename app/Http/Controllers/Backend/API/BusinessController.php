@@ -14,12 +14,14 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Modules\Booking\Models\Booking;
 use Modules\BussinessHour\Models\BussinessHour;
+use Modules\Employee\Models\BranchEmployee;
 use Modules\Employee\Models\BusinessEmployee;
 use Modules\Employee\Models\EmployeeRating;
 use Modules\Employee\Transformers\EmployeeResource;
 use Modules\Employee\Transformers\EmployeeReviewResource;
 use Modules\Service\Models\ServiceBusinesses;
 use Modules\Tax\Models\Tax;
+use PhpOffice\PhpSpreadsheet\Calculation\Engine\BranchPruner;
 
 class BusinessController extends Controller
 {
@@ -47,7 +49,7 @@ class BusinessController extends Controller
         $businessId = $request->business_id;
         $business = Business::with('businessHours', 'media', 'gallerys')->find($businessId);
 
-        $employeeIds = BusinessEmployee::where('business_id', $businessId)
+        $employeeIds = BranchEmployee::where('business_id', $businessId)
             ->distinct()
             ->pluck('employee_id');
 
@@ -88,7 +90,7 @@ class BusinessController extends Controller
 
         $perPage = $request->input('per_page', 10);
 
-        $employeeIds = BusinessEmployee::where('business_id', $businessId)
+        $employeeIds = BranchEmployee::where('business_id', $businessId)
             ->distinct()
             ->pluck('employee_id');
 
@@ -111,7 +113,7 @@ class BusinessController extends Controller
 
         $perPage = $request->input('per_page', 10);
 
-        $businessEmployees = BusinessEmployee::where('business_id', $businessId)->pluck('employee_id');
+        $businessEmployees = BranchEmployee::where('business_id', $businessId)->pluck('employee_id');
         $employee = User::with(['media', 'businesses', 'services'])->where('status', 1);
         $employee = $employee->whereIn('id', $businessEmployees);
         $employee = $employee->paginate($perPage);
@@ -143,7 +145,7 @@ class BusinessController extends Controller
 
     public function assign_list($id)
     {
-        $business_user = BusinessEmployee::with('employee')->where('business_id', $id)->get();
+        $business_user = BranchEmployee::with('employee')->where('business_id', $id)->get();
         $business_user = $business_user->each(function ($data) {
             $data['name'] = $data->employee->name;
             $data['avatar'] = $data->employee->avatar;
@@ -156,9 +158,9 @@ class BusinessController extends Controller
 
     public function assign_update($id, Request $request)
     {
-        BusinessEmployee::where('business_id', $id)->delete();
+        BranchEmployee::where('business_id', $id)->delete();
         foreach ($request->users as $key => $value) {
-            BusinessEmployee::create([
+            BranchEmployee::create([
                 'business_id' => $id,
                 'employee_id' => $value['employee_id'],
                 'is_primary' => $value['is_primary'],
@@ -212,5 +214,11 @@ class BusinessController extends Controller
         } else {
             return response()->json(['status' => true, 'message' => '']);
         }
+    }
+
+    public function show($id)
+    {
+        $business = Business::findOrFail($id);
+        return new BusinessResource($business);
     }
 }
