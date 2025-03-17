@@ -22,45 +22,18 @@ class DashboardController extends Controller
 {
     public function dashboardDetail(Request $request)
     {
-        $perPage = $request->input('per_page', 10);
-        $businessId = $request->input('business_id', null); // Assuming the business ID is passed in the request
-        $business = Business::find($businessId);
-
-
-        if ($business==null) {
-            $business=Business::all();
-        }
-
-        $categories = Category::with('media')->where('status', 1)->whereNull('parent_id')
-            ->whereHas('services.businesses', function ($query) use ($businessId) {
-                $query->where('business_id', $businessId);
-            })
-            ->paginate($perPage)
-            ->forPage(1, 6);
-
-        $services = Service::with(['media', 'businesses' => function ($query) use ($businessId) {
-            $query->where('business_id', $businessId);
-        }])
-            ->whereHas('businesses', function ($query) use ($businessId) {
-                $query->where('business_id', $businessId);
-            })
-            ->paginate($perPage);
-
-        $employees = User::with('media')->withCount(['businesses', 'services'])
-            ->whereHas('businesses', function ($query) use ($businessId) {
-                $query->where('business_id', $businessId);
-            })
-            ->orderByDesc('services_count')
-            ->paginate($perPage)
-            ->forPage(1, 6);
-
+        $perPage = 10;
         $slider = SliderResource::collection(Slider::where('status', 1)->paginate($perPage));
 
 
+        if ($slider->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => __('messages.no_sliders_found'),
+            ], 404);
+        }
+
         $responseData = [
-            'category' => CategoryResource::collection($categories)->toArray(request()),
-            'service' => ServiceResource::collection($services)->toArray(request()),
-            'top_experts' => EmployeeResource::collection($employees)->toArray(request()),
             'slider' => $slider,
         ];
 
