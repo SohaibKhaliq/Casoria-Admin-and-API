@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'notifications_fetched' => 'Notifications fetched successfully.',
+    'notification_marked_as_read' => 'Notification marked as read.',
+    'notification_deleted' => 'Notification deleted.',
+    'no_sliders_found' => 'No sliders found.',
     'Welcome to' => 'Welcome to :name Admin Dashboard.',
     'yes' => 'Yes',
     'no' => 'No',

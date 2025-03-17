@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'no_sliders_found' => 'Nessuno slider trovato',
+    'notifications_fetched' => 'Notifiche recuperate',
+    'notification_marked_as_read' => 'Notifica contrassegnata come letta',
+    'notification_deleted' => 'Notifica eliminata',
     'Welcome to' => 'Benvenuto in :name Admin Dashboard.',
     'yes' => 'Sì',
     'no' => 'No',
