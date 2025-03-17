@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all_notifications_marked_as_read' => 'Tutte le notifiche contrassegnate come lette',
     'no_sliders_found' => 'Nessuno slider trovato',
     'notifications_fetched' => 'Notifiche recuperate',
     'notification_marked_as_read' => 'Notifica contrassegnata come letta',

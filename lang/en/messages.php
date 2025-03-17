@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'all_notifications_marked_as_read'=> 'All notifications marked as read.',
     'notifications_fetched' => 'Notifications fetched successfully.',
     'notification_marked_as_read' => 'Notification marked as read.',
     'notification_deleted' => 'Notification deleted.',

@@ -51,7 +51,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('user', UserApiController::class);
     Route::get('setting', [SettingController::class, 'appConfiguraton']);
     Route::apiResource('notifications', NotificationsController::class);
-    Route::post('notifications/mark-all', [NotificationsController::class, 'markAllAsRead']);
+    Route::post('markallasread', [NotificationsController::class, 'markAllAsRead']);
     Route::get('notification-list', [NotificationsController::class, 'notificationList']);
     Route::get('gallery-list', [DashboardController::class, 'globalGallery']);
     Route::get('search-list', [DashboardController::class, 'searchList']);
