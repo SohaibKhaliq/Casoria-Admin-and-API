@@ -14,7 +14,7 @@ yarn-error.log
 /.vscode
 *.cache
 .DS_Store
-
+vendor/*
 
 Below Comments For Design Style & Scripts
 !/public/css/.gitkeep
