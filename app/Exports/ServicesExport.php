@@ -39,7 +39,8 @@ class ServicesExport implements FromCollection, WithHeadings, WithStyles
     {
         $query = Service::query()
             ->with(['category', 'sub_category'])
-            ->withCount(['businesses', 'employee']);
+            ->withCount(['businesses', 'employee'])
+            ->select($this->columns); // Ensure only selected columns are queried
 
         $query->whereDate('created_at', '>=', $this->dateRange[0]);
 
@@ -65,7 +66,7 @@ class ServicesExport implements FromCollection, WithHeadings, WithStyles
                         break;
 
                     case 'duration_min':
-                        $selectedData[$column] = $row->duration_min.' Min';
+                        $selectedData[$column] = $row->duration_min . ' Min';
                         break;
 
                     case 'businesses':
@@ -79,7 +80,7 @@ class ServicesExport implements FromCollection, WithHeadings, WithStyles
                     case 'category':
                         $category = isset($row->category->name) ? $row->category->name : '-';
                         if (isset($row->sub_category->name)) {
-                            $category = $category.' > '.$row->sub_category->name;
+                            $category = $category . ' > ' . $row->sub_category->name;
                         }
                         $selectedData[$column] = $category;
                         break;
