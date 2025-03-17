@@ -1,6 +1,4 @@
 node_modules
-/public/hot
-/public/storage
 /storage/*.key
 /vendor
 .env
@@ -16,29 +14,6 @@ yarn-error.log
 .DS_Store
 
 
-Below Comments For Design Style & Scripts
-!/public/css/.gitkeep
-!/public/js/core/.gitkeep
-# Below Comments For Design Style & Scripts
-# /public/css/*
-# !/public/css/.gitkeep
-# /public/js/core/*
-# !/public/js/core/.gitkeep
-
-/public/js/*.js*
-!/public/js/.gitkeep
-
-!/public/js/iqonic-script/.gitkeep
-
-
-<<<<<<< HEAD
-/public/modules/**/*
-!/public/modules/.gitkeep
-=======
-# /public/modules/**/*
-# !/public/modules/.gitkeep
-# /public/mix-manifest.json
-<<<<<<< HEAD
 >>>>>>> push-notification-template
 >>>>>>> development
 =======
