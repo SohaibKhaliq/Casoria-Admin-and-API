@@ -13,6 +13,7 @@ use Auth;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -20,13 +21,32 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:191',
+            'last_name' => 'required|string|max:191',
+            'email' => 'required|string|email|max:191|unique:users',
+            'password' => 'required|string|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $user = $this->registerTrait($request);
         $success['token'] = $user->createToken(setting('app_name'))->plainTextToken;
         $success['name'] = $user->name;
 
         $userResource = new RegisterResource($user);
 
-        return $this->sendResponse($userResource, __('messages.register_successfull'));
+        return response()->json([
+            'status' => true,
+            'data' => $userResource,
+            'message' => __('messages.register_successfull')
+        ], 201);
     }
 
     /**
@@ -36,6 +56,19 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $user = User::withTrashed()->where('email', $request->input('email'))->first();
         if ($user == null) {
             return response()->json(['status' => false, 'message' => __('messages.register_before_login')]);
@@ -72,11 +105,25 @@ class AuthController extends Controller
         } else {
             return $this->sendError(__('messages.not_matched'), ['error' => __('messages.unauthorised')], 200);
         }
-
     }
 
     public function socialLogin(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'login_type' => 'required|string',
+            'email' => 'required_if:login_type,google|string|email',
+            'username' => 'required_if:login_type,mobile|string',
+            'accessToken' => 'required_if:login_type,google|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $input = $request->all();
 
         if ($input['login_type'] === 'mobile') {
@@ -138,7 +185,7 @@ class AuthController extends Controller
             $password = ! empty($input['accessToken']) ? $input['accessToken'] : $input['email'];
 
             $input['user_type'] = 'user';
-            $input['display_name'] = $input['first_name'].' '.$input['last_name'];
+            $input['display_name'] = $input['first_name'] . ' ' . $input['last_name'];
             $input['password'] = Hash::make($password);
             $input['user_type'] = isset($input['user_type']) ? $input['user_type'] : 'user';
 
@@ -175,6 +222,18 @@ class AuthController extends Controller
 
     public function forgotPassword(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $request->validate([
             'email' => 'required|email',
         ]);
@@ -199,6 +258,19 @@ class AuthController extends Controller
 
     public function changePassword(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required|string',
+            'new_password' => 'required|string|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $user = \Auth::user();
         $user_id = ! empty($request->id) ? $request->id : $user->id;
         $user = User::where('id', $user_id)->first();
@@ -249,9 +321,24 @@ class AuthController extends Controller
             ], 200);
         }
     }
-
     public function updateProfile(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'id' => 'sometimes|integer|exists:users,id',
+            'first_name' => 'sometimes|string|max:191',
+            'last_name' => 'sometimes|string|max:191',
+            'email' => 'sometimes|string|email|max:191|unique:users,email,' . $request->id,
+            'profile_image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $user = \Auth::user();
         if ($request->has('id') && ! empty($request->id)) {
             $user = User::where('id', $request->id)->first();
