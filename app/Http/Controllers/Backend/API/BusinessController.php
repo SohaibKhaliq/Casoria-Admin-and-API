@@ -212,7 +212,7 @@ class BusinessController extends Controller
         if ($booking->count() > 0) {
             return response()->json(['status' => false, 'message' => __('business.business_reserved')]);
         } else {
-            return response()->json(['status' => true, 'message' => '']);
+            return response()->json(['status' => true, 'message' => 'Slot is Already Booked!! Want to enroll in Queue?','tobecontinued'=>'I am currently working on this']);
         }
     }
 
