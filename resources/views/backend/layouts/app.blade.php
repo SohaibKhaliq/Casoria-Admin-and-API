@@ -48,11 +48,11 @@
         :root {
             <?php
             $rootColors = setting('root_colors'); // Assuming the setting() function retrieves the JSON string
-            
+
             // Check if the JSON string is not empty and can be decoded
             if (!empty($rootColors) && is_string($rootColors)) {
                 $colors = json_decode($rootColors, true);
-            
+
                 // Check if decoding was successful and the colors array is not empty
                 if (json_last_error() === JSON_ERROR_NONE && is_array($colors) && count($colors) > 0) {
                     foreach ($colors as $key => $value) {
@@ -142,9 +142,9 @@
     </div>
     <!-- Loader End -->
     <!-- Sidebar -->
-    @hasPermission('menu_builder_sidebar')
+    {{-- @hasPermission('menu_builder_sidebar') --}}
         @include('backend.includes.sidebar')
-    @endhasPermission
+    {{-- @endhasPermission --}}
     <!-- /Sidebar -->
     <div class="main-content wrapper">
         <div
