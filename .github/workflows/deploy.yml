@@ -23,7 +23,7 @@ jobs:
           port: ${{ secrets.FTP_PORT }}
           protocol: ftps  # Change to "ftp" if your server does not support FTPS
           local-dir: ./  # Upload everything in the repo
-          server-dir: . # Change to the path of your Laravel app on your server
+          server-dir: ./ # Change to the path of your Laravel app on your server
           exclude: |
             **/.git*
             **/.github*
@@ -36,7 +36,6 @@ jobs:
       - name: 🏗 Install Dependencies & Cache Clear
         run: |
           sshpass -p "${{ secrets.FTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ secrets.FTP_HOST }} <<EOF
-          cd /httpdocs
           composer install --no-dev --optimize-autoloader
           php artisan key:generate --force
           php artisan cache:clear
