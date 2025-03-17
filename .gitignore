@@ -17,9 +17,7 @@ yarn-error.log
 
 
 Below Comments For Design Style & Scripts
-/public/css/*
 !/public/css/.gitkeep
-/public/js/core/*
 !/public/js/core/.gitkeep
 # Below Comments For Design Style & Scripts
 # /public/css/*
@@ -30,14 +28,12 @@ Below Comments For Design Style & Scripts
 /public/js/*.js*
 !/public/js/.gitkeep
 
-/public/js/iqonic-script/*.min.js*
 !/public/js/iqonic-script/.gitkeep
-!/public/js/setting-init.js
+
 
 <<<<<<< HEAD
 /public/modules/**/*
 !/public/modules/.gitkeep
-/public/mix-manifest.json
 =======
 # /public/modules/**/*
 # !/public/modules/.gitkeep
