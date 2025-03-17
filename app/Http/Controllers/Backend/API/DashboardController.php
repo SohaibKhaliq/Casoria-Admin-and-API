@@ -23,12 +23,12 @@ class DashboardController extends Controller
     public function dashboardDetail(Request $request)
     {
         $perPage = $request->input('per_page', 10);
-        $businessId = $request->input('business_id'); // Assuming the business ID is passed in the request
-        $user_id = $request->input('user_id');
+        $businessId = $request->input('business_id', null); // Assuming the business ID is passed in the request
         $business = Business::find($businessId);
 
-        if (! $business) {
-            return response()->json(['status' => false, 'message' => __('business.business_notfound')], 404);
+
+        if ($business==null) {
+            $business=Business::all();
         }
 
         $categories = Category::with('media')->where('status', 1)->whereNull('parent_id')
