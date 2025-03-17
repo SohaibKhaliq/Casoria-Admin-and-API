@@ -88,7 +88,7 @@ class BusinessController extends Controller
 
         $perPage = $request->input('per_page', 10);
 
-        $employeeIds = BusinessEmployee::where('business_id', $businessId)
+        $employeeIds = BranchEmployee::where('business_id', $businessId)
             ->distinct()
             ->pluck('employee_id');
 
