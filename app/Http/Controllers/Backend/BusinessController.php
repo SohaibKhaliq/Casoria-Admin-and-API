@@ -160,7 +160,7 @@ class BusinessController extends Controller
 
         $datatable = $datatable->eloquent($query)
             ->addColumn('check', function ($row) {
-                return '<input type="checkbox" class="form-check-input select-table-row "  id="datatable-row-'.$row->id.'"  name="datatable_ids[]" value="'.$row->id.'" onclick="dataTableRowCheck('.$row->id.')">';
+                return '<input type="checkbox" class="form-check-input select-table-row "  id="datatable-row-' . $row->id . '"  name="datatable_ids[]" value="' . $row->id . '" onclick="dataTableRowCheck(' . $row->id . ')">';
             })
             ->addColumn('action', function ($data) use ($module_name) {
                 return view('backend.business.action_column', compact('module_name', 'data'));
@@ -168,14 +168,14 @@ class BusinessController extends Controller
             ->filterColumn('address.city', function ($query, $keyword) {
                 if (! empty($keyword)) {
                     $query->whereHas('address', function ($q) use ($keyword) {
-                        $q->where('city', 'like', '%'.$keyword.'%');
+                        $q->where('city', 'like', '%' . $keyword . '%');
                     });
                 }
             })
             ->filterColumn('address.postal_code', function ($query, $keyword) {
                 if (! empty($keyword)) {
                     $query->whereHas('address', function ($q) use ($keyword) {
-                        $q->where('postal_code', 'like', '%'.$keyword.'%');
+                        $q->where('postal_code', 'like', '%' . $keyword . '%');
                     });
                 }
             })
@@ -183,9 +183,9 @@ class BusinessController extends Controller
             ->filterColumn('manager_id', function ($query, $keyword) {
                 if (! empty($keyword)) {
                     $query->whereHas('employee', function ($q) use ($keyword) {
-                        $q->where('first_name', 'like', '%'.$keyword.'%');
-                        $q->orWhere('last_name', 'like', '%'.$keyword.'%');
-                        $q->orWhere('email', 'like', '%'.$keyword.'%');
+                        $q->where('first_name', 'like', '%' . $keyword . '%');
+                        $q->orWhere('last_name', 'like', '%' . $keyword . '%');
+                        $q->orWhere('email', 'like', '%' . $keyword . '%');
                     });
                 }
             })
@@ -196,13 +196,13 @@ class BusinessController extends Controller
             })
             ->filterColumn('business_for', function ($query, $keyword) {
                 if (! empty($keyword)) {
-                    $query->where('business_for', 'like', $keyword.'%');
+                    $query->where('business_for', 'like', $keyword . '%');
                 }
             })
             ->filterColumn('name', function ($query, $keyword) {
                 if (! empty($keyword)) {
-                    $query->Where('name', 'like', '%'.$keyword.'%');
-                    $query->orWhere('contact_email', 'like', '%'.$keyword.'%');
+                    $query->Where('name', 'like', '%' . $keyword . '%');
+                    $query->orWhere('contact_email', 'like', '%' . $keyword . '%');
                 }
             })
             ->editColumn('status', function ($row) {
@@ -213,7 +213,7 @@ class BusinessController extends Controller
 
                 return '
              <div class="form-check form-switch  ">
-                 <input type="checkbox" data-url="'.route('backend.business.update_status', $row->id).'" data-token="'.csrf_token().'" class="switch-status-change form-check-input"  id="datatable-row-'.$row->id.'"  name="status" value="'.$row->id.'" '.$checked.'>
+                 <input type="checkbox" data-url="' . route('backend.business.update_status', $row->id) . '" data-token="' . csrf_token() . '" class="switch-status-change form-check-input"  id="datatable-row-' . $row->id . '"  name="status" value="' . $row->id . '" ' . $checked . '>
              </div>
             ';
             })
