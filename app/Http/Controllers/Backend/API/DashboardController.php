@@ -56,17 +56,12 @@ class DashboardController extends Controller
 
         $slider = SliderResource::collection(Slider::where('status', 1)->paginate($perPage));
 
-        $cartCount = 0;
-        if ($user_id) {
-            $cartCount = Cart::where('user_id', $user_id)->count();
-        }
 
         $responseData = [
             'category' => CategoryResource::collection($categories)->toArray(request()),
             'service' => ServiceResource::collection($services)->toArray(request()),
             'top_experts' => EmployeeResource::collection($employees)->toArray(request()),
             'slider' => $slider,
-            'cart_count' => $cartCount,
         ];
 
         return response()->json([
