@@ -20,8 +20,6 @@ use App\Http\Controllers\Backend\API\UserApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('business-list', [BusinessController::class, 'businessList']);
-Route::get('user-detail', [AuthController::class, 'userDetails']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -35,15 +33,19 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('logout', 'logout');
 });
 
-Route::get('dashboard-detail', [DashboardController::class, 'dashboardDetail']);
-Route::get('business-configuration', [BusinessController::class, 'businessConfig']);
-Route::get('business-detail', [BusinessController::class, 'businessDetails']);
-Route::get('business-service', [BusinessController::class, 'businessService']);
-Route::get('business-review', [BusinessController::class, 'businessReviews']);
-Route::get('business-employee', [BusinessController::class, 'businessEmployee']);
-Route::get('business-gallery', [BusinessController::class, 'businessGallery']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('business-list', [BusinessController::class, 'businessList']);
+    Route::get('user-detail', [AuthController::class, 'userDetails']);
+    Route::get('dashboard-detail', [DashboardController::class, 'dashboardDetail']);
+    Route::get('business-configuration', [BusinessController::class, 'businessConfig']);
+    Route::get('business-detail', [BusinessController::class, 'businessDetails']);
+    Route::get('business-service', [BusinessController::class, 'businessService']);
+    Route::get('business-review', [BusinessController::class, 'businessReviews']);
+    Route::get('business-employee', [BusinessController::class, 'businessEmployee']);
+    Route::get('business-gallery', [BusinessController::class, 'businessGallery']);
+    Route::get('business-list', [BusinessController::class, 'businessList']);
+    Route::get('user-detail', [AuthController::class, 'userDetails']);
     Route::post('business/assign/{id}', [BusinessController::class, 'assign_update']);
     Route::apiResource('business', BusinessController::class);
     Route::apiResource('user', UserApiController::class);
@@ -63,5 +65,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('edit-address', [AddressController::class, 'EditAddress']);
 
     Route::post('verify-slot', [BusinessController::class, 'verifySlot']);
+    Route::post('app-configuration', [SettingController::class, 'appConfiguraton']);
 });
-Route::post('app-configuration', [SettingController::class, 'appConfiguraton']);
