@@ -17,24 +17,75 @@ use Modules\Service\Models\ServiceGallery;
 use Modules\Service\Transformers\ServiceResource;
 use Modules\Slider\Models\Slider;
 use Modules\Slider\Transformers\SliderResource;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function dashboardDetail(Request $request)
     {
+        // Get authenticated user
+        $user = Auth::user();
+
+        // Get user full name
+        $userName = trim($user->first_name . ' ' . $user->last_name);
+
+        // Get user's pending bookings with name(category) and image, staff name, date and time
+        $pendingBookingQuery = Booking::where('user_id', $user->id)
+            ->where('status', 'pending') // Ensure 'pending' is the correct status value
+            ->with('booking_service.service:id,name', 'booking_service.employee:id,first_name,last_name', 'business:id,name')
+            ->select('id', 'business_id');
+
+        // Log the query for debugging
+        \Log::info($pendingBookingQuery->toSql());
+
+        $pendingBooking = $pendingBookingQuery->get();
+
+        // Log the results for debugging
+        \Log::info($pendingBooking);
+
+        // Get all businesses with selected fields
+        $businesses = Business::with('address', 'businessHours')
+            ->select('id', 'name')
+            ->get();
+
+        // Paginate sliders
         $perPage = 10;
-        $slider = SliderResource::collection(Slider::where('status', 1)->paginate($perPage));
+        $sliderQuery = Slider::where('status', 1)->paginate($perPage);
+        $slider = SliderResource::collection($sliderQuery);
 
-
-        if ($slider->isEmpty()) {
+        // If no sliders are found
+        if ($sliderQuery->isEmpty()) {
             return response()->json([
                 'status' => false,
                 'message' => __('messages.no_sliders_found'),
             ], 404);
         }
 
+        // Format business data
+        $businessData = $businesses->map(function ($business) {
+            return [
+                'id' => $business->id,
+                'name' => $business->name,
+                'address' => $business->address ?? null,
+                'feature_image' => $business->feature_image, // Accessor handles fallback image
+                'business_hours' => $business->businessHours ?? [],
+            ];
+        });
+
+        // Prepare response
         $responseData = [
-            'slider' => $slider,
+            'slider' => [
+                'data' => $slider,
+                'pagination' => [
+                    'current_page' => $sliderQuery->currentPage(),
+                    'total_pages' => $sliderQuery->lastPage(),
+                    'total_items' => $sliderQuery->total(),
+                    'per_page' => $sliderQuery->perPage(),
+                ],
+            ],
+            'user' => $userName,
+            'pending_booking' => $pendingBooking,
+            'businesses' => $businessData,
         ];
 
         return response()->json([
@@ -43,6 +94,7 @@ class DashboardController extends Controller
             'message' => __('messages.dashboard_detail'),
         ], 200);
     }
+
 
     public function searchList(Request $request)
     {
