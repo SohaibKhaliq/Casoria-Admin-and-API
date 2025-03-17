@@ -3,7 +3,7 @@ name: 🚀 FTP Deployment to Plesk
 on:
   push:
     branches:
-      - main  # Change this if your main branch is different
+      - main # Change this if your main branch is different
 
 jobs:
   deploy:
@@ -14,6 +14,22 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
+      - name: 📦 Cache Composer Dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: 📦 Cache Node Modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: 🚀 Upload Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
@@ -21,8 +37,8 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
-          protocol: ftps  # Change to "ftp" if your server does not support FTPS
-          local-dir: ./  # Upload everything in the repo
+          protocol: ftps # Change to "ftp" if your server does not support FTPS
+          local-dir: ./ # Upload everything in the repo
           server-dir: ./ # Change to the path of your Laravel app on your server
           exclude: |
             **/.git*
