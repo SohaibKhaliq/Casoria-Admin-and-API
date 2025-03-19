@@ -49,11 +49,7 @@ class BookingListResource extends JsonResource
                     unset($booking_service['service']);
                     return $booking_service;
                 })
-                : ($this->bookingPackages->isNotEmpty()
-                    ? $this->bookingPackages->flatMap(function ($bookingPackage) {
-                        return (new BookingPackageResource($bookingPackage))->toArray(request())['services'];
-                    })
-                    : []),
+                : [],
             'user_id' => $this->user_id,
             'user_name' => optional($this->user)->full_name ?? default_user_name(),
             'user_profile_image' => optional($this->user)->profile_image ?? default_user_avatar(),
@@ -65,14 +61,9 @@ class BookingListResource extends JsonResource
             'updated_at' => date('D, M Y', strtotime($this->updated_at)),
             'payment' => $this->payment,
             'sumOfServicePrices' => $this->booking_service ? $this->booking_service->sum('service_price') : 0,
-            'sumOfProductPrices' => $this->products ? $this->products->sum('discounted_price') : 0,
             'tax_amount' => $tax_details['total_tax_amount'],
             'total_amount' => (($primaryAmount + ($this->products ? $this->products->sum('discounted_price') : 0) + $tax_details['total_tax_amount'] + ($this->payment ? $this->payment->tip_amount : 0))) - $couponAmount,
             'coupon_amount' => $couponAmount ?? 0,
-            'sumOfPackagesPrices' => $this->bookingPackages ? $this->bookingPackages->sum('package_price') : 0,
-            'packages' => $this->bookingPackages->isNotEmpty()
-                ? BookingPackageResource::collection($this->bookingPackages)
-                : [],
         ];
     }
 }
