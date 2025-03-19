@@ -222,7 +222,7 @@ class ServiceController extends Controller
         $services = Service::where(function ($query) use ($searchQuery) {
             $query->where('name', 'like', '%' . $searchQuery . '%')
                 ->orWhere('description', 'like', '%' . $searchQuery . '%')
-                ->orWhere('category', 'like', '%' . $searchQuery . '%');
+                ->orWhere('category_id', 'like', '%' . $searchQuery . '%');
         })->get();
 
         return response()->json($services);
