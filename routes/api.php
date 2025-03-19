@@ -49,7 +49,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('business/assign/{id}', [BusinessController::class, 'assign_update']);
     Route::apiResource('business', BusinessController::class);
     Route::apiResource('user', UserApiController::class);
-    Route::get('setting', [SettingController::class, 'appConfiguraton']);
+
     Route::apiResource('notifications', NotificationsController::class);
     Route::post('markallasread', [NotificationsController::class, 'markAllAsRead']);
     Route::get('notification-list', [NotificationsController::class, 'notificationList']);
@@ -68,3 +68,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('verify-slot', [BusinessController::class, 'verifySlot']);
     Route::post('app-configuration', [SettingController::class, 'appConfiguraton']);
 });
+
+Route::get('setting', [SettingController::class, 'appConfiguraton']);
