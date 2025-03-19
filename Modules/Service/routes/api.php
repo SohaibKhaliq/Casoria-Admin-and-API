@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Service\Http\Controllers\Backend\API\ServiceController;
 
-Route::get('service-list', [ServiceController::class, 'serviceList']);
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('service-list', [ServiceController::class, 'serviceList']);
     Route::get('service/staff/{id}', [ServiceController::class, 'assign_employee_list']);
     Route::post('service/staff/{id}', [ServiceController::class, 'assign_employee_update']);
 
