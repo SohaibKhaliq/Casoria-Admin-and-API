@@ -5,6 +5,7 @@ namespace Modules\Service\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Employee\Models\BranchEmployee;
 use Modules\Employee\Models\BusinessEmployee;
 
 class ServiceEmployee extends Model
@@ -24,9 +25,14 @@ class ServiceEmployee extends Model
         return $this->belongsTo(User::class, 'employee_id', 'id');
     }
 
+    public function staff()
+    {
+        return $this->belongsTo(User::class, 'employee_id', 'id');
+    }
+
     public function businesses()
     {
-        return $this->hasMany(BusinessEmployee::class, 'employee_id');
+        return $this->hasMany(BranchEmployee::class, 'employee_id');
     }
     public function service()
     {
