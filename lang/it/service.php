@@ -22,7 +22,7 @@ return [
     'service_detail' => 'Dettaglio del Servizio',
     'service_update' => 'Servizio Aggiornato con Successo',
     'service_delete' => 'Servizio Eliminato con Successo',
-    'stff_service' => 'ELENCO_PERSONALE_ASSEGNATO',
+    'stff_service' => 'Elenco dei Servizi per Personale',
     'stff_service_update' => 'Personale del Servizio Aggiornato con Successo',
     'business_service' => 'ELENCO_FILIALI_ASSEGNATE',
     'business_service_update' => 'Azienda del Servizio Aggiornata con Successo',
