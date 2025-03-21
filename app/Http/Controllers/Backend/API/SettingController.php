@@ -7,6 +7,7 @@ use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Modules\Currency\Models\Currency;
+use Modules\Page\Http\Controllers\Backend\PageController;
 
 class SettingController extends Controller
 {
@@ -69,7 +70,7 @@ class SettingController extends Controller
     {
         // Get all settings with correct column names
         $settings = Setting::pluck('val', 'name')->toArray();
-
+        $pages=PageController::index();
         // Fetch currency data
         $currency = Currency::first();
         $currencyData = $currency ? [
@@ -84,10 +85,10 @@ class SettingController extends Controller
 
         // Prepare response
         $response = [
-            'version_code' => isset($settings['version_code']) ? intval($settings['version_code']) : 0,
+            'version_code' => "1.0.0",
+            'pages' => $pages,
             'is_user_authorized' => false,
             'currency' => $currencyData,
-            'otp_login_status' => false,
             'application_language' => app()->getLocale(),
             'status' => true,
             'data' => $settings,  // Send **all** settings
