@@ -227,4 +227,25 @@ class ServiceController extends Controller
 
         return response()->json($services);
     }
+
+    public function getServiceStaff($serviceId)
+    {
+        $staff = ServiceEmployee::with('staff')
+            ->where('service_id', $serviceId)
+            ->get()
+            ->map(function ($data) {
+                return [
+                    'id' => $data->employee_id,
+                    'name' => $data->staff->name,
+                    
+                    'avatar' => $data->staff->avatar,
+                ];
+            });
+
+        if ($staff->isEmpty()) {
+            return response()->json(['status' => false, 'message' => __('service.no_staff_found')], 404);
+        }
+
+        return response()->json(['status' => true, 'data' => $staff, 'message' => __('service staff')], 200);
+    }
 }
