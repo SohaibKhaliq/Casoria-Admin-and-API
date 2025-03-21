@@ -34,7 +34,7 @@ trait AuthTrait
             'last_name' => ['required', 'string', 'max:191'],
             'email' => ['required', 'string', 'email', 'max:191', 'unique:users'],
             'password' => ['required', Rules\Password::defaults()],
-            'mobile' => ['nullable', 'string', 'max:15', 'unique:users'],
+            'mobile' => ['required', 'string', 'max:15', 'unique:users'], // Updated mobile to required
             'gender' => ['nullable'],
         ]);
 
@@ -43,7 +43,7 @@ trait AuthTrait
             'last_name' => $request->last_name,
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
-            'mobile' => $request->mobile,
+            'mobile' => $request->mobile, // Ensure mobile is included
             'gender' => $request->gender ?? null,
             'password' => Hash::make($request->password),
         ];
