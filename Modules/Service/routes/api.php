@@ -20,4 +20,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('service-detail', [ServiceController::class, 'serviceDetails']);
     Route::get('search-service', [ServiceController::class, 'searchServices']);
+    Route::get('service/{id}/staff', [ServiceController::class, 'getServiceStaff']);
 });
