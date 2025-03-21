@@ -19,7 +19,7 @@ use App\Http\Controllers\Backend\API\UserApiController;
 */
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use Modules\Page\Http\Controllers\Backend\PageController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -67,6 +67,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('verify-slot', [BusinessController::class, 'verifySlot']);
     Route::post('app-configuration', [SettingController::class, 'appConfiguraton']);
+    Route::get('pages', [PageController::class, 'index']);
 });
 
 Route::get('setting', [SettingController::class, 'appConfiguraton']);
