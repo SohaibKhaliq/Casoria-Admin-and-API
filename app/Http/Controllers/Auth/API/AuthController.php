@@ -9,7 +9,7 @@ use App\Http\Resources\LoginResource;
 use App\Http\Resources\RegisterResource;
 use App\Http\Resources\SocialLoginResource;
 use App\Models\User;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -26,6 +26,7 @@ class AuthController extends Controller
             'last_name' => 'required|string|max:191',
             'email' => 'required|string|email|max:191|unique:users',
             'password' => 'required|string|min:8',
+            'mobile' => 'required|string|max:15|unique:users', // Added mobile as required
         ]);
 
         if ($validator->fails()) {
@@ -271,7 +272,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user = \Auth::user();
+        $user = Auth::user();
         $user_id = ! empty($request->id) ? $request->id : $user->id;
         $user = User::where('id', $user_id)->first();
         if ($user == '') {
@@ -339,7 +340,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user = \Auth::user();
+        $user = Auth::user();
         if ($request->has('id') && ! empty($request->id)) {
             $user = User::where('id', $request->id)->first();
         }
@@ -385,7 +386,7 @@ class AuthController extends Controller
 
     public function deleteAccount(Request $request)
     {
-        $user_id = \Auth::user()->id;
+        $user_id = Auth::user()->id;
         $user = User::where('id', $user_id)->first();
         if ($user == null) {
             $message = __('messages.user_not_found');
