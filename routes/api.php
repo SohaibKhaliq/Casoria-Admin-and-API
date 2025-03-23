@@ -27,10 +27,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
-    Route::post('login', 'login');
+    // Route::post('login', 'login');
     Route::post('social-login', 'socialLogin');
     Route::post('forgot-password', 'forgotPassword');
     Route::get('logout', 'logout');
+    Route::post('login', 'mobileLogin'); // New route for mobile login
 });
 
 
