@@ -270,10 +270,6 @@ class BookingsController extends Controller
             $this->storeApiUserPackage($booking->id);
         }
 
-
-
-
-
         //service
         if (!empty($request->services)) {
             $this->updateBookingService($request->services, $booking->id);
@@ -599,12 +595,12 @@ class BookingsController extends Controller
     public function storeInQueue(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'date' => 'required|date_format:d/m/Y',
-            'time' => 'required|date_format:h:i A',
-            'duration' => 'required|integer|min:1', // Duration in minutes
-            'user_id' => 'sometimes|integer|exists:users,id',
+            'user_id' => 'required|integer|exists:users,id',
+            'business_id' => 'required|integer|exists:businesses,id',
             'services' => 'sometimes|array',
             'services.*.service_id' => 'required_with:services|integer|exists:services,id',
+            'employee_id' => 'required|integer|exists:users,id',
+            'start_date_time' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         if ($validator->fails()) {
@@ -615,10 +611,10 @@ class BookingsController extends Controller
             ], 422);
         }
 
-        $startDateTime = Carbon::createFromFormat('d/m/Y h:i A', $request->date . ' ' . $request->time);
-        $endDateTime = $startDateTime->copy()->addMinutes($request->duration);
+        $startDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
+        $service = Service::where('id', $request->service_id)->first();
+        $endDateTime = $startDateTime->copy()->addMinutes($service->duration_min);
 
-        // Save the booking with queue_status = 'in_queue'
         $data = $request->all();
         $data['start_date_time'] = $startDateTime;
         $data['end_date_time'] = $endDateTime;
@@ -627,10 +623,20 @@ class BookingsController extends Controller
 
         $booking = Booking::create($data);
 
+        $message = 'New ' . Str::singular($this->module_title) . ' Added to Queue';
+        try {
+            $type = 'queue_booking';
+            $messageTemplate = 'Booking #[[booking_id]] has been added to the queue.';
+            $notify_message = str_replace('[[booking_id]]', $booking->id, $messageTemplate);
+            $this->sendNotificationOnBookingUpdate($type, $notify_message, $booking);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
+
         return response()->json([
+            'message' => $message,
             'status' => true,
-            'message' => 'Booking added to the queue successfully.',
-            'data' => $booking,
+            'booking_id' => $booking->id,
         ], 201);
     }
 }
