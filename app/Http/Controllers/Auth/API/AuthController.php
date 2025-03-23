@@ -58,7 +58,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
+            'mobile' => 'required|string', // Changed from 'email' to 'mobile'
             'password' => 'required|string',
         ]);
 
@@ -70,11 +70,11 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user = User::withTrashed()->where('email', $request->input('email'))->first();
+        $user = User::withTrashed()->where('mobile', $request->input('mobile'))->first(); // Changed from 'email' to 'mobile'
         if ($user == null) {
             return response()->json(['status' => false, 'message' => __('messages.register_before_login')]);
         }
-        if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
+        if (Auth::attempt(['mobile' => request('mobile'), 'password' => request('password')])) { // Changed from 'email' to 'mobile'
             $user = Auth::user();
 
             if ($user->is_banned == 1 || $user->status == 0) {
@@ -94,7 +94,6 @@ class AuthController extends Controller
 
             return $this->sendResponse($loginResource, $message);
         }
-        // $user = User::withTrashed()->where('id', (int)$request->input('user_id'))->first();
         $is_user_authorized = false;
 
         if (! empty($user)) {
@@ -107,58 +106,33 @@ class AuthController extends Controller
             return $this->sendError(__('messages.not_matched'), ['error' => __('messages.unauthorised')], 200);
         }
     }
-    // public function login(LoginRequest $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'email' => 'required|string|email',
-    //         'password' => 'required|string',
-    //     ]);
 
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'Validation Error',
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
+    public function mobileLogin(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|string',
+            'password' => 'required|string',
+        ]);
 
-    //     $user = User::withTrashed()->where('email', $request->input('email'))->first();
-    //     if ($user == null) {
-    //         return response()->json(['status' => false, 'message' => __('messages.register_before_login')]);
-    //     }
-    //     if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
-    //         $user = Auth::user();
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
 
-    //         if ($user->is_banned == 1 || $user->status == 0) {
-    //             return response()->json(['status' => false, 'message' => __('messages.login_error')]);
-    //         }
+        $credentials = ['mobile' => $request->mobile, 'password' => $request->password];
 
-    //         // Save the user
-    //         $user->save();
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $token = $user->createToken('authToken')->plainTextToken;
 
-    //         if (! $user->hasRole('user')) {
-    //             return $this->sendError(__('messages.role_not_matched'), ['error' => __('messages.unauthorised')], 200);
-    //         }
-    //         $user['api_token'] = $user->createToken(setting('app_name'))->plainTextToken;
+            return response()->json([
+                'message' => 'Login successful',
+                'user' => $user,
+                'token' => $token,
+            ], 200);
+        }
 
-    //         $loginResource = new LoginResource($user);
-    //         $message = __('messages.user_login');
-
-    //         return $this->sendResponse($loginResource, $message);
-    //     }
-    //     // $user = User::withTrashed()->where('id', (int)$request->input('user_id'))->first();
-    //     $is_user_authorized = false;
-
-    //     if (! empty($user)) {
-    //         if ($user->status === 0) {
-    //             $is_user_authorized = false;
-    //         } elseif ($user->status === 1) {
-    //             $is_user_authorized = ! $user->trashed();
-    //         }
-    //     } else {
-    //         return $this->sendError(__('messages.not_matched'), ['error' => __('messages.unauthorised')], 200);
-    //     }
-    // }
+        return response()->json(['error' => 'Invalid credentials'], 401);
+    }
 
     public function socialLogin(Request $request)
     {
