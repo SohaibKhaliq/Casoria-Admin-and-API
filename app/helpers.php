@@ -60,14 +60,14 @@ function sendNotification($data)
                 $data['service_price'] = $booking['service_price'];
                 $data['serviceAmount'] = $booking['serviceAmount'];
                 // $data['services_total_amount'] = $data['services_total_amount'];
-                $data['product_name'] = $booking['product_name'];
-                $data['product_price'] = $booking['product_price'];
-                $data['product_qty'] = $booking['product_qty'];
+                // $data['product_name'] = $booking['product_name'];
+                // $data['product_price'] = $booking['product_price'];
+                // $data['product_qty'] = $booking['product_qty'];
                 $data['business_name'] = $booking['business_name'];
                 $data['business_number'] = $booking['business_number'];
                 $data['business_email'] = $booking['business_email'];
                 // $data['product_amount'] = $data['product_amount'];
-                $data['tip_amount'] = $booking['tip_amount'];
+                // $data['tip_amount'] = $booking['tip_amount'];
                 $data['tax_amount'] = $booking['tax_amount'];
                 $data['grand_total'] = $booking['grand_total'];
                 $data['discount'] = $booking['coupon_discount'];
@@ -76,7 +76,7 @@ function sendNotification($data)
 
                 if ($data['type'] == 'complete_booking') {
                     $data['extra']['services'] = $booking['extra']['services'];
-                    $data['extra']['products'] = $booking['extra']['products'];
+                    // $data['extra']['products'] = $booking['extra']['products'];
                     $data['extra']['detail'] = $booking['extra']['detail'];
                 }
                 unset($data['booking']);
