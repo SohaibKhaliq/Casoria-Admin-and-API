@@ -237,9 +237,9 @@ class ServiceController extends Controller
                 return [
                     'id' => $data->employee_id,
                     'name' => $data->staff->name,
-                    
-                    'avatar' => $data->staff->avatar,
+                    'avatar' => $data->staff->profile_image,
                 ];
+                return $data;
             });
 
         if ($staff->isEmpty()) {
