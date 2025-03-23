@@ -30,6 +30,7 @@ class BookingsController extends Controller
 {
     use BookingTrait;
     use PaymentTrait;
+    protected $module_title;
     public function __construct()
     {
         // Page Title
