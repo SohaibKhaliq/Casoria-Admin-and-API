@@ -236,10 +236,10 @@ class ServiceController extends Controller
             ->map(function ($data) {
                 return [
                     'id' => $data->employee_id,
-                    'name' => $data->staff->name,
+                    'name' => $data->staff->first_name.' '.$data->staff->last_name,
                     'avatar' => $data->staff->profile_image,
                 ];
-                return $data;
+                // return $data;
             });
 
         if ($staff->isEmpty()) {
