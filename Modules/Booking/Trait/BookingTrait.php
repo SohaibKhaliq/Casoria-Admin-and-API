@@ -355,24 +355,24 @@ trait BookingTrait
             'service_price' => isset($booking->services[0]['service_price']) ? $booking->services[0]['service_price'] : 0,
             'serviceAmount' => $booking->detail['serviceAmount'] ?? 0,
             // 'services_total_amount' =>$booking->services->sum('service_price'),
-            'product_name' => implode(', ', $booking->products->pluck('product_name')->toArray()),
-            'product_price' => isset($booking->products[0]['product_price']) ? $booking->products[0]['product_price'] : 0,
-            'product_qty' => isset($booking->products[0]['product_qty']) ? $booking->products[0]['product_qty'] : 0,
+            // 'product_name' => implode(', ', $booking->products->pluck('product_name')->toArray()),
+            // 'product_price' => isset($booking->products[0]['product_price']) ? $booking->products[0]['product_price'] : 0,
+            // 'product_qty' => isset($booking->products[0]['product_qty']) ? $booking->products[0]['product_qty'] : 0,
             // 'product_amount' => isset($booking->products[0]['product_amount']) ? $booking->products[0]['product_amount'] : 0,
             'name' => implode(', ', $booking->packages->pluck('name')->toArray()),
             'business_name' => optional($booking->business)->name ?? default_user_name(),
             'business_number' => optional($booking->business)->contact_number ?? default_user_name(),
             'business_email' => optional($booking->business)->contact_email ?? default_user_name(),
 
-            'package_price' => isset($booking->packages[0]['package_price']) ? $booking->packages[0]['package_price'] : 0,
-            'tip_amount' => optional($booking->payment)->tip_amount ?? 'default_value',
+            // 'package_price' => isset($booking->packages[0]['package_price']) ? $booking->packages[0]['package_price'] : 0,
+            // 'tip_amount' => optional($booking->payment)->tip_amount ?? 'default_value',
             'tax_amount' => $booking->detail['tax_amount'] ?? 0,
             'grand_total' => $booking->detail['grand_total'] ?? 0,
-            'coupon_discount' => $booking->userCouponRedeem['discount'] ?? 0,
+            // 'coupon_discount' => $booking->userCouponRedeem['discount'] ?? 0,
             'extra' => [
                 'services' => $booking->services ? $booking->services->toArray() : [],
-                'products' => $booking->products ? $booking->products->toArray() : [],
-                'packages' => $booking->packages ? $booking->packages->toArray() : [],
+                // 'products' => $booking->products ? $booking->products->toArray() : [],
+                // 'packages' => $booking->packages ? $booking->packages->toArray() : [],
                 'detail' => $booking->detail ? $booking->detail : []
             ]
         ];
