@@ -201,14 +201,6 @@
                 width: '10%'
             },
             {
-                data: 'packages',
-                name: 'packages',
-                title: "{{ __('booking.lbl_packages') }}",
-                orderable: false,
-                searchable: false,
-                width: '10%'
-            },
-            {
                 data: 'updated_at',
                 name: 'updated_at',
                 title: "{{ __('booking.lbl_update_at') }}",
