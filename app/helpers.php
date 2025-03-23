@@ -7,130 +7,136 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-function randomString($length)
-{
-    $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    $token = substr(str_shuffle($chars), 0, $length);
+if (!function_exists('randomString')) {
+    function randomString($length)
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $token = substr(str_shuffle($chars), 0, $length);
 
-    return $token;
+        return $token;
+    }
 }
 
-function mail_footer($type, $notify_message)
-{
-    return [
-        'notification_type' => $type,
-        'notification_message' => $notify_message,
-        'logged_in_user_fullname' => auth()->user() ? auth()->user()->full_name ?? default_user_name() : '',
-        'logged_in_user_role' => auth()->user() ? auth()->user()->getRoleNames()->first()->name ?? '-' : '',
-        'company_name' => setting('app_name'),
-        'company_contact_info' => implode('', [
-            setting('helpline_number').PHP_EOL,
-            setting('inquriy_email'),
-        ]),
-    ];
+
+if (!function_exists('mail_footer')) {
+    function mail_footer($type, $notify_message)
+    {
+        return [
+            'notification_type' => $type,
+            'notification_message' => $notify_message,
+            'logged_in_user_fullname' => auth()->user() ? auth()->user()->full_name ?? default_user_name() : '',
+            'logged_in_user_role' => auth()->user() ? auth()->user()->getRoleNames()->first()->name ?? '-' : '',
+            'company_name' => setting('app_name'),
+            'company_contact_info' => implode('', [
+                setting('helpline_number') . PHP_EOL,
+                setting('inquriy_email'),
+            ]),
+        ];
+    }
 }
+if (!function_exists('sendNotification')) {
+    function sendNotification($data)
+    {
+        $mailable = \Modules\NotificationTemplate\Models\NotificationTemplate::where('type', $data['notification_type'])->with('defaultNotificationTemplateMap')->first();
+        if ($mailable != null && $mailable->to != null) {
+            $mails = json_decode($mailable->to);
 
-function sendNotification($data)
-{
-    $mailable = \Modules\NotificationTemplate\Models\NotificationTemplate::where('type', $data['notification_type'])->with('defaultNotificationTemplateMap')->first();
-    if ($mailable != null && $mailable->to != null) {
-        $mails = json_decode($mailable->to);
+            foreach ($mails as $key => $mailTo) {
+                $data['type'] = $data['notification_type'];
+                $booking = isset($data['booking']) ? $data['booking'] : null;
+                $order = isset($data['order']) ? $data['order'] : null;
+                if (isset($booking) && $booking != null) {
+                    $data['id'] = $booking['id'];
+                    // $data['logo'] = $booking['logo'];
+                    $data['description'] = $booking['description'];
+                    $data['user_id'] = $booking['user_id'];
+                    $data['user_name'] = $booking['user_name'];
+                    $data['employee_id'] = $booking['employee_id'];
+                    $data['employee_name'] = $booking['employee_name'];
+                    $data['booking_date'] = $booking['booking_date'];
+                    $data['booking_time'] = $booking['booking_time'];
+                    $data['booking_duration'] = $booking['booking_duration'];
+                    $data['venue_address'] = $booking['venue_address'];
+                    $data['notification_group'] = 'booking';
+                    $data['email'] = $booking['email'];
+                    $data['mobile'] = $booking['mobile'];
+                    $data['transaction_type'] = $booking['transaction_type'];
+                    $data['service_name'] = $booking['service_name'];
+                    $data['service_price'] = $booking['service_price'];
+                    $data['serviceAmount'] = $booking['serviceAmount'];
+                    // $data['services_total_amount'] = $data['services_total_amount'];
+                    // $data['product_name'] = $booking['product_name'];
+                    // $data['product_price'] = $booking['product_price'];
+                    // $data['product_qty'] = $booking['product_qty'];
+                    $data['business_name'] = $booking['business_name'];
+                    $data['business_number'] = $booking['business_number'];
+                    $data['business_email'] = $booking['business_email'];
+                    // $data['product_amount'] = $data['product_amount'];
+                    // $data['tip_amount'] = $booking['tip_amount'];
+                    $data['tax_amount'] = $booking['tax_amount'];
+                    $data['grand_total'] = $booking['grand_total'];
+                    $data['discount'] = $booking['coupon_discount'];
 
-        foreach ($mails as $key => $mailTo) {
-            $data['type'] = $data['notification_type'];
-            $booking = isset($data['booking']) ? $data['booking'] : null;
-            $order = isset($data['order']) ? $data['order'] : null;
-            if (isset($booking) && $booking != null) {
-                $data['id'] = $booking['id'];
-                // $data['logo'] = $booking['logo'];
-                $data['description'] = $booking['description'];
-                $data['user_id'] = $booking['user_id'];
-                $data['user_name'] = $booking['user_name'];
-                $data['employee_id'] = $booking['employee_id'];
-                $data['employee_name'] = $booking['employee_name'];
-                $data['booking_date'] = $booking['booking_date'];
-                $data['booking_time'] = $booking['booking_time'];
-                $data['booking_duration'] = $booking['booking_duration'];
-                $data['venue_address'] = $booking['venue_address'];
-                $data['notification_group'] = 'booking';
-                $data['email'] = $booking['email'];
-                $data['mobile'] = $booking['mobile'];
-                $data['transaction_type'] = $booking['transaction_type'];
-                $data['service_name'] = $booking['service_name'];
-                $data['service_price'] = $booking['service_price'];
-                $data['serviceAmount'] = $booking['serviceAmount'];
-                // $data['services_total_amount'] = $data['services_total_amount'];
-                // $data['product_name'] = $booking['product_name'];
-                // $data['product_price'] = $booking['product_price'];
-                // $data['product_qty'] = $booking['product_qty'];
-                $data['business_name'] = $booking['business_name'];
-                $data['business_number'] = $booking['business_number'];
-                $data['business_email'] = $booking['business_email'];
-                // $data['product_amount'] = $data['product_amount'];
-                // $data['tip_amount'] = $booking['tip_amount'];
-                $data['tax_amount'] = $booking['tax_amount'];
-                $data['grand_total'] = $booking['grand_total'];
-                $data['discount'] = $booking['coupon_discount'];
+                    $data['site_url'] = env('APP_URL');
 
-                $data['site_url'] = env('APP_URL');
-
-                if ($data['type'] == 'complete_booking') {
-                    $data['extra']['services'] = $booking['extra']['services'];
-                    // $data['extra']['products'] = $booking['extra']['products'];
-                    $data['extra']['detail'] = $booking['extra']['detail'];
-                }
-                unset($data['booking']);
-            } elseif (isset($order) && $order != null) {
-                $data['notification_group'] = 'shop';
-                $data['id'] = $order['id'];
-                $data['user_id'] = $order['user_id'];
-                $data['order_code'] = $order['order_code'];
-                $data['user_name'] = $order['user_name'];
-                $data['order_date'] = $order['order_date'];
-                $data['order_time'] = $order['order_time'];
-                $data['site_url'] = env('APP_URL');
-                unset($data['order']);
-            }
-
-            switch ($mailTo) {
-                case 'admin':
-
-                    $admin = \App\Models\User::role('admin')->first();
-
-                    if (isset($admin->email)) {
-                        try {
-                            $admin->notify(new \App\Notifications\CommonNotification($data['notification_type'], $data));
-                        } catch (\Exception $e) {
-                            Log::error($e);
-                        }
+                    if ($data['type'] == 'complete_booking') {
+                        $data['extra']['services'] = $booking['extra']['services'];
+                        // $data['extra']['products'] = $booking['extra']['products'];
+                        $data['extra']['detail'] = $booking['extra']['detail'];
                     }
+                    unset($data['booking']);
+                } elseif (isset($order) && $order != null) {
+                    $data['notification_group'] = 'shop';
+                    $data['id'] = $order['id'];
+                    $data['user_id'] = $order['user_id'];
+                    $data['order_code'] = $order['order_code'];
+                    $data['user_name'] = $order['user_name'];
+                    $data['order_date'] = $order['order_date'];
+                    $data['order_time'] = $order['order_time'];
+                    $data['site_url'] = env('APP_URL');
+                    unset($data['order']);
+                }
 
-                    break;
+                switch ($mailTo) {
+                    case 'admin':
 
-                case 'manager':
-                    if (isset($data['employee_id']) && $data['employee_id'] != '') {
-                        $employee = \App\Models\User::find($data['employee_id']);
-                        if (isset($employee->email)) {
+                        $admin = \App\Models\User::role('admin')->first();
+
+                        if (isset($admin->email)) {
                             try {
-                                $employee->notify(new \App\Notifications\CommonNotification($data['notification_type'], $data));
+                                $admin->notify(new \App\Notifications\CommonNotification($data['notification_type'], $data));
                             } catch (\Exception $e) {
                                 Log::error($e);
                             }
                         }
-                    }
 
-                    break;
+                        break;
 
-                case 'user':
-                    if (isset($data['user_id'])) {
-                        $user = \App\Models\User::find($data['user_id']);
-                        try {
-                            $user->notify(new \App\Notifications\CommonNotification($data['notification_type'], $data));
-                        } catch (\Exception $e) {
-                            Log::error($e);
+                    case 'manager':
+                        if (isset($data['employee_id']) && $data['employee_id'] != '') {
+                            $employee = \App\Models\User::find($data['employee_id']);
+                            if (isset($employee->email)) {
+                                try {
+                                    $employee->notify(new \App\Notifications\CommonNotification($data['notification_type'], $data));
+                                } catch (\Exception $e) {
+                                    Log::error($e);
+                                }
+                            }
                         }
-                    }
-                    break;
+
+                        break;
+
+                    case 'user':
+                        if (isset($data['user_id'])) {
+                            $user = \App\Models\User::find($data['user_id']);
+                            try {
+                                $user->notify(new \App\Notifications\CommonNotification($data['notification_type'], $data));
+                            } catch (\Exception $e) {
+                                Log::error($e);
+                            }
+                        }
+                        break;
+                }
             }
         }
     }
@@ -142,10 +148,10 @@ function fcm($fields)
     $projectID = $otherSetting->val ?? null;
     $access_token = getAccessToken();
     $headers = [
-        'Authorization: Bearer '.$access_token,
+        'Authorization: Bearer ' . $access_token,
         'Content-Type: application/json',
     ];
-    $ch = curl_init('https://fcm.googleapis.com/v1/projects/'.$projectID.'/messages:send');
+    $ch = curl_init('https://fcm.googleapis.com/v1/projects/' . $projectID . '/messages:send');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -158,7 +164,7 @@ function fcm($fields)
 function getAccessToken()
 {
     $directory = storage_path('app/data');
-    $credentialsFiles = File::glob($directory.'/*.json');
+    $credentialsFiles = File::glob($directory . '/*.json');
     if (empty($credentialsFiles)) {
         throw new Exception('No JSON credentials found in the specified directory.');
     }
@@ -206,7 +212,7 @@ function dateAgo($date, $type2 = '')
         return $diff_time;
     }
 
-    return $diff_time1.' on '.$diff_time;
+    return $diff_time1 . ' on ' . $diff_time;
 }
 
 function customDate($date, $format = 'd-m-Y h:i A')
@@ -261,8 +267,8 @@ function formatOffset($offset)
         $sign = ' ';
     }
 
-    return 'GMT'.$sign.str_pad($hour, 2, '0', STR_PAD_LEFT)
-        .':'.str_pad($minutes, 2, '0');
+    return 'GMT' . $sign . str_pad($hour, 2, '0', STR_PAD_LEFT)
+        . ':' . str_pad($minutes, 2, '0');
 }
 
 function timeZoneList()
@@ -287,7 +293,7 @@ function timeZoneList()
     array_multisort($offset, SORT_ASC, $data);
     $options = [];
     foreach ($data as $key => $row) {
-        $options[$row['timezone_id']] = $row['time'].' - '.formatOffset($row['offset']).' '.$row['timezone_id'];
+        $options[$row['timezone_id']] = $row['time'] . ' - ' . formatOffset($row['offset']) . ' ' . $row['timezone_id'];
     }
 
     return $options;
@@ -313,11 +319,11 @@ if (! function_exists('app_name')) {
 if (! function_exists('default_user_avatar')) {
     function default_user_avatar()
     {
-        return asset(config('app.avatar_base_path').'avatar.png');
+        return asset(config('app.avatar_base_path') . 'avatar.png');
     }
     function default_user_name()
     {
-        return env('APP_NAME').' User';
+        return env('APP_NAME') . ' User';
     }
 }
 if (! function_exists('user_avatar')) {
@@ -326,7 +332,7 @@ if (! function_exists('user_avatar')) {
         if (auth()->user()->profile_image ?? null) {
             return auth()->user()->profile_image;
         } else {
-            return asset(config('app.avatar_base_path').'avatar.png');
+            return asset(config('app.avatar_base_path') . 'avatar.png');
         }
     }
 }
@@ -334,21 +340,21 @@ if (! function_exists('user_avatar')) {
 if (! function_exists('default_feature_image')) {
     function default_feature_image()
     {
-        return asset(config('app.image_path').'default.png');
+        return asset(config('app.image_path') . 'default.png');
     }
 }
 
 if (! function_exists('product_feature_image')) {
     function product_feature_image()
     {
-        return asset(config('app.image_path').'default2.png');
+        return asset(config('app.image_path') . 'default2.png');
     }
 }
 
 if (! function_exists('promotion_image')) {
     function promotion_image()
     {
-        return asset(config('app.image_path').'No_Image_Available.png');
+        return asset(config('app.image_path') . 'No_Image_Available.png');
     }
 }
 /*
@@ -448,10 +454,10 @@ if (! function_exists('show_column_value')) {
             $img_path = asset($value);
 
             $return_text = '<figure class="figure">
-                                <a href="'.$img_path.'" data-lightbox="image-set" data-title="Path: '.$value.'">
-                                    <img src="'.$img_path.'" style="max-width:200px;" class="figure-img img-fluid rounded img-thumbnail" alt="">
+                                <a href="' . $img_path . '" data-lightbox="image-set" data-title="Path: ' . $value . '">
+                                    <img src="' . $img_path . '" style="max-width:200px;" class="figure-img img-fluid rounded img-thumbnail" alt="">
                                 </a>
-                                <figcaption class="figure-caption">Path: '.$value.'</figcaption>
+                                <figcaption class="figure-caption">Path: ' . $value . '</figcaption>
                             </figure>';
         } else {
             $return_text = $value;
@@ -523,7 +529,7 @@ if (! function_exists('humanFilesize')) {
             $i++;
         }
 
-        return round($size, $precision).$units[$i];
+        return round($size, $precision) . $units[$i];
     }
 }
 
@@ -609,7 +615,7 @@ if (! function_exists('icon')) {
      */
     function icon($string = 'fas fa-check')
     {
-        $return_string = "<i class='".$string."'></i>";
+        $return_string = "<i class='" . $string . "'></i>";
 
         return $return_string;
     }
@@ -777,14 +783,14 @@ function formatCurrency($number, $noOfDecimal, $decimalSeparator, $thousandSepar
         $currencyString .= $integerPart;
         // Add decimal part and decimal separator if applicable
         if ($noOfDecimal > 0) {
-            $currencyString .= $decimalSeparator.$decimalPart;
+            $currencyString .= $decimalSeparator . $decimalPart;
         }
     }
 
     if ($currencyPosition == 'right' || $currencyPosition == 'right_with_space') {
         // Add decimal part and decimal separator if applicable
         if ($noOfDecimal > 0) {
-            $currencyString .= $integerPart.$decimalSeparator.$decimalPart;
+            $currencyString .= $integerPart . $decimalSeparator . $decimalPart;
         }
         if ($currencyPosition == 'right_with_space') {
             $currencyString .= ' ';
