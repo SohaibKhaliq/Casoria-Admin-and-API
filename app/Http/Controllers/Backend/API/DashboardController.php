@@ -18,6 +18,7 @@ use Modules\Service\Transformers\ServiceResource;
 use Modules\Slider\Models\Slider;
 use Modules\Slider\Transformers\SliderResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -36,12 +37,12 @@ class DashboardController extends Controller
             ->select('id', 'business_id');
 
         // Log the query for debugging
-        \Log::info($pendingBookingQuery->toSql());
+        Log::info($pendingBookingQuery->toSql());
 
         $pendingBooking = $pendingBookingQuery->get();
 
         // Log the results for debugging
-        \Log::info($pendingBooking);
+        Log::info($pendingBooking);
 
         // Get all businesses with selected fields
         $businesses = Business::with('address', 'businessHours')
