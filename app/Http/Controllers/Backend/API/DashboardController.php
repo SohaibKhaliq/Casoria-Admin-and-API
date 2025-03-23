@@ -177,4 +177,26 @@ class DashboardController extends Controller
             'message' => __('messages.gallery_notfound'),
         ], 404);
     }
+
+    public function activeBookings()
+    {
+        $user = Auth::user();
+
+        // Fetch active bookings for the authenticated user
+        $activeBookings = Booking::where('user_id', $user->id)
+            ->where('status', 'pending') // Assuming 'pending' is the status for active bookings
+            ->with([
+                'business:id,name',
+                'services' => function ($query) {
+                    $query->select('services.id', 'services.name'); // Changed 'service_name' to 'name'
+                }
+            ])
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $activeBookings,
+            'message' => __('messages.active_bookings_retrieved'),
+        ], 200);
+    }
 }
