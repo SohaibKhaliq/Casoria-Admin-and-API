@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('verify-slot', [BusinessController::class, 'verifySlot']);
     Route::post('app-configuration', [SettingController::class, 'appConfiguraton']);
     Route::get('pages', [PageController::class, 'index']);
+    Route::get('active-bookings', [DashboardController::class, 'activeBookings']); // New route for active bookings
 });
 
 Route::get('setting', [SettingController::class, 'appConfiguraton']);
