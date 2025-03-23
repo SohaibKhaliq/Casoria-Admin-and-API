@@ -3,6 +3,7 @@
 namespace Modules\Booking\Http\Controllers\Backend\API;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -10,6 +11,7 @@ use Modules\Booking\Models\Booking;
 use Modules\Booking\Models\BookingService;
 use Modules\Booking\Trait\BookingTrait;
 use Modules\Booking\Trait\PaymentTrait;
+use Illuminate\Support\Facades\Auth;
 use Modules\Booking\Transformers\BookingDetailResource;
 use Modules\Booking\Transformers\BookingPackageDetailResource;
 use Modules\Booking\Transformers\BookingListResource;
@@ -209,7 +211,7 @@ class BookingsController extends Controller
             $notify_message = str_replace('[[booking_id]]', $booking->id, $messageTemplate);
             $this->sendNotificationOnBookingUpdate($type, $notify_message, $booking);
         } catch (\Exception $e) {
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
         }
 
         return response()->json(['message' => $message, 'status' => true, 'booking_id' => $booking->id], 200);
@@ -234,7 +236,7 @@ class BookingsController extends Controller
 
             if (!empty($request->packages)) {
 
-                $this->updateAPIBookingPackage($request->packages, $booking->id, $request->employee_id);
+                $this->updateAPIBookingPackage($request->packages, $booking->id, $request->employee_id, $request->user_id);
             }
             if (!empty($request->services)) {
                 $this->updateBookingService($request->services, $booking->id);
@@ -279,7 +281,7 @@ class BookingsController extends Controller
             try {
                 $this->sendNotificationOnBookingUpdate($notify_type, '', $booking);
             } catch (\Exception $e) {
-                \Log::error($e->getMessage());
+                Log::error($e->getMessage());
             }
         }
 
@@ -290,7 +292,7 @@ class BookingsController extends Controller
 
     public function bookingList(Request $request)
     {
-        $user = \Auth::user();
+        $user = Auth::user();
 
         $booking = Booking::where('user_id', $user->id)->with('booking_service', 'bookingTransaction', 'bookingPackages.bookedPackageService');
 
@@ -448,7 +450,7 @@ class BookingsController extends Controller
 
         if (!empty($request->packages)) {
 
-            $this->updateAPIBookingPackage($request->packages, $booking->id, $request->employee_id);
+            $this->updateAPIBookingPackage($request->packages, $booking->id, $request->employee_id,$request->user_id);
         }
         $this->updateBookingService($bookingService, $booking->id);
 

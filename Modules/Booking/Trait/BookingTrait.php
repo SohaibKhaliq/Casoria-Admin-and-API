@@ -100,14 +100,12 @@ trait BookingTrait
     }
 
 
-    public function updateAPIBookingPackage($data, $booking_id, $employee_id, $user_id, $is_reclaim)
+    public function updateAPIBookingPackage($data, $booking_id, $employee_id, $user_id)
     {
 
         $packageData = collect($data);
 
         $packageId = $packageData->pluck('id')->toArray();
-        $is_reclaim = filter_var($is_reclaim, FILTER_VALIDATE_BOOLEAN);
-
         $bookingPackage = BookingPackages::where('booking_id', $booking_id);
         if (count($packageId) > 0) {
             $bookingPackage = $bookingPackage->whereNotIn('package_id', $packageId);
