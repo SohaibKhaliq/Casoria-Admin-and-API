@@ -41,6 +41,60 @@ class BookingsController extends Controller
         $this->module_title = 'Bookings';
     }
 
+    // function to get all of the bookings of authenticated user
+    public function index(Request $request)
+    {
+        $user = Auth::user();
+        $bookings = Booking::where('user_id', $user->id)->with('booking_service');
+
+        if ($request->has('status') && isset($request->status)) {
+            $status = explode(',', $request->status);
+            $bookings->whereIn('status', $status);
+        }
+
+        if ($request->has('business_id') && !empty($request->business_id)) {
+            $bookings->where('business_id', $request->business_id);
+        }
+
+        $per_page = $request->input('per_page', 10);
+        if ($request->has('per_page') && !empty($request->per_page)) {
+            if (is_numeric($request->per_page)) {
+                $per_page = $request->per_page;
+            }
+            if ($request->per_page === 'all') {
+                $per_page = $bookings->count();
+            }
+        }
+
+        $orderBy = 'desc';
+        if ($request->has('order_by') && !empty($request->order_by)) {
+            $orderBy = $request->order_by;
+        }
+
+        // Apply search conditions for booking ID, employee name, and service name
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $bookings->where(function ($query) use ($search) {
+                $query->where('id', 'LIKE', "%$search%")
+                    ->orWhereHas('services', function ($subquery) use ($search) {
+                        $subquery->whereHas('employee', function ($employeeQuery) use ($search) {
+                            $employeeQuery->where(function ($nameQuery) use ($search) {
+                                $nameQuery->where('first_name', 'LIKE', "%$search%")
+                                    ->orWhere('last_name', 'LIKE', "%$search%");
+                            });
+                        });
+                    })
+                    ->orWhereHas('services', function ($subquery) use ($search) {
+                        $subquery->whereHas('service', function ($employeeQuery) use ($search) {
+                            $employeeQuery->where('name', 'LIKE', "%$search%");
+                        });
+                    });
+            });
+        }
+
+        $bookings = $bookings->orderBy('updated_at', $orderBy)->paginate($per_page);
+        return $bookings;
+    }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
