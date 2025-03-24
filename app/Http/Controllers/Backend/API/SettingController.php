@@ -10,6 +10,8 @@ use Modules\Currency\Models\Currency;
 use Modules\Page\Http\Controllers\Backend\PageController;
 use Illuminate\Support\Facades\Log;
 
+use function PHPUnit\Framework\returnSelf;
+
 class SettingController extends Controller
 {
     // public function appConfiguraton(Request $request)
@@ -71,6 +73,16 @@ class SettingController extends Controller
     {
         // Get all settings with correct column names
         $settings = Setting::pluck('val', 'name')->toArray();
+        $address = implode(', ', array_filter([
+            $settings['bussiness_address_line_1'] ?? null,
+            $settings['bussiness_address_line_2'] ?? null,
+            $settings['bussiness_address_city'] ?? null,
+            $settings['bussiness_address_state'] ?? null,
+            $settings['bussiness_address_country'] ?? null,
+            $settings['bussiness_address_postal_code'] ?? null,
+        ]));
+
+
         $pagesResponse = PageController::index();
 
         if (!$pagesResponse instanceof \Illuminate\Http\JsonResponse) {
@@ -108,7 +120,6 @@ class SettingController extends Controller
             'thousand_separator' => $currency->thousand_separator,
             'decimal_separator' => $currency->decimal_separator,
         ] : null;
-
         // get all except mail_driver,mail_host, mail_port, mail_username, mail_password, mail_encryption, mail_from_address, mail_from_name
         $settings = collect($settings)->except([
             'mail_driver',
@@ -118,7 +129,13 @@ class SettingController extends Controller
             'mail_password',
             'mail_encryption',
             'mail_from_address',
-            'mail_from_name'
+            'mail_from_name',
+            'bussiness_address_line_1',
+            'bussiness_address_line_2',
+            'bussiness_address_city',
+            'bussiness_address_state',
+            'bussiness_address_country',
+            'bussiness_address_postal_code',
         ]);
         // Prepare response
         $response = [
@@ -129,6 +146,7 @@ class SettingController extends Controller
             'application_language' => app()->getLocale(),
             'status' => true,
             'data' => $settings,  // Send **filtered** settings
+            'address' => $address,
         ];
 
         // Check user authorization
