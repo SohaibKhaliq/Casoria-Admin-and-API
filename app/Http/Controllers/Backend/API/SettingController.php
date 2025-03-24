@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Modules\Currency\Models\Currency;
 use Modules\Page\Http\Controllers\Backend\PageController;
+use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
@@ -70,7 +71,32 @@ class SettingController extends Controller
     {
         // Get all settings with correct column names
         $settings = Setting::pluck('val', 'name')->toArray();
-        $pages=PageController::index();
+        $pagesResponse = PageController::index();
+
+        if (!$pagesResponse instanceof \Illuminate\Http\JsonResponse) {
+            Log::error('Invalid response type from PageController::index()', ['response' => $pagesResponse]);
+            $pages = collect(); // Set to an empty collection
+        } else {
+            $pagesContent = $pagesResponse->getContent();
+            $decodedPages = json_decode($pagesContent, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && isset($decodedPages['data']) && is_array($decodedPages['data'])) {
+                $pages = collect($decodedPages['data'])->map(function ($page) {
+                    return [
+                        'name' => $page['name'] ?? 'N/A',
+                        'description' => $page['description'] ?? 'N/A',
+                    ];
+                });
+            } else {
+                Log::error('Invalid JSON response from PageController::index()', [
+                    'response_content' => $pagesContent,
+                    'json_error' => json_last_error_msg(),
+                ]);
+                $pages = collect(); // Set to an empty collection if JSON is invalid
+            }
+        }
+
+
         // Fetch currency data
         $currency = Currency::first();
         $currencyData = $currency ? [
@@ -83,6 +109,17 @@ class SettingController extends Controller
             'decimal_separator' => $currency->decimal_separator,
         ] : null;
 
+        // get all except mail_driver,mail_host, mail_port, mail_username, mail_password, mail_encryption, mail_from_address, mail_from_name
+        $settings = collect($settings)->except([
+            'mail_driver',
+            'mail_host',
+            'mail_port',
+            'mail_username',
+            'mail_password',
+            'mail_encryption',
+            'mail_from_address',
+            'mail_from_name'
+        ]);
         // Prepare response
         $response = [
             'version_code' => "1.0.0",
@@ -91,7 +128,7 @@ class SettingController extends Controller
             'currency' => $currencyData,
             'application_language' => app()->getLocale(),
             'status' => true,
-            'data' => $settings,  // Send **all** settings
+            'data' => $settings,  // Send **filtered** settings
         ];
 
         // Check user authorization
