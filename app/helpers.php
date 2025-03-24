@@ -142,79 +142,85 @@ if (!function_exists('sendNotification')) {
     }
 }
 
-function fcm($fields)
-{
-    $otherSetting = \App\Models\Setting::where('type', 'firebase_notification')->where('name', 'firebase_project_id')->first();
-    $projectID = $otherSetting->val ?? null;
-    $access_token = getAccessToken();
-    $headers = [
-        'Authorization: Bearer ' . $access_token,
-        'Content-Type: application/json',
-    ];
-    $ch = curl_init('https://fcm.googleapis.com/v1/projects/' . $projectID . '/messages:send');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+if (!function_exists('fcm')) {
+    function fcm($fields)
+    {
+        $otherSetting = \App\Models\Setting::where('type', 'firebase_notification')->where('name', 'firebase_project_id')->first();
+        $projectID = $otherSetting->val ?? null;
+        $access_token = getAccessToken();
+        $headers = [
+            'Authorization: Bearer ' . $access_token,
+            'Content-Type: application/json',
+        ];
+        $ch = curl_init('https://fcm.googleapis.com/v1/projects/' . $projectID . '/messages:send');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
 
-    $response = curl_exec($ch);
-    Log::info($response);
-    curl_close($ch);
-}
-function getAccessToken()
-{
-    $directory = storage_path('app/data');
-    $credentialsFiles = File::glob($directory . '/*.json');
-    if (empty($credentialsFiles)) {
-        throw new Exception('No JSON credentials found in the specified directory.');
+        $response = curl_exec($ch);
+        Log::info($response);
+        curl_close($ch);
     }
-    $client = new Google_Client;
-    $client->setAuthConfig($credentialsFiles[0]);
-    $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+    function getAccessToken()
+    {
+        $directory = storage_path('app/data');
+        $credentialsFiles = File::glob($directory . '/*.json');
+        if (empty($credentialsFiles)) {
+            throw new Exception('No JSON credentials found in the specified directory.');
+        }
+        $client = new Google_Client;
+        $client->setAuthConfig($credentialsFiles[0]);
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
 
-    $token = $client->fetchAccessTokenWithAssertion();
+        $token = $client->fetchAccessTokenWithAssertion();
 
-    return $token['access_token'];
-}
-
-function timeAgoInt($date)
-{
-    if ($date == null) {
-        return '-';
+        return $token['access_token'];
     }
-    $datetime = new \DateTime($date);
-    $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
-    $diff_time = \Carbon\Carbon::parse($datetime)->diffInHours();
-
-    return $diff_time;
 }
-function timeAgo($date)
-{
-    if ($date == null) {
-        return '-';
-    }
-    $datetime = new \DateTime($date);
-    $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
-    $diff_time = \Carbon\Carbon::parse($datetime)->diffForHumans();
+if (!function_exists(timeAgoInt)) {
+    function timeAgoInt($date)
+    {
+        if ($date == null) {
+            return '-';
+        }
+        $datetime = new \DateTime($date);
+        $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
+        $diff_time = \Carbon\Carbon::parse($datetime)->diffInHours();
 
-    return $diff_time;
-}
-function dateAgo($date, $type2 = '')
-{
-    if ($date == null || $date == '0000-00-00 00:00:00') {
-        return '-';
-    }
-    $diff_time1 = \Carbon\Carbon::createFromTimeStamp(strtotime($date))->diffForHumans();
-    $datetime = new \DateTime($date);
-    $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
-    $diff_time = \Carbon\Carbon::parse($datetime->format('Y-m-d H:i:s'))->isoFormat('LLL');
-    if ($type2 != '') {
         return $diff_time;
     }
-
-    return $diff_time1 . ' on ' . $diff_time;
 }
+if (!function_exists(timeAgo)) {
+    function timeAgo($date)
+    {
+        if ($date == null) {
+            return '-';
+        }
+        $datetime = new \DateTime($date);
+        $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
+        $diff_time = \Carbon\Carbon::parse($datetime)->diffForHumans();
 
+        return $diff_time;
+    }
+}
+if (!function_exists(dateAgo)) {
+    function dateAgo($date, $type2 = '')
+    {
+        if ($date == null || $date == '0000-00-00 00:00:00') {
+            return '-';
+        }
+        $diff_time1 = \Carbon\Carbon::createFromTimeStamp(strtotime($date))->diffForHumans();
+        $datetime = new \DateTime($date);
+        $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
+        $diff_time = \Carbon\Carbon::parse($datetime->format('Y-m-d H:i:s'))->isoFormat('LLL');
+        if ($type2 != '') {
+            return $diff_time;
+        }
+
+        return $diff_time1 . ' on ' . $diff_time;
+    }
+}
 function customDate($date, $format = 'd-m-Y h:i A')
 {
     if ($date == null || $date == '0000-00-00 00:00:00') {
@@ -270,33 +276,34 @@ function formatOffset($offset)
     return 'GMT' . $sign . str_pad($hour, 2, '0', STR_PAD_LEFT)
         . ':' . str_pad($minutes, 2, '0');
 }
+if (!function_exists(timeZoneList)) {
+    function timeZoneList()
+    {
+        $list = \DateTimeZone::listAbbreviations();
+        $idents = \DateTimeZone::listIdentifiers();
 
-function timeZoneList()
-{
-    $list = \DateTimeZone::listAbbreviations();
-    $idents = \DateTimeZone::listIdentifiers();
-
-    $data = $offset = $added = [];
-    foreach ($list as $abbr => $info) {
-        foreach ($info as $zone) {
-            if (! empty($zone['timezone_id']) and ! in_array($zone['timezone_id'], $added) and in_array($zone['timezone_id'], $idents)) {
-                $z = new \DateTimeZone($zone['timezone_id']);
-                $c = new \DateTime(null, $z);
-                $zone['time'] = $c->format('H:i a');
-                $offset[] = $zone['offset'] = $z->getOffset($c);
-                $data[] = $zone;
-                $added[] = $zone['timezone_id'];
+        $data = $offset = $added = [];
+        foreach ($list as $abbr => $info) {
+            foreach ($info as $zone) {
+                if (! empty($zone['timezone_id']) and ! in_array($zone['timezone_id'], $added) and in_array($zone['timezone_id'], $idents)) {
+                    $z = new \DateTimeZone($zone['timezone_id']);
+                    $c = new \DateTime(null, $z);
+                    $zone['time'] = $c->format('H:i a');
+                    $offset[] = $zone['offset'] = $z->getOffset($c);
+                    $data[] = $zone;
+                    $added[] = $zone['timezone_id'];
+                }
             }
         }
-    }
 
-    array_multisort($offset, SORT_ASC, $data);
-    $options = [];
-    foreach ($data as $key => $row) {
-        $options[$row['timezone_id']] = $row['time'] . ' - ' . formatOffset($row['offset']) . ' ' . $row['timezone_id'];
-    }
+        array_multisort($offset, SORT_ASC, $data);
+        $options = [];
+        foreach ($data as $key => $row) {
+            $options[$row['timezone_id']] = $row['time'] . ' - ' . formatOffset($row['offset']) . ' ' . $row['timezone_id'];
+        }
 
-    return $options;
+        return $options;
+    }
 }
 
 /*
