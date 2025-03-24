@@ -178,49 +178,45 @@ if (!function_exists('fcm')) {
         return $token['access_token'];
     }
 }
-if (!function_exists(timeAgoInt)) {
-    function timeAgoInt($date)
-    {
-        if ($date == null) {
-            return '-';
-        }
-        $datetime = new \DateTime($date);
-        $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
-        $diff_time = \Carbon\Carbon::parse($datetime)->diffInHours();
+function timeAgoInt($date)
+{
+    if ($date == null) {
+        return '-';
+    }
+    $datetime = new \DateTime($date);
+    $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
+    $diff_time = \Carbon\Carbon::parse($datetime)->diffInHours();
 
+    return $diff_time;
+}
+
+function timeAgo($date)
+{
+    if ($date == null) {
+        return '-';
+    }
+    $datetime = new \DateTime($date);
+    $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
+    $diff_time = \Carbon\Carbon::parse($datetime)->diffForHumans();
+
+    return $diff_time;
+}
+function dateAgo($date, $type2 = '')
+{
+    if ($date == null || $date == '0000-00-00 00:00:00') {
+        return '-';
+    }
+    $diff_time1 = \Carbon\Carbon::createFromTimeStamp(strtotime($date))->diffForHumans();
+    $datetime = new \DateTime($date);
+    $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
+    $diff_time = \Carbon\Carbon::parse($datetime->format('Y-m-d H:i:s'))->isoFormat('LLL');
+    if ($type2 != '') {
         return $diff_time;
     }
-}
-if (!function_exists(timeAgo)) {
-    function timeAgo($date)
-    {
-        if ($date == null) {
-            return '-';
-        }
-        $datetime = new \DateTime($date);
-        $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
-        $diff_time = \Carbon\Carbon::parse($datetime)->diffForHumans();
 
-        return $diff_time;
-    }
+    return $diff_time1 . ' on ' . $diff_time;
 }
-if (!function_exists(dateAgo)) {
-    function dateAgo($date, $type2 = '')
-    {
-        if ($date == null || $date == '0000-00-00 00:00:00') {
-            return '-';
-        }
-        $diff_time1 = \Carbon\Carbon::createFromTimeStamp(strtotime($date))->diffForHumans();
-        $datetime = new \DateTime($date);
-        $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
-        $diff_time = \Carbon\Carbon::parse($datetime->format('Y-m-d H:i:s'))->isoFormat('LLL');
-        if ($type2 != '') {
-            return $diff_time;
-        }
 
-        return $diff_time1 . ' on ' . $diff_time;
-    }
-}
 function customDate($date, $format = 'd-m-Y h:i A')
 {
     if ($date == null || $date == '0000-00-00 00:00:00') {
