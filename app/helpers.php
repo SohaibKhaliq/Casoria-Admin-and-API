@@ -272,34 +272,33 @@ function formatOffset($offset)
     return 'GMT' . $sign . str_pad($hour, 2, '0', STR_PAD_LEFT)
         . ':' . str_pad($minutes, 2, '0');
 }
-if (!function_exists(timeZoneList)) {
-    function timeZoneList()
-    {
-        $list = \DateTimeZone::listAbbreviations();
-        $idents = \DateTimeZone::listIdentifiers();
 
-        $data = $offset = $added = [];
-        foreach ($list as $abbr => $info) {
-            foreach ($info as $zone) {
-                if (! empty($zone['timezone_id']) and ! in_array($zone['timezone_id'], $added) and in_array($zone['timezone_id'], $idents)) {
-                    $z = new \DateTimeZone($zone['timezone_id']);
-                    $c = new \DateTime(null, $z);
-                    $zone['time'] = $c->format('H:i a');
-                    $offset[] = $zone['offset'] = $z->getOffset($c);
-                    $data[] = $zone;
-                    $added[] = $zone['timezone_id'];
-                }
+function timeZoneList()
+{
+    $list = \DateTimeZone::listAbbreviations();
+    $idents = \DateTimeZone::listIdentifiers();
+
+    $data = $offset = $added = [];
+    foreach ($list as $abbr => $info) {
+        foreach ($info as $zone) {
+            if (! empty($zone['timezone_id']) and ! in_array($zone['timezone_id'], $added) and in_array($zone['timezone_id'], $idents)) {
+                $z = new \DateTimeZone($zone['timezone_id']);
+                $c = new \DateTime(null, $z);
+                $zone['time'] = $c->format('H:i a');
+                $offset[] = $zone['offset'] = $z->getOffset($c);
+                $data[] = $zone;
+                $added[] = $zone['timezone_id'];
             }
         }
-
-        array_multisort($offset, SORT_ASC, $data);
-        $options = [];
-        foreach ($data as $key => $row) {
-            $options[$row['timezone_id']] = $row['time'] . ' - ' . formatOffset($row['offset']) . ' ' . $row['timezone_id'];
-        }
-
-        return $options;
     }
+
+    array_multisort($offset, SORT_ASC, $data);
+    $options = [];
+    foreach ($data as $key => $row) {
+        $options[$row['timezone_id']] = $row['time'] . ' - ' . formatOffset($row['offset']) . ' ' . $row['timezone_id'];
+    }
+
+    return $options;
 }
 
 /*
