@@ -3,9 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Booking\Http\Controllers\Backend\API\BookingsController;
 use Modules\Booking\Http\Controllers\Backend\API\PaymentController;
+use Modules\Booking\Models\Booking;
 
 Route::group(['middleware' => 'auth:sanctum', 'as' => 'backend.'], function () {
     Route::apiResource('bookings', BookingsController::class);
+    // GET all bookings api
+    Route::get('all-bookings', [BookingsController::class, 'index']);
     Route::post('booking-update', [BookingsController::class, 'update']);
     Route::get('booking-list', [BookingsController::class, 'bookingList']);
     Route::get('booking-detail', [BookingsController::class, 'bookingDetail']);
