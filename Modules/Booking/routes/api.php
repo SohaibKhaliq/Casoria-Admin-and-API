@@ -21,4 +21,7 @@ Route::group(['middleware' => 'auth:sanctum', 'as' => 'backend.'], function () {
     Route::get('businesshour', [BookingsController::class, 'getBusinessHours']);
     Route::get('service-dates', [BookingsController::class, 'getServiceDates']);
     Route::get('time-slots', [BookingsController::class, 'getTimeSlots']);
+    Route::post('update-queue', [BookingsController::class, 'updateQueue']);
+    Route::delete('delete-booking', [BookingsController::class, 'deleteBooking']);
+    Route::delete('delete-queue', [BookingsController::class, 'deleteQueue']);
 });
