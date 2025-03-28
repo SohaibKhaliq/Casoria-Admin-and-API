@@ -125,76 +125,20 @@ class BookingsController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-        $date = Carbon::parse($request->start_date_time)->toDateString();
-        // get service by employee_id and business_id on date from start_date_time
-        $service_booking = Booking::where('employee_id', $request->employee_id)
-            ->where('business_id', $request->business_id)
-            ->whereDate('start_date_time', $date)
-            ->get();
 
-        // return $service_booking;
-
-        if ($service_booking->isNotEmpty()) {
-
-            // Check if the employee is already booked from the requested time and date
-            foreach ($service_booking as $booking) {
-                $startDateTime = Carbon::parse($booking->start_date_time);
-                $endDateTime = Carbon::parse($booking->end_date_time);
-
-                $requestedStartDateTime = Carbon::parse($request->start_date_time);
-                $requestedEndDateTime = $requestedStartDateTime->copy()->addMinutes($request->duration_min);
-
-                if ($requestedStartDateTime->between($startDateTime, $endDateTime) || $requestedEndDateTime->between($startDateTime, $endDateTime)) {
-                    return response()->json(['message' => 'This booking slot is not available! Add in the queue?', 'status' => false], 200);
-                }
-            }
-        }
-        // Save the booking
         $data = $request->all();
-        $data['start_date_time'] = $request->start_date_time;
-        // get service by service_id and get then duration_min from the service and make endDateTime
+        $data['start_date_time'] = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
         $service = Service::where('id', $request->service_id)->first();
-
-        $data['start_date_time'] = Carbon::createFromFormat('Y-m-d H:i:s', $data['start_date_time']);
-        //also add safety so that it cannot overlap with the existing booked slot's end_date_time
-
         $data['end_date_time'] = $data['start_date_time']->copy()->addMinutes($service->duration_min);
 
-        // Check for overlapping with existing bookings
-        foreach ($service_booking as $booking) {
-            $existingStartDateTime = Carbon::parse($booking->start_date_time);
-            $existingEndDateTime = Carbon::parse($booking->end_date_time);
-
-            if (
-                $data['start_date_time']->between($existingStartDateTime, $existingEndDateTime) ||
-                $data['end_date_time']->between($existingStartDateTime, $existingEndDateTime) ||
-                ($data['start_date_time']->lte($existingStartDateTime) && $data['end_date_time']->gte($existingEndDateTime))
-            ) {
-
-                $remainingTimeInMinutes = $existingEndDateTime->diffInMinutes($data['start_date_time']);
-                $remainingHours = intdiv($remainingTimeInMinutes, 60);
-                $remainingMinutes = $remainingTimeInMinutes % 60;
-
-                return response()->json([
-                    'message' => 'The staff is not available at the selected time. Your start time is ' . $data['start_date_time']->format('H:i') .
-                        ' and end time is ' . $data['end_date_time']->format('H:i') .
-                        '. An appointment is already booked with someone else from ' . $existingStartDateTime->format('H:i') .
-                        ' to ' . $existingEndDateTime->format('H:i') .
-                        '. The service duration is ' . $service->duration_min . ' minutes. Remaining time until availability: ' .
-                        $remainingHours . ' hours and ' . $remainingMinutes . ' minutes.',
-                    'status' => false
-                ], 200);
-            }
-        }
         $data['queue_status'] = 'not_in_queue';
         $data['user_id'] = $request->user_id ?? auth()->id();
 
-        $data['user_id'] = !empty($request->user_id) ? $request->user_id : auth()->user()->id;
         $userId = $data['user_id'];
         $is_reclaim = false;
         $alreadyPurchased = false;
-        if (!empty($request->packages) && (!$request->has('is_reclaim') || !$request->is_reclaim)) {
 
+        if (!empty($request->packages) && (!$request->has('is_reclaim') || !$request->is_reclaim)) {
             foreach ($request->packages as $key => $value) {
                 $existingPackage = UserPackage::where('package_id', $value['id'])
                     ->where('user_id', $userId)
@@ -214,16 +158,16 @@ class BookingsController extends Controller
 
             $totalPrice = 0;
 
-            // Calculate the total price based on services or packages
             if (!empty($data['services'])) {
                 $totalPrice = array_sum(array_column($data['services'], 'service_price'));
             } elseif (!empty($data['packages'])) {
                 $totalPrice = array_sum(array_column($data['packages'], 'package_price'));
             }
-            // Apply the discount validation
+
             if ($data['couponDiscountamount'] > $totalPrice) {
                 return response()->json(['valid' => false, 'message' => 'Discount exceeds the total price', 'status' => false], 200);
             }
+
             if (!$coupon) {
                 if ($coupon_data->is_expired == 1) {
                     $message = 'Coupon has expired.';
@@ -277,8 +221,6 @@ class BookingsController extends Controller
                 }
             }
         }
-        //if package reclaim
-
 
         if ($request->has('is_reclaim') && isset($request->packages) && $request->is_reclaim == true) {
             $is_reclaim = true;
@@ -332,12 +274,11 @@ class BookingsController extends Controller
                     }
                 }
             }
-        } else  if ($alreadyPurchased == false) {
+        } else if ($alreadyPurchased == false) {
             $this->updateAPIBookingPackage($request->packages, $booking->id, $request->employee_id, $userId, $is_reclaim);
             $this->storeApiUserPackage($booking->id);
         }
 
-        //service
         if (!empty($request->services)) {
             $this->updateBookingService($request->services, $booking->id);
         }
