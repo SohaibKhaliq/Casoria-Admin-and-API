@@ -746,6 +746,8 @@ class BookingsController extends Controller
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|integer|exists:services,id',
             'business_id' => 'required|integer|exists:businesses,id',
+            'employee_id' => 'required|integer|exists:users,id',
+            'date' => 'required|date_format:Y-m-d',
         ]);
 
         if ($validator->fails()) {
@@ -775,8 +777,26 @@ class BookingsController extends Controller
 
         // Get service duration
         $service_duration_in_minutes = $service->duration_min;
+        $service_bookings = BookingService::where('service_id', $request->service_id)
+            ->where('employee_id', $request->employee_id)
+            ->whereDate('start_date_time', Carbon::createFromFormat('Y-m-d', $request->date)->format('Y-m-d'))
+            ->get();
 
         $slots = [];
+        $bookedSlots = [];
+
+        // Mark booked slots based on $service_bookings
+        foreach ($service_bookings as $booking) {
+            $start = Carbon::parse($booking->start_date_time);
+            $end = $start->copy()->addMinutes($booking->duration_min);
+
+            while ($start->lt($end)) {
+                $bookedSlots[] = $start->format('H:i');
+                $start->addMinutes($slot_duration_in_minutes);
+            }
+        }
+
+        // Generate all slots and mark their status
         while ($start_time->addMinutes($slot_duration_in_minutes)->lte($end_time)) {
             $slot_start = $start_time->copy()->subMinutes($slot_duration_in_minutes);
             $slot_end = $slot_start->copy()->addMinutes($service_duration_in_minutes);
@@ -797,7 +817,10 @@ class BookingsController extends Controller
             }
 
             if (!$is_break) {
-                $slots[] = $slot_start->format('H:i');
+                $slots[] = [
+                    'time' => $slot_start->format('H:i'),
+                    'status' => in_array($slot_start->format('H:i'), $bookedSlots) ? 'booked' : 'available',
+                ];
             }
         }
 
