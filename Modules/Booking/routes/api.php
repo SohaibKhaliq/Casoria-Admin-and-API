@@ -18,4 +18,10 @@ Route::group(['middleware' => 'auth:sanctum', 'as' => 'backend.'], function () {
     Route::get('booking-status', [BookingsController::class, 'statusList']);
     Route::get('booking-invoice-download', [Modules\Booking\Http\Controllers\Backend\BookingsController::class, 'downloadInvoice'])->name('bookings.downloadinvoice');
     Route::post('store-in-queue', [BookingsController::class, 'storeInQueue']);
+    Route::get('businesshour', [BookingsController::class, 'getBusinessHours']);
+    Route::get('service-dates', [BookingsController::class, 'getServiceDates']);
+    Route::get('time-slots', [BookingsController::class, 'getTimeSlots']);
+    Route::post('update-queue', [BookingsController::class, 'updateQueue']);
+    Route::delete('delete-booking', [BookingsController::class, 'deleteBooking']);
+    Route::delete('delete-queue', [BookingsController::class, 'deleteQueue']);
 });

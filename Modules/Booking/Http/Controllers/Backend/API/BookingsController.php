@@ -28,7 +28,8 @@ use Modules\Promotion\Models\Promotion;
 use Modules\Promotion\Models\UserCouponRedeem;
 use Modules\Package\Models\BookingPackageService;
 use Modules\Service\Models\Service;
-
+use Modules\BussinessHour\Models\BussinessHour;
+use App\Models\Setting;
 
 class BookingsController extends Controller
 {
@@ -39,6 +40,18 @@ class BookingsController extends Controller
     {
         // Page Title
         $this->module_title = 'Bookings';
+    }
+
+    // get all business hours by business id
+    public function getBusinessHours(Request $request)
+    {
+        $business_id = $request->business_id;
+        $business_hours = BussinessHour::where('business_id', $business_id)->get();
+        return response()->json([
+            'status' => true,
+            'data' => $business_hours,
+            'message' => __('booking.business_hours'),
+        ], 200);
     }
 
     // function to get all of the bookings of authenticated user
@@ -112,76 +125,20 @@ class BookingsController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-        $date = Carbon::parse($request->start_date_time)->toDateString();
-        // get service by employee_id and business_id on date from start_date_time
-        $service_booking = Booking::where('employee_id', $request->employee_id)
-            ->where('business_id', $request->business_id)
-            ->whereDate('start_date_time', $date)
-            ->get();
 
-        // return $service_booking;
-
-        if ($service_booking->isNotEmpty()) {
-
-            // Check if the employee is already booked from the requested time and date
-            foreach ($service_booking as $booking) {
-                $startDateTime = Carbon::parse($booking->start_date_time);
-                $endDateTime = Carbon::parse($booking->end_date_time);
-
-                $requestedStartDateTime = Carbon::parse($request->start_date_time);
-                $requestedEndDateTime = $requestedStartDateTime->copy()->addMinutes($request->duration_min);
-
-                if ($requestedStartDateTime->between($startDateTime, $endDateTime) || $requestedEndDateTime->between($startDateTime, $endDateTime)) {
-                    return response()->json(['message' => 'This booking slot is not available! Add in the queue?', 'status' => false], 200);
-                }
-            }
-        }
-        // Save the booking
         $data = $request->all();
-        $data['start_date_time'] = $request->start_date_time;
-        // get service by service_id and get then duration_min from the service and make endDateTime
+        $data['start_date_time'] = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
         $service = Service::where('id', $request->service_id)->first();
-
-        $data['start_date_time'] = Carbon::createFromFormat('Y-m-d H:i:s', $data['start_date_time']);
-        //also add safety so that it cannot overlap with the existing booked slot's end_date_time
-
         $data['end_date_time'] = $data['start_date_time']->copy()->addMinutes($service->duration_min);
 
-        // Check for overlapping with existing bookings
-        foreach ($service_booking as $booking) {
-            $existingStartDateTime = Carbon::parse($booking->start_date_time);
-            $existingEndDateTime = Carbon::parse($booking->end_date_time);
-
-            if (
-                $data['start_date_time']->between($existingStartDateTime, $existingEndDateTime) ||
-                $data['end_date_time']->between($existingStartDateTime, $existingEndDateTime) ||
-                ($data['start_date_time']->lte($existingStartDateTime) && $data['end_date_time']->gte($existingEndDateTime))
-            ) {
-
-                $remainingTimeInMinutes = $existingEndDateTime->diffInMinutes($data['start_date_time']);
-                $remainingHours = intdiv($remainingTimeInMinutes, 60);
-                $remainingMinutes = $remainingTimeInMinutes % 60;
-
-                return response()->json([
-                    'message' => 'The staff is not available at the selected time. Your start time is ' . $data['start_date_time']->format('H:i') .
-                        ' and end time is ' . $data['end_date_time']->format('H:i') .
-                        '. An appointment is already booked with someone else from ' . $existingStartDateTime->format('H:i') .
-                        ' to ' . $existingEndDateTime->format('H:i') .
-                        '. The service duration is ' . $service->duration_min . ' minutes. Remaining time until availability: ' .
-                        $remainingHours . ' hours and ' . $remainingMinutes . ' minutes.',
-                    'status' => false
-                ], 200);
-            }
-        }
         $data['queue_status'] = 'not_in_queue';
         $data['user_id'] = $request->user_id ?? auth()->id();
 
-        $data['user_id'] = !empty($request->user_id) ? $request->user_id : auth()->user()->id;
         $userId = $data['user_id'];
         $is_reclaim = false;
         $alreadyPurchased = false;
-        if (!empty($request->packages) && (!$request->has('is_reclaim') || !$request->is_reclaim)) {
 
+        if (!empty($request->packages) && (!$request->has('is_reclaim') || !$request->is_reclaim)) {
             foreach ($request->packages as $key => $value) {
                 $existingPackage = UserPackage::where('package_id', $value['id'])
                     ->where('user_id', $userId)
@@ -201,16 +158,16 @@ class BookingsController extends Controller
 
             $totalPrice = 0;
 
-            // Calculate the total price based on services or packages
             if (!empty($data['services'])) {
                 $totalPrice = array_sum(array_column($data['services'], 'service_price'));
             } elseif (!empty($data['packages'])) {
                 $totalPrice = array_sum(array_column($data['packages'], 'package_price'));
             }
-            // Apply the discount validation
+
             if ($data['couponDiscountamount'] > $totalPrice) {
                 return response()->json(['valid' => false, 'message' => 'Discount exceeds the total price', 'status' => false], 200);
             }
+
             if (!$coupon) {
                 if ($coupon_data->is_expired == 1) {
                     $message = 'Coupon has expired.';
@@ -264,8 +221,6 @@ class BookingsController extends Controller
                 }
             }
         }
-        //if package reclaim
-
 
         if ($request->has('is_reclaim') && isset($request->packages) && $request->is_reclaim == true) {
             $is_reclaim = true;
@@ -319,12 +274,11 @@ class BookingsController extends Controller
                     }
                 }
             }
-        } else  if ($alreadyPurchased == false) {
+        } else if ($alreadyPurchased == false) {
             $this->updateAPIBookingPackage($request->packages, $booking->id, $request->employee_id, $userId, $is_reclaim);
             $this->storeApiUserPackage($booking->id);
         }
 
-        //service
         if (!empty($request->services)) {
             $this->updateBookingService($request->services, $booking->id);
         }
@@ -362,45 +316,10 @@ class BookingsController extends Controller
         }
 
         $booking = Booking::findOrFail($request->id);
-        $date = Carbon::parse($request->start_date_time)->toDateString();
-
-        $service_booking = Booking::where('employee_id', $request->employee_id)
-            ->where('business_id', $request->business_id)
-            ->whereDate('start_date_time', $date)
-            ->where('id', '!=', $booking->id)
-            ->get();
-
-        if ($service_booking->isNotEmpty()) {
-            foreach ($service_booking as $existingBooking) {
-                $startDateTime = Carbon::parse($existingBooking->start_date_time);
-                $endDateTime = Carbon::parse($existingBooking->end_date_time);
-
-                $requestedStartDateTime = Carbon::parse($request->start_date_time);
-                $requestedEndDateTime = $requestedStartDateTime->copy()->addMinutes($request->duration_min);
-
-                if ($requestedStartDateTime->between($startDateTime, $endDateTime) || $requestedEndDateTime->between($startDateTime, $endDateTime)) {
-                    return response()->json(['message' => 'This booking slot is not available!', 'status' => false], 200);
-                }
-            }
-        }
-
         $data = $request->all();
         $data['start_date_time'] = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
         $service = Service::where('id', $request->service_id)->first();
         $data['end_date_time'] = $data['start_date_time']->copy()->addMinutes($service->duration_min);
-
-        foreach ($service_booking as $existingBooking) {
-            $existingStartDateTime = Carbon::parse($existingBooking->start_date_time);
-            $existingEndDateTime = Carbon::parse($existingBooking->end_date_time);
-
-            if (
-                $data['start_date_time']->between($existingStartDateTime, $existingEndDateTime) ||
-                $data['end_date_time']->between($existingStartDateTime, $existingEndDateTime) ||
-                ($data['start_date_time']->lte($existingStartDateTime) && $data['end_date_time']->gte($existingEndDateTime))
-            ) {
-                return response()->json(['message' => 'The staff is not available at the selected time.', 'status' => false], 200);
-            }
-        }
 
         $data['queue_status'] = 'not_in_queue';
         $data['user_id'] = $request->user_id ?? auth()->id();
@@ -692,5 +611,206 @@ class BookingsController extends Controller
             'status' => true,
             'booking_id' => $booking->id,
         ], 201);
+    }
+
+    public function getServiceDates(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'business_id' => 'required|integer|exists:businesses,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => 'Validation Error', 'errors' => $validator->errors()], 422);
+        }
+
+        $business_id = $request->business_id;
+        $business_hours = BussinessHour::where('business_id', $business_id)->get();
+
+        $dates = [];
+        $currentDate = Carbon::now();
+        $endDate = $currentDate->copy()->addMonth();
+
+        while ($currentDate->lte($endDate)) {
+            $dayOfWeek = strtolower($currentDate->format('l')); // Get the day name in lowercase (e.g., monday, tuesday)
+            $businessHour = $business_hours->firstWhere('day', $dayOfWeek);
+
+            if ($businessHour && $businessHour->is_holiday == 0) { // Check if it's not a holiday
+                $dates[] = [
+                    'date' => $currentDate->toDateString(),
+                    'day' => ucfirst($dayOfWeek), // Capitalize the first letter of the day
+                ];
+            }
+
+            $currentDate->addDay();
+        }
+
+        return response()->json(['status' => true, 'data' => $dates, 'message' => 'Available service dates fetched successfully.'], 200);
+    }
+
+    public function getTimeSlots(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'service_id' => 'required|integer|exists:services,id',
+            'business_id' => 'required|integer|exists:businesses,id',
+            'employee_id' => 'required|integer|exists:users,id',
+            'date' => 'required|date_format:Y-m-d',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => 'Validation Error', 'errors' => $validator->errors()], 422);
+        }
+
+        $service = Service::findOrFail($request->service_id);
+        $business_hours = BussinessHour::where('business_id', $request->business_id)->first();
+
+        if (!$business_hours) {
+            return response()->json(['status' => false, 'message' => 'No business hours found for the selected date.'], 404);
+        }
+
+        if ($business_hours->is_holiday == 1) {
+            return response()->json(['status' => false, 'message' => 'This business is closed on the selected day.'], 200);
+        }
+
+        // Get slot_duration from Settings table
+        $slot_duration = Setting::where('name', 'slot_duration')->value('val');
+        $start_time = Carbon::parse($business_hours->start_time);
+        $end_time = Carbon::parse($business_hours->end_time);
+        $breaks = $business_hours->breaks ? json_decode($business_hours->breaks, true) : []; // Handle empty breaks gracefully
+
+        // Convert slot_duration from "HH:mm" format to minutes
+        [$hours, $minutes] = explode(':', $slot_duration);
+        $slot_duration_in_minutes = ($hours * 60) + $minutes;
+
+        // Get service duration
+        $service_duration_in_minutes = $service->duration_min;
+        $service_bookings = BookingService::where('service_id', $request->service_id)
+            ->where('employee_id', $request->employee_id)
+            ->whereDate('start_date_time', Carbon::createFromFormat('Y-m-d', $request->date)->format('Y-m-d'))
+            ->get();
+
+        $slots = [];
+        $bookedSlots = [];
+
+        // Mark booked slots based on $service_bookings
+        foreach ($service_bookings as $booking) {
+            $start = Carbon::parse($booking->start_date_time);
+            $end = $start->copy()->addMinutes($booking->duration_min);
+
+            // Adjust the end time to leave the last 15 minutes as available
+            $adjusted_end = $end->copy()->subMinutes($slot_duration_in_minutes);
+
+            while ($start->lt($adjusted_end)) {
+                $bookedSlots[] = $start->format('H:i');
+                $start->addMinutes($slot_duration_in_minutes);
+            }
+        }
+
+        // Generate all slots and mark their status
+        while ($start_time->addMinutes($slot_duration_in_minutes)->lte($end_time)) {
+            $slot_start = $start_time->copy()->subMinutes($slot_duration_in_minutes);
+            $slot_end = $slot_start->copy()->addMinutes($service_duration_in_minutes);
+
+            // Ensure the slot does not exceed the business end time
+            if ($slot_end->gt($end_time)) {
+                break;
+            }
+
+            $is_break = false;
+            foreach ($breaks as $break) {
+                $break_start = Carbon::parse($break['start']);
+                $break_end = Carbon::parse($break['end']);
+                if ($slot_start->between($break_start, $break_end) || $slot_end->between($break_start, $break_end)) {
+                    $is_break = true;
+                    break;
+                }
+            }
+
+            if (!$is_break) {
+                $slots[] = [
+                    'time' => $slot_start->format('H:i'),
+                    'status' => in_array($slot_start->format('H:i'), $bookedSlots) ? 'booked' : 'available',
+                ];
+            }
+        }
+
+        return response()->json(['status' => true, 'data' => $slots, 'message' => 'Available time slots fetched successfully.'], 200);
+    }
+
+    public function updateQueue(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:bookings,id',
+            'queue_status' => 'required|string|in:in_queue,not_in_queue',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $booking = Booking::findOrFail($request->id);
+        $booking->update(['queue_status' => $request->queue_status]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Queue status updated successfully.',
+        ], 200);
+    }
+
+    public function deleteBooking(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:bookings,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $booking = Booking::findOrFail($request->id);
+        $booking->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Booking deleted successfully.',
+        ], 200);
+    }
+
+    public function deleteQueue(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:bookings,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $booking = Booking::where('id', $request->id)->where('queue_status', 'in_queue')->first();
+
+        if (!$booking) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Queue not found or already processed.',
+            ], 404);
+        }
+
+        $booking->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Queue deleted successfully.',
+        ], 200);
     }
 }
