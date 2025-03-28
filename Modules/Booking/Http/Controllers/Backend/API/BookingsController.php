@@ -776,20 +776,19 @@ class BookingsController extends Controller
         $slots = [];
         while ($start_time->addMinutes($slot_duration_in_minutes)->lte($end_time)) {
             $slot_start = $start_time->copy()->subMinutes($slot_duration_in_minutes);
-            $slot_end = $start_time;
 
             $is_break = false;
             foreach ($breaks as $break) {
-            $break_start = Carbon::parse($break['start']);
-            $break_end = Carbon::parse($break['end']);
-            if ($slot_start->between($break_start, $break_end) || $slot_end->between($break_start, $break_end)) {
-                $is_break = true;
-                break;
-            }
+                $break_start = Carbon::parse($break['start']);
+                $break_end = Carbon::parse($break['end']);
+                if ($slot_start->between($break_start, $break_end)) {
+                    $is_break = true;
+                    break;
+                }
             }
 
             if (!$is_break) {
-            $slots[] = ['start' => $slot_start->format('H:i'), 'end' => $slot_end->format('H:i')];
+                $slots[] = $slot_start->format('H:i');
             }
         }
 
