@@ -316,26 +316,6 @@ class BookingsController extends Controller
         }
 
         $booking = Booking::findOrFail($request->id);
-        $date = Carbon::parse($request->start_date_time)->toDateString();
-
-        $service_booking = Booking::where('employee_id', $request->employee_id)
-            ->where('business_id', $request->business_id)
-            ->whereDate('start_date_time', $date)
-            ->where('id', '!=', $booking->id)
-            ->get();
-
-        foreach ($service_booking as $existingBooking) {
-            $startDateTime = Carbon::parse($existingBooking->start_date_time);
-            $endDateTime = Carbon::parse($existingBooking->end_date_time);
-
-            $requestedStartDateTime = Carbon::parse($request->start_date_time);
-            $requestedEndDateTime = $requestedStartDateTime->copy()->addMinutes($request->duration_min);
-
-            if ($requestedStartDateTime->between($startDateTime, $endDateTime) || $requestedEndDateTime->between($startDateTime, $endDateTime)) {
-                return response()->json(['message' => 'This booking slot is not available!', 'status' => false], 200);
-            }
-        }
-
         $data = $request->all();
         $data['start_date_time'] = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
         $service = Service::where('id', $request->service_id)->first();
@@ -754,5 +734,83 @@ class BookingsController extends Controller
         }
 
         return response()->json(['status' => true, 'data' => $slots, 'message' => 'Available time slots fetched successfully.'], 200);
+    }
+
+    public function updateQueue(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:bookings,id',
+            'queue_status' => 'required|string|in:in_queue,not_in_queue',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $booking = Booking::findOrFail($request->id);
+        $booking->update(['queue_status' => $request->queue_status]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Queue status updated successfully.',
+        ], 200);
+    }
+
+    public function deleteBooking(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:bookings,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $booking = Booking::findOrFail($request->id);
+        $booking->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Booking deleted successfully.',
+        ], 200);
+    }
+
+    public function deleteQueue(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:bookings,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $booking = Booking::where('id', $request->id)->where('queue_status', 'in_queue')->first();
+
+        if (!$booking) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Queue not found or already processed.',
+            ], 404);
+        }
+
+        $booking->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Queue deleted successfully.',
+        ], 200);
     }
 }
