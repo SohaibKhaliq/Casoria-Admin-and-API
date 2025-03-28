@@ -790,7 +790,10 @@ class BookingsController extends Controller
             $start = Carbon::parse($booking->start_date_time);
             $end = $start->copy()->addMinutes($booking->duration_min);
 
-            while ($start->lt($end)) {
+            // Adjust the end time to leave the last 15 minutes as available
+            $adjusted_end = $end->copy()->subMinutes($slot_duration_in_minutes);
+
+            while ($start->lt($adjusted_end)) {
                 $bookedSlots[] = $start->format('H:i');
                 $start->addMinutes($slot_duration_in_minutes);
             }
