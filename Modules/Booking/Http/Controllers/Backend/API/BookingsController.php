@@ -28,7 +28,8 @@ use Modules\Promotion\Models\Promotion;
 use Modules\Promotion\Models\UserCouponRedeem;
 use Modules\Package\Models\BookingPackageService;
 use Modules\Service\Models\Service;
-
+use Modules\BussinessHour\Models\BussinessHour;
+use App\Models\Setting;
 
 class BookingsController extends Controller
 {
@@ -39,6 +40,18 @@ class BookingsController extends Controller
     {
         // Page Title
         $this->module_title = 'Bookings';
+    }
+
+    // get all business hours by business id
+    public function getBusinessHours(Request $request)
+    {
+        $business_id = $request->business_id;
+        $business_hours = BussinessHour::where('business_id', $business_id)->get();
+        return response()->json([
+            'status' => true,
+            'data' => $business_hours,
+            'message' => __('booking.business_hours'),
+        ], 200);
     }
 
     // function to get all of the bookings of authenticated user
@@ -692,5 +705,90 @@ class BookingsController extends Controller
             'status' => true,
             'booking_id' => $booking->id,
         ], 201);
+    }
+
+    public function getServiceDates(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'business_id' => 'required|integer|exists:businesses,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => 'Validation Error', 'errors' => $validator->errors()], 422);
+        }
+
+        $business_id = $request->business_id;
+        $business_hours = BussinessHour::where('business_id', $business_id)->get();
+
+        $dates = [];
+        $currentDate = Carbon::now();
+        $endDate = $currentDate->copy()->addMonth();
+
+        while ($currentDate->lte($endDate)) {
+            $dayOfWeek = strtolower($currentDate->format('l')); // Get the day name in lowercase (e.g., monday, tuesday)
+            $businessHour = $business_hours->firstWhere('day', $dayOfWeek);
+
+            if ($businessHour && $businessHour->is_holiday == 0) { // Check if it's not a holiday
+                $dates[] = [
+                    'date' => $currentDate->toDateString(),
+                    'day' => ucfirst($dayOfWeek), // Capitalize the first letter of the day
+                ];
+            }
+
+            $currentDate->addDay();
+        }
+
+        return response()->json(['status' => true, 'data' => $dates, 'message' => 'Available service dates fetched successfully.'], 200);
+    }
+
+    public function getTimeSlots(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'service_id' => 'required|integer|exists:services,id',
+            'business_id' => 'required|integer|exists:businesses,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => 'Validation Error', 'errors' => $validator->errors()], 422);
+        }
+
+        $service = Service::findOrFail($request->service_id);
+        $business_hours = BussinessHour::where('business_id', $request->business_id)->first();
+
+        if (!$business_hours) {
+            return response()->json(['status' => false, 'message' => 'No business hours found for the selected date.'], 404);
+        }
+
+        if ($business_hours->is_holiday == 1) {
+            return response()->json(['status' => false, 'message' => 'This business is closed on the selected day.'], 200);
+        }
+
+        // Get slot_duration plucked from Settings table
+        $slot_duration = Setting::where('name', 'slot_duration')->value('val');
+        $start_time = Carbon::parse($business_hours->start_time);
+        $end_time = Carbon::parse($business_hours->end_time);
+        $breaks = $business_hours->breaks ? json_decode($business_hours->breaks, true) : []; // Handle empty breaks gracefully
+
+        $slots = [];
+        while ($start_time->addMinutes($slot_duration)->lte($end_time)) {
+            $slot_start = $start_time->copy()->subMinutes($slot_duration);
+            $slot_end = $start_time;
+
+            $is_break = false;
+            foreach ($breaks as $break) {
+                $break_start = Carbon::parse($break['start']);
+                $break_end = Carbon::parse($break['end']);
+                if ($slot_start->between($break_start, $break_end) || $slot_end->between($break_start, $break_end)) {
+                    $is_break = true;
+                    break;
+                }
+            }
+
+            if (!$is_break) {
+                $slots[] = ['start' => $slot_start->format('H:i'), 'end' => $slot_end->format('H:i')];
+            }
+        }
+
+        return response()->json(['status' => true, 'data' => $slots, 'message' => 'Available time slots fetched successfully.'], 200);
     }
 }
