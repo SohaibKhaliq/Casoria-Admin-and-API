@@ -324,17 +324,15 @@ class BookingsController extends Controller
             ->where('id', '!=', $booking->id)
             ->get();
 
-        if ($service_booking->isNotEmpty()) {
-            foreach ($service_booking as $existingBooking) {
-                $startDateTime = Carbon::parse($existingBooking->start_date_time);
-                $endDateTime = Carbon::parse($existingBooking->end_date_time);
+        foreach ($service_booking as $existingBooking) {
+            $startDateTime = Carbon::parse($existingBooking->start_date_time);
+            $endDateTime = Carbon::parse($existingBooking->end_date_time);
 
-                $requestedStartDateTime = Carbon::parse($request->start_date_time);
-                $requestedEndDateTime = $requestedStartDateTime->copy()->addMinutes($request->duration_min);
+            $requestedStartDateTime = Carbon::parse($request->start_date_time);
+            $requestedEndDateTime = $requestedStartDateTime->copy()->addMinutes($request->duration_min);
 
-                if ($requestedStartDateTime->between($startDateTime, $endDateTime) || $requestedEndDateTime->between($startDateTime, $endDateTime)) {
-                    return response()->json(['message' => 'This booking slot is not available!', 'status' => false], 200);
-                }
+            if ($requestedStartDateTime->between($startDateTime, $endDateTime) || $requestedEndDateTime->between($startDateTime, $endDateTime)) {
+                return response()->json(['message' => 'This booking slot is not available!', 'status' => false], 200);
             }
         }
 
@@ -342,19 +340,6 @@ class BookingsController extends Controller
         $data['start_date_time'] = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
         $service = Service::where('id', $request->service_id)->first();
         $data['end_date_time'] = $data['start_date_time']->copy()->addMinutes($service->duration_min);
-
-        foreach ($service_booking as $existingBooking) {
-            $existingStartDateTime = Carbon::parse($existingBooking->start_date_time);
-            $existingEndDateTime = Carbon::parse($existingBooking->end_date_time);
-
-            if (
-                $data['start_date_time']->between($existingStartDateTime, $existingEndDateTime) ||
-                $data['end_date_time']->between($existingStartDateTime, $existingEndDateTime) ||
-                ($data['start_date_time']->lte($existingStartDateTime) && $data['end_date_time']->gte($existingEndDateTime))
-            ) {
-                return response()->json(['message' => 'The staff is not available at the selected time.', 'status' => false], 200);
-            }
-        }
 
         $data['queue_status'] = 'not_in_queue';
         $data['user_id'] = $request->user_id ?? auth()->id();
