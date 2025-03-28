@@ -773,15 +773,24 @@ class BookingsController extends Controller
         [$hours, $minutes] = explode(':', $slot_duration);
         $slot_duration_in_minutes = ($hours * 60) + $minutes;
 
+        // Get service duration
+        $service_duration_in_minutes = $service->duration_min;
+
         $slots = [];
         while ($start_time->addMinutes($slot_duration_in_minutes)->lte($end_time)) {
             $slot_start = $start_time->copy()->subMinutes($slot_duration_in_minutes);
+            $slot_end = $slot_start->copy()->addMinutes($service_duration_in_minutes);
+
+            // Ensure the slot does not exceed the business end time
+            if ($slot_end->gt($end_time)) {
+                break;
+            }
 
             $is_break = false;
             foreach ($breaks as $break) {
                 $break_start = Carbon::parse($break['start']);
                 $break_end = Carbon::parse($break['end']);
-                if ($slot_start->between($break_start, $break_end)) {
+                if ($slot_start->between($break_start, $break_end) || $slot_end->between($break_start, $break_end)) {
                     $is_break = true;
                     break;
                 }
