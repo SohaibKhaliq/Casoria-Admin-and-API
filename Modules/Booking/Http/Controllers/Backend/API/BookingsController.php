@@ -763,29 +763,33 @@ class BookingsController extends Controller
             return response()->json(['status' => false, 'message' => 'This business is closed on the selected day.'], 200);
         }
 
-        // Get slot_duration plucked from Settings table
+        // Get slot_duration from Settings table
         $slot_duration = Setting::where('name', 'slot_duration')->value('val');
         $start_time = Carbon::parse($business_hours->start_time);
         $end_time = Carbon::parse($business_hours->end_time);
         $breaks = $business_hours->breaks ? json_decode($business_hours->breaks, true) : []; // Handle empty breaks gracefully
 
+        // Convert slot_duration from "HH:mm" format to minutes
+        [$hours, $minutes] = explode(':', $slot_duration);
+        $slot_duration_in_minutes = ($hours * 60) + $minutes;
+
         $slots = [];
-        while ($start_time->addMinutes($slot_duration)->lte($end_time)) {
-            $slot_start = $start_time->copy()->subMinutes($slot_duration);
+        while ($start_time->addMinutes($slot_duration_in_minutes)->lte($end_time)) {
+            $slot_start = $start_time->copy()->subMinutes($slot_duration_in_minutes);
             $slot_end = $start_time;
 
             $is_break = false;
             foreach ($breaks as $break) {
-                $break_start = Carbon::parse($break['start']);
-                $break_end = Carbon::parse($break['end']);
-                if ($slot_start->between($break_start, $break_end) || $slot_end->between($break_start, $break_end)) {
-                    $is_break = true;
-                    break;
-                }
+            $break_start = Carbon::parse($break['start']);
+            $break_end = Carbon::parse($break['end']);
+            if ($slot_start->between($break_start, $break_end) || $slot_end->between($break_start, $break_end)) {
+                $is_break = true;
+                break;
+            }
             }
 
             if (!$is_break) {
-                $slots[] = ['start' => $slot_start->format('H:i'), 'end' => $slot_end->format('H:i')];
+            $slots[] = ['start' => $slot_start->format('H:i'), 'end' => $slot_end->format('H:i')];
             }
         }
 
