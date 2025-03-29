@@ -831,7 +831,7 @@ class BookingsController extends Controller
             ->where('employee_id', $request->employee_id)
             ->whereDate('start_date_time', Carbon::createFromFormat('Y-m-d', $request->date)->format('Y-m-d'))
             ->get();
-        // return $service_bookings;
+
         $slots = [];
         $bookedSlots = [];
 
@@ -840,18 +840,15 @@ class BookingsController extends Controller
             $start = Carbon::parse($booking->start_date_time);
             $end = $start->copy()->addMinutes($booking->duration_min);
 
-            // Adjust the end time to leave the last 15 minutes as available
-            $adjusted_end = $end->copy()->subMinutes($slot_duration_in_minutes);
-
-            while ($start->lt($adjusted_end)) {
+            while ($start->lt($end)) {
                 $bookedSlots[] = $start->format('H:i');
                 $start->addMinutes($slot_duration_in_minutes);
             }
         }
 
         // Generate all slots and mark their status
-        while ($start_time->addMinutes($slot_duration_in_minutes)->lte($end_time)) {
-            $slot_start = $start_time->copy()->subMinutes($slot_duration_in_minutes);
+        while ($start_time->lte($end_time)) {
+            $slot_start = $start_time->copy();
             $slot_end = $slot_start->copy()->addMinutes($service_duration_in_minutes);
 
             // Ensure the slot does not exceed the business end time
@@ -875,6 +872,8 @@ class BookingsController extends Controller
                     'status' => in_array($slot_start->format('H:i'), $bookedSlots) ? 'booked' : 'available',
                 ];
             }
+
+            $start_time->addMinutes($slot_duration_in_minutes);
         }
 
         return response()->json(['status' => true, 'data' => $slots, 'message' => 'Available time slots fetched successfully.'], 200);
