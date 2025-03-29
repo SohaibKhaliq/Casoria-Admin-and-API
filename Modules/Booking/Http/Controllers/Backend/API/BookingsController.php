@@ -332,9 +332,9 @@ class BookingsController extends Controller
             $this->updateAPIBookingPackage($request->packages, $booking->id, $request->employee_id, $userId, $is_reclaim);
             $this->storeApiUserPackage($booking->id);
         }
-
-        if (!empty($request->services)) {
-            $this->updateBookingService($request->services, $booking->id);
+        // return $request->service_id;
+        if (!empty($request->service_id)) {
+            $this->updateBookingService($request->service_id, $booking->id);
         }
 
         $message = 'New ' . Str::singular($this->module_title) . ' Added';
@@ -432,7 +432,92 @@ class BookingsController extends Controller
         $data['user_id'] = $request->user_id ?? auth()->id();
 
         // ...existing code for updating packages, services, and coupons...
+        if (!empty($request->service_id)) {
+            $this->updateBookingService($request->service_id, $booking->id);
+        }
+        if (!empty($request->packages)) {
+            $this->updateAPIBookingPackage($request->packages, $booking->id, $request->employee_id, $request->user_id);
+            $this->storeApiUserPackage($booking->id);
+        }
+        if (!empty($request->coupon_code)) {
+            $coupon = UserCouponRedeem::where('coupon_code', $request->coupon_code)->first();
+            $coupon_data = Coupon::where('coupon_code', $request->coupon_code)->first();
 
+            if ($coupon) {
+                $total_coupon = UserCouponRedeem::where('coupon_code', $request->coupon_code)->count();
+                if ($total_coupon == $coupon_data->use_limit) {
+                    Coupon::where('coupon_code', $request->coupon_code)->update(['is_expired' => 1]);
+                    if ($coupon = Coupon::where('coupon_code', $request->coupon_code)->first()) {
+                        Promotion::where('id', $coupon->promotion_id)->update(['status' => 0]);
+                    }
+                }
+            }
+        }
+        if (!empty($request->packages)) {
+            foreach ($request->packages as $key => $value) {
+                $UserPackages = UserPackage::with('bookings')
+                    ->where('package_id', $value['id'])
+                    ->where('user_id', $request->user_id)
+                    ->get();
+
+                $bookingPackage = BookingPackages::where('booking_id', $booking->id)->first();
+
+                if ($UserPackages->isNotEmpty()) {
+                    foreach ($UserPackages as $UserPackage) {
+                        foreach ($value['services'] as $service) {
+                            $userPackageService = UserPackageServices::where('user_package_id', $UserPackage->id)
+                                ->whereHas('packageService', function ($query) use ($service) {
+                                    $query->where('service_id', $service['service_id']);
+                                })->first();
+
+                            if ($userPackageService) {
+                                if ($userPackageService->qty >= 1) {
+                                    BookingPackageService::Create([
+                                        'booking_id' => $booking->id,
+                                        'package_id' => $value['id'],
+                                        'user_id' => $request->user_id,
+                                        'package_service_id' => $userPackageService->package_service_id,
+                                        'booking_package_id' => $bookingPackage->id,
+                                        'service_name' => $userPackageService->service_name,
+                                        'qty' => $userPackageService->qty - 1,
+                                        'service_id' => $service['service_id'],
+                                    ]);
+                                    $userPackageService->qty -= 1;
+                                    $userPackageService->save();
+                                }
+
+                                if ($userPackageService->qty == 0) {
+                                    $userPackageService->delete();
+                                }
+                            }
+                        }
+
+                        $remainingServices = UserPackageServices::where('user_package_id', $UserPackage->id)->count();
+                        if ($remainingServices == 0) {
+                            $UserPackage->delete();
+                        } else {
+                            $UserPackage->type = 'reclaimed';
+                            $UserPackage->save();
+                        }
+                    }
+                }
+            }
+        }
+        if (!empty($request->coupon_code)) {
+            $coupon = UserCouponRedeem::where('coupon_code', $request->coupon_code)->first();
+            $coupon_data = Coupon::where('coupon_code', $request->coupon_code)->first();
+
+            if ($coupon) {
+                $total_coupon = UserCouponRedeem::where('coupon_code', $request->coupon_code)->count();
+                if ($total_coupon == $coupon_data->use_limit) {
+                    Coupon::where('coupon_code', $request->coupon_code)->update(['is_expired' => 1]);
+                    if ($coupon = Coupon::where('coupon_code', $request->coupon_code)->first()) {
+                        Promotion::where('id', $coupon->promotion_id)->update(['status' => 0]);
+                    }
+                }
+            }
+        }
+        
         $booking->update($data);
 
         $message = __('booking.booking_update');
@@ -442,7 +527,7 @@ class BookingsController extends Controller
     public function updateStatus(Request $request)
     {
         $id = $request->id;
-        $booking = Booking::with('services', 'user', 'products')->findOrFail($id);
+        $booking = Booking::with('services', 'user')->findOrFail($id);
         $status = $request->status;
 
         if (isset($request->action_type) && $request->action_type == 'update-status') {
@@ -746,7 +831,7 @@ class BookingsController extends Controller
             ->where('employee_id', $request->employee_id)
             ->whereDate('start_date_time', Carbon::createFromFormat('Y-m-d', $request->date)->format('Y-m-d'))
             ->get();
-        return $service_bookings;
+        // return $service_bookings;
         $slots = [];
         $bookedSlots = [];
 
