@@ -108,14 +108,16 @@ class BookingsController extends Controller
         $bookings = $bookings->orderBy('updated_at', $orderBy)->paginate($per_page);
         return $bookings;
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer|exists:users,id',
             'business_id' => 'required|integer|exists:businesses,id',
-            'services' => 'sometimes|array',
-            'services.*.service_id' => 'required_with:services|integer|exists:services,id',
+            'service_id' => 'required|integer|exists:services,id',
             'employee_id' => 'required|integer|exists:users,id',
+            'start_date_time' => 'required|date_format:Y-m-d H:i:s',
+            'note' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -127,9 +129,56 @@ class BookingsController extends Controller
         }
 
         $data = $request->all();
-        $data['start_date_time'] = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
-        $service = Service::where('id', $request->service_id)->first();
-        $data['end_date_time'] = $data['start_date_time']->copy()->addMinutes($service->duration_min);
+        $startDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
+        $service = Service::findOrFail($request->service_id);
+        $business_hours = BussinessHour::where('business_id', $request->business_id)
+            ->where('day', strtolower($startDateTime->format('l')))
+            ->first();
+
+        // Check if the business is closed on the selected day
+        if (!$business_hours || $business_hours->is_holiday == 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This business is closed on the selected day.',
+            ], 422);
+        }
+
+        $endDateTime = $startDateTime->copy()->addMinutes($service->duration_min);
+        $businessEndTime = Carbon::parse($business_hours->end_time);
+        Log::info('Service End Time: ' . $endDateTime);
+        Log::info('Business End Time: ' . $businessEndTime);
+
+        // Allow booking if the service ends exactly at or before the business end time
+        if ($endDateTime->gt($businessEndTime) || $endDateTime->eq($businessEndTime)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This service exceeds the business end time.',
+            ], 422);
+        }
+
+        $data['start_date_time'] = $startDateTime;
+        $data['end_date_time'] = $endDateTime;
+        $data['queue_status'] = 'not_in_queue';
+        $data['user_id'] = $request->user_id ?? auth()->id();
+
+        // Check for overlapping bookings
+        $date = Carbon::parse($request->start_date_time)->toDateString();
+        $service_booking = Booking::where('employee_id', $request->employee_id)
+            ->where('business_id', $request->business_id)
+            ->whereDate('start_date_time', $date)
+            ->get();
+
+        foreach ($service_booking as $existingBooking) {
+            $startDateTime = Carbon::parse($existingBooking->start_date_time);
+            $endDateTime = Carbon::parse($existingBooking->end_date_time);
+
+            $requestedStartDateTime = Carbon::parse($request->start_date_time);
+            $requestedEndDateTime = $requestedStartDateTime->copy()->addMinutes($service->duration_min);
+
+            if ($requestedStartDateTime->between($startDateTime, $endDateTime) || $requestedEndDateTime->between($startDateTime, $endDateTime)) {
+                return response()->json(['message' => 'This booking slot is not available!', 'status' => false], 200);
+            }
+        }
 
         $data['queue_status'] = 'not_in_queue';
         $data['user_id'] = $request->user_id ?? auth()->id();
@@ -293,7 +342,7 @@ class BookingsController extends Controller
             Log::error($e->getMessage());
         }
 
-        return response()->json(['message' => $message, 'status' => true, 'booking_id' => $booking->id], 200);
+        return response()->json(['message' => 'New booking added successfully.', 'status' => true, 'booking_id' => $booking->id], 200);
     }
 
     public function update(Request $request)
@@ -302,9 +351,9 @@ class BookingsController extends Controller
             'id' => 'required|integer|exists:bookings,id',
             'user_id' => 'required|integer|exists:users,id',
             'business_id' => 'required|integer|exists:businesses,id',
-            'services' => 'sometimes|array',
-            'services.*.service_id' => 'required_with:services|integer|exists:services,id',
+            'service_id' => 'required|integer|exists:services,id',
             'employee_id' => 'required|integer|exists:users,id',
+            'start_date_time' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         if ($validator->fails()) {
@@ -317,9 +366,55 @@ class BookingsController extends Controller
 
         $booking = Booking::findOrFail($request->id);
         $data = $request->all();
-        $data['start_date_time'] = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
-        $service = Service::where('id', $request->service_id)->first();
-        $data['end_date_time'] = $data['start_date_time']->copy()->addMinutes($service->duration_min);
+        $startDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
+        $service = Service::findOrFail($request->service_id);
+        $business_hours = BussinessHour::where('business_id', $request->business_id)
+            ->where('day', strtolower($startDateTime->format('l')))
+            ->first();
+
+        // Check if the business is closed on the selected day
+        if (!$business_hours || $business_hours->is_holiday == 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This business is closed on the selected day.',
+            ], 422);
+        }
+
+        $endDateTime = $startDateTime->copy()->addMinutes($service->duration_min);
+        $businessEndTime = Carbon::parse($business_hours->end_time);
+
+        // Allow booking if the service ends exactly at or before the business end time
+        if ($endDateTime->gt($businessEndTime)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This service exceeds the business end time.',
+            ], 422);
+        }
+
+        $data['start_date_time'] = $startDateTime;
+        $data['end_date_time'] = $endDateTime;
+        $data['queue_status'] = 'not_in_queue';
+        $data['user_id'] = $request->user_id ?? auth()->id();
+
+        // Check for overlapping bookings
+        $date = Carbon::parse($request->start_date_time)->toDateString();
+        $service_booking = Booking::where('employee_id', $request->employee_id)
+            ->where('business_id', $request->business_id)
+            ->whereDate('start_date_time', $date)
+            ->where('id', '!=', $booking->id)
+            ->get();
+
+        foreach ($service_booking as $existingBooking) {
+            $startDateTime = Carbon::parse($existingBooking->start_date_time);
+            $endDateTime = Carbon::parse($existingBooking->end_date_time);
+
+            $requestedStartDateTime = Carbon::parse($request->start_date_time);
+            $requestedEndDateTime = $requestedStartDateTime->copy()->addMinutes($service->duration_min);
+
+            if ($requestedStartDateTime->between($startDateTime, $endDateTime) || $requestedEndDateTime->between($startDateTime, $endDateTime)) {
+                return response()->json(['message' => 'This booking slot is not available!', 'status' => false], 200);
+            }
+        }
 
         $data['queue_status'] = 'not_in_queue';
         $data['user_id'] = $request->user_id ?? auth()->id();
