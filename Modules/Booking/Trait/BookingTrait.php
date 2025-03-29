@@ -24,7 +24,7 @@ trait BookingTrait
         Log::info('Booking ID', ['booking_id' => $booking_id]);
 
         $serviceId = collect($data);
-        
+
         Log::info('Booking Service ID', ['serviceData' => $serviceId]);
 
         $bookingService = BookingService::where('booking_id', $booking_id)->get();
@@ -243,9 +243,9 @@ trait BookingTrait
         }
     }
 
-    public function getSlots($date, $day, $business_id, $serviceDuration = 0, $employee_id = null)
+    public function getSlots($date, $business_id, $serviceDuration = 0, $employee_id = null)
     {
-        $slotDay = BussinessHour::where(['day' => strtolower($day), 'business_id' => $business_id])->first();
+        $slotDay = BussinessHour::where(['business_id' => $business_id])->first();
 
         $slots[] = [
             'value' => '',
