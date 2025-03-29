@@ -979,7 +979,7 @@ class BookingsController extends Controller
     public function deleteBooking(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|integer|exists:bookings,id',
+            'booking_id' => 'required|integer|exists:bookings,id',
         ]);
 
         if ($validator->fails()) {
@@ -990,7 +990,11 @@ class BookingsController extends Controller
             ], 422);
         }
 
-        $booking = Booking::findOrFail($request->id);
+        $booking = Booking::findOrFail($request->booking_id);
+        $bookingServices = BookingService::where('booking_id', $booking->id)->get();
+        foreach ($bookingServices as $service) {
+            $service->delete();
+        }
         $booking->delete();
 
         return response()->json([
