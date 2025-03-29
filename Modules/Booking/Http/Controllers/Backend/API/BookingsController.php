@@ -204,7 +204,7 @@ class BookingsController extends Controller
                 }
             }
         }
-        
+
         $booking = Booking::create($data);
         if (!empty($data['coupon_code'])) {
             $coupon = UserCouponRedeem::where('coupon_code', $data['coupon_code'])->first();
@@ -517,7 +517,7 @@ class BookingsController extends Controller
                 }
             }
         }
-        
+
         $booking->update($data);
 
         $message = __('booking.booking_update');
@@ -956,5 +956,96 @@ class BookingsController extends Controller
             'status' => true,
             'message' => 'Queue deleted successfully.',
         ], 200);
+    }
+
+    public function getSlots(Request $request)
+    {
+        $date = $request->input('date');
+        $business_id = $request->input('business_id');
+        $serviceDuration = $request->input('serviceDuration', 0);
+        $employee_id = $request->input('employee_id', null);
+
+        $slotDay = BussinessHour::where(['business_id' => $business_id])->first();
+
+        $slots[] = [
+            'value' => '',
+            'label' => 'No Slot Available',
+            'disabled' => true,
+        ];
+
+        if (isset($slotDay)) {
+            $start_time = strtotime($slotDay->start_time);
+            $end_time = strtotime($slotDay->end_time);
+            $slot_duration = setting('slot_duration');
+
+            $slot_parts = explode(':', $slot_duration);
+            $slot_hours = intval($slot_parts[0]);
+            $slot_minutes = intval($slot_parts[1]);
+
+            $slot_duration_minutes = $slot_hours * 60 + $slot_minutes;
+
+            $current_time = $start_time;
+            $slots = [];
+
+            while ($current_time < $end_time) {
+                $is_break_hour = false;
+                foreach ($slotDay->breaks as $break) {
+                    $start_break = strtotime($break['start_break']);
+                    $end_break = strtotime($break['end_break']);
+                    if ($current_time >= $start_break && $current_time < $end_break) {
+                        $current_time = $end_break;
+                        $is_break_hour = true;
+                        break;
+                    }
+                }
+
+                if ($is_break_hour) {
+                    continue;
+                }
+
+                $slot_end_time = $current_time + ($serviceDuration * 60);
+
+                if ($slot_end_time > $end_time) {
+                    break;
+                }
+
+                $slot_start = $current_time;
+                $current_time += $slot_duration_minutes * 60;
+
+                $startDateTime = date('Y-m-d', strtotime($date)) . ' ' . date('H:i:s', $slot_start);
+                $startTimestamp = strtotime($startDateTime);
+
+                $endTimestamp = $startTimestamp + ($slot_duration_minutes * 60);
+
+                $is_booked = false;
+                if ($employee_id) {
+                    $existingAppointments = BookingService::where('employee_id', $employee_id)
+                        ->where('start_date_time', '<', date('Y-m-d H:i:s', $endTimestamp))
+                        ->get();
+                    // return response()->json($existingAppointments);
+
+                    foreach ($existingAppointments as $appointment) {
+                        $appointment_start = strtotime($appointment->start_date_time);
+                        $appointment_end = $appointment_start + ($appointment->duration_min * 60);
+
+                        if ($startTimestamp >= $appointment_start && $startTimestamp < $appointment_end) {
+                            $is_booked = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!$is_booked) {
+                    $slot = [
+                        'value' => date('Y-m-d H:i:s', $startTimestamp),
+                        'label' => date('h:i A', $slot_start),
+                        'disabled' => false,
+                    ];
+                    $slots[] = $slot;
+                }
+            }
+        }
+
+        return response()->json($slots);
     }
 }
