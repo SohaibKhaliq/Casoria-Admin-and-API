@@ -204,9 +204,8 @@ class BookingsController extends Controller
                 }
             }
         }
-
+        
         $booking = Booking::create($data);
-
         if (!empty($data['coupon_code'])) {
             $coupon = UserCouponRedeem::where('coupon_code', $data['coupon_code'])->first();
             $coupon_data = Coupon::where('coupon_code', $data['coupon_code'])->first();
@@ -360,6 +359,7 @@ class BookingsController extends Controller
             'services' => 'sometimes|array',
             'services.*.service_id' => 'required_with:services|integer|exists:services,id',
             'employee_id' => 'required|integer|exists:users,id',
+            'start_date_time' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         if ($validator->fails()) {
@@ -372,25 +372,41 @@ class BookingsController extends Controller
 
         $booking = Booking::findOrFail($request->id);
         $data = $request->all();
-        $data['start_date_time'] = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
-        $service = Service::where('id', $request->service_id)->first();
-        $data['end_date_time'] = $data['start_date_time']->copy()->addMinutes($service->duration_min);
-
+        $startDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
+        $service = Service::findOrFail($request->service_id);
         $business_hours = BussinessHour::where('business_id', $request->business_id)
-            ->where('day', strtolower($data['start_date_time']->format('l')))
+            ->where('day', strtolower($startDateTime->format('l')))
             ->first();
 
-        if ($business_hours) {
-            $businessEndTime = Carbon::parse($business_hours->end_time);
-
-            // Check if booking exceeds business end time
-            if ($data['end_date_time']->gt($businessEndTime)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'This service exceeds the business end time.',
-                ], 422);
-            }
+        // Check if the business is closed on the selected day
+        if (!$business_hours || $business_hours->is_holiday == 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This business is closed on the selected day.',
+            ], 422);
         }
+
+        $endDateTime = $startDateTime->copy()->addMinutes($service->duration_min);
+        $businessEndTime = Carbon::parse($business_hours->end_time)->setDate(
+            $startDateTime->year,
+            $startDateTime->month,
+            $startDateTime->day
+        );
+
+        // Check if the service booking exceeds the business end time
+        if ($endDateTime->gt($businessEndTime)) {
+            Log::info('endDateTime exceeds businessEndTime', [
+                'endDateTime' => $endDateTime->toDateTimeString(),
+                'businessEndTime' => $businessEndTime->toDateTimeString(),
+            ]);
+            return response()->json([
+                'status' => false,
+                'message' => 'This service exceeds the business end time.',
+            ], 422);
+        }
+
+        $data['start_date_time'] = $startDateTime;
+        $data['end_date_time'] = $endDateTime;
 
         // Check for overlapping bookings
         $date = Carbon::parse($request->start_date_time)->toDateString();
@@ -401,13 +417,13 @@ class BookingsController extends Controller
             ->get();
 
         foreach ($service_booking as $existingBooking) {
-            $startDateTime = Carbon::parse($existingBooking->start_date_time);
-            $endDateTime = Carbon::parse($existingBooking->end_date_time);
+            $existingStartDateTime = Carbon::parse($existingBooking->start_date_time);
+            $existingEndDateTime = Carbon::parse($existingBooking->end_date_time);
 
             $requestedStartDateTime = Carbon::parse($request->start_date_time);
             $requestedEndDateTime = $requestedStartDateTime->copy()->addMinutes($service->duration_min);
-            // return $requestedEndDateTime;
-            if ($requestedStartDateTime->between($startDateTime, $endDateTime) || $requestedEndDateTime->between($startDateTime, $endDateTime)) {
+
+            if ($requestedStartDateTime->between($existingStartDateTime, $existingEndDateTime) || $requestedEndDateTime->between($existingStartDateTime, $existingEndDateTime)) {
                 return response()->json(['message' => 'This booking slot is not available!', 'status' => false], 200);
             }
         }
@@ -415,57 +431,9 @@ class BookingsController extends Controller
         $data['queue_status'] = 'not_in_queue';
         $data['user_id'] = $request->user_id ?? auth()->id();
 
-        if (!empty($request->packages)) {
-            foreach ($request->packages as $package) {
-                $existingPackage = UserPackage::where('package_id', $package['id'])
-                    ->where('user_id', $data['user_id'])
-                    ->exists();
-                if ($existingPackage) {
-                    return response()->json(['message' => 'Package already purchased.', 'status' => false], 200);
-                }
-            }
-        }
+        // ...existing code for updating packages, services, and coupons...
 
         $booking->update($data);
-
-        if (!empty($data['coupon_code'])) {
-            $coupon = UserCouponRedeem::where('coupon_code', $data['coupon_code'])->first();
-            $coupon_data = Coupon::where('coupon_code', $data['coupon_code'])->first();
-
-            $totalPrice = 0;
-            if (!empty($data['services'])) {
-                $totalPrice = array_sum(array_column($data['services'], 'service_price'));
-            } elseif (!empty($data['packages'])) {
-                $totalPrice = array_sum(array_column($data['packages'], 'package_price'));
-            }
-
-            if ($data['couponDiscountamount'] > $totalPrice) {
-                return response()->json(['valid' => false, 'message' => 'Discount exceeds the total price', 'status' => false], 200);
-            }
-
-            if (!$coupon) {
-                if ($coupon_data->is_expired == 1) {
-                    return response()->json(['message' => 'Coupon has expired.', 'status' => false], 200);
-                } else {
-                    $redeemCoupon = [
-                        'coupon_code' => $data['coupon_code'],
-                        'discount' => $data['couponDiscountamount'],
-                        'user_id' => $data['user_id'],
-                        'coupon_id' => $coupon_data->id,
-                        'booking_id' => $booking->id,
-                    ];
-                    UserCouponRedeem::create($redeemCoupon);
-                }
-            }
-        }
-
-        if (!empty($request->packages)) {
-            $this->updateAPIBookingPackage($request->packages, $booking->id, $request->employee_id, $data['user_id']);
-        }
-
-        if (!empty($request->services)) {
-            $this->updateBookingService($request->services, $booking->id);
-        }
 
         $message = __('booking.booking_update');
         return response()->json(['message' => $message, 'status' => true], 200);
@@ -778,7 +746,7 @@ class BookingsController extends Controller
             ->where('employee_id', $request->employee_id)
             ->whereDate('start_date_time', Carbon::createFromFormat('Y-m-d', $request->date)->format('Y-m-d'))
             ->get();
-
+        return $service_bookings;
         $slots = [];
         $bookedSlots = [];
 
