@@ -2,6 +2,7 @@
 
 namespace Modules\Booking\Trait;
 
+use Illuminate\Support\Facades\Log;
 use App\Jobs\BulkNotification;
 use Modules\Booking\Models\BookingProduct;
 use Modules\Booking\Models\BookingService;
@@ -13,24 +14,32 @@ use Modules\Package\Models\BookingPackages;
 use Modules\Package\Models\UserPackageRedeem;
 use Modules\Package\Models\UserPackageServices;
 use Modules\Package\Models\PackageService;
+use Modules\Booking\Models\Booking;
 
 trait BookingTrait
 {
     public function updateBookingService($data, $booking_id)
     {
-        $serviceData = collect($data);
-        $serviceId = $serviceData->pluck('service_id')->toArray();
-        $bookingService = BookingService::where('booking_id', $booking_id);
-        if (count($serviceId) > 0) {
-            $bookingService = $bookingService->whereNotIn('service_id', $serviceId);
-        }
-        $bookingService->delete();
+        Log::info('Booking Service Data', ['data' => $data]);
+        Log::info('Booking ID', ['booking_id' => $booking_id]);
+
+        $serviceId = collect($data);
+        
+        Log::info('Booking Service ID', ['serviceData' => $serviceId]);
+
+        $bookingService = BookingService::where('booking_id', $booking_id)->get();
+        Log::info('Booking Service', ['bookingService' => $bookingService]);
+        // Get the values of service_id and employee_id from the database from Booking 
+        $serviceData = Booking::where('id', $booking_id)->get();
+        Log::info('Booking Service Data', ['serviceData' => $serviceData]);
+        // $bookingService->delete();
         foreach ($serviceData as $key => $value) {
+            Log::info('Processing Service', ['serviceId' => $serviceId]);
             BookingService::updateOrCreate(['booking_id' => $booking_id, 'service_id' => $value['service_id'], 'employee_id' => $value['employee_id']], [
                 'sequance' => $key,
                 'start_date_time' => $value['start_date_time'],
                 'booking_id' => $booking_id,
-                'service_id' => $value['service_id'],
+                'service_id' => (int)$serviceId->first(),
                 'employee_id' => $value['employee_id'],
                 'service_price' => $value['service_price'] ?? 0,
                 'duration_min' => $value['duration_min'] ?? 30,
