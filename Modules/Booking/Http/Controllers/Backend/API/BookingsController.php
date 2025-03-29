@@ -130,6 +130,16 @@ class BookingsController extends Controller
 
         $data = $request->all();
         $startDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
+        $currentDateTime = Carbon::now();
+
+        // Check if the booking is for a past date
+        if ($startDateTime->lt($currentDateTime)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bookings cannot be made for past dates or times.',
+            ], 422);
+        }
+
         $service = Service::findOrFail($request->service_id);
         $business_hours = BussinessHour::where('business_id', $request->business_id)
             ->where('day', strtolower($startDateTime->format('l')))
@@ -143,12 +153,26 @@ class BookingsController extends Controller
             ], 422);
         }
 
-        $endDateTime = $startDateTime->copy()->addMinutes($service->duration_min);
+        // Check if the booking is outside the business's operating hours
+        $businessStartTime = Carbon::parse($business_hours->start_time)->setDate(
+            $startDateTime->year,
+            $startDateTime->month,
+            $startDateTime->day
+        );
         $businessEndTime = Carbon::parse($business_hours->end_time)->setDate(
             $startDateTime->year,
             $startDateTime->month,
             $startDateTime->day
         );
+
+        if ($startDateTime->lt($businessStartTime) || $startDateTime->gte($businessEndTime)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bookings must be made within the business operating hours.',
+            ], 422);
+        }
+
+        $endDateTime = $startDateTime->copy()->addMinutes($service->duration_min);
 
         // Check if the service booking exceeds the business end time
         if ($endDateTime->gt($businessEndTime)) {
@@ -175,13 +199,10 @@ class BookingsController extends Controller
             ->get();
 
         foreach ($service_booking as $existingBooking) {
-            $startDateTime = Carbon::parse($existingBooking->start_date_time);
-            $endDateTime = Carbon::parse($existingBooking->end_date_time);
+            $existingStartDateTime = Carbon::parse($existingBooking->start_date_time);
+            $existingEndDateTime = Carbon::parse($existingBooking->end_date_time);
 
-            $requestedStartDateTime = Carbon::parse($request->start_date_time);
-            $requestedEndDateTime = $requestedStartDateTime->copy()->addMinutes($service->duration_min);
-
-            if ($requestedStartDateTime->between($startDateTime, $endDateTime) || $requestedEndDateTime->between($startDateTime, $endDateTime)) {
+            if ($startDateTime->between($existingStartDateTime, $existingEndDateTime) || $endDateTime->between($existingStartDateTime, $existingEndDateTime)) {
                 return response()->json(['message' => 'This booking slot is not available!', 'status' => false], 200);
             }
         }
@@ -714,8 +735,7 @@ class BookingsController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer|exists:users,id',
             'business_id' => 'required|integer|exists:businesses,id',
-            'services' => 'sometimes|array',
-            'services.*.service_id' => 'required_with:services|integer|exists:services,id',
+            'service_id' => 'required|integer|exists:services,id',
             'employee_id' => 'required|integer|exists:users,id',
             'start_date_time' => 'required|date_format:Y-m-d H:i:s',
         ]);
@@ -729,8 +749,61 @@ class BookingsController extends Controller
         }
 
         $startDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
-        $service = Service::where('id', $request->service_id)->first();
+        $currentDateTime = Carbon::now();
+
+        // Check if the booking is for a past date
+        if ($startDateTime->lt($currentDateTime)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bookings cannot be made for past dates or times.',
+            ], 422);
+        }
+
+        $service = Service::findOrFail($request->service_id);
+        $business_hours = BussinessHour::where('business_id', $request->business_id)
+            ->where('day', strtolower($startDateTime->format('l')))
+            ->first();
+
+        // Check if the business is closed on the selected day
+        if (!$business_hours || $business_hours->is_holiday == 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This business is closed on the selected day.',
+            ], 422);
+        }
+
+        // Check if the booking is outside the business's operating hours
+        $businessStartTime = Carbon::parse($business_hours->start_time)->setDate(
+            $startDateTime->year,
+            $startDateTime->month,
+            $startDateTime->day
+        );
+        $businessEndTime = Carbon::parse($business_hours->end_time)->setDate(
+            $startDateTime->year,
+            $startDateTime->month,
+            $startDateTime->day
+        );
+
+        if ($startDateTime->lt($businessStartTime) || $startDateTime->gte($businessEndTime)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bookings must be made within the business operating hours.',
+            ], 422);
+        }
+
         $endDateTime = $startDateTime->copy()->addMinutes($service->duration_min);
+
+        // Check if the service booking exceeds the business end time
+        if ($endDateTime->gt($businessEndTime)) {
+            Log::info('endDateTime exceeds businessEndTime', [
+                'endDateTime' => $endDateTime->toDateTimeString(),
+                'businessEndTime' => $businessEndTime->toDateTimeString(),
+            ]);
+            return response()->json([
+                'status' => false,
+                'message' => 'This service exceeds the business end time.',
+            ], 422);
+        }
 
         $data = $request->all();
         $data['start_date_time'] = $startDateTime;
