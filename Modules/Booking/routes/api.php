@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Booking\Http\Controllers\Backend\API\BookingsController;
 use Modules\Booking\Http\Controllers\Backend\API\PaymentController;
 use Modules\Booking\Models\Booking;
+use Modules\Booking\Trait\BookingTrait;
 
 Route::group(['middleware' => 'auth:sanctum', 'as' => 'backend.'], function () {
     Route::apiResource('bookings', BookingsController::class);
@@ -24,4 +25,5 @@ Route::group(['middleware' => 'auth:sanctum', 'as' => 'backend.'], function () {
     Route::post('update-queue', [BookingsController::class, 'updateQueue']);
     Route::delete('delete-booking', [BookingsController::class, 'deleteBooking']);
     Route::delete('delete-queue', [BookingsController::class, 'deleteQueue']);
+    Route::get('getSlots', [BookingsController::class, 'getSlots']);
 });
