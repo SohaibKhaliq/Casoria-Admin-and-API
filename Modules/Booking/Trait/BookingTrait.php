@@ -15,6 +15,7 @@ use Modules\Package\Models\UserPackageRedeem;
 use Modules\Package\Models\UserPackageServices;
 use Modules\Package\Models\PackageService;
 use Modules\Booking\Models\Booking;
+use Modules\Service\Models\Service;
 
 trait BookingTrait
 {
@@ -33,6 +34,13 @@ trait BookingTrait
         $serviceData = Booking::where('id', $booking_id)->get();
         Log::info('Booking Service Data', ['serviceData' => $serviceData]);
         // $bookingService->delete();
+        $serviceprice=Service::where('id',$serviceId->first())->first();
+        Log::info('Service Price', ['serviceprice' => $serviceprice]);
+        if ($serviceprice) {
+            $serviceprice = $serviceprice->default_price;
+        } else {
+            $serviceprice = 0;
+        }
         foreach ($serviceData as $key => $value) {
             Log::info('Processing Service', ['serviceId' => $serviceId]);
             BookingService::updateOrCreate(['booking_id' => $booking_id, 'service_id' => $value['service_id'], 'employee_id' => $value['employee_id']], [
@@ -41,7 +49,7 @@ trait BookingTrait
                 'booking_id' => $booking_id,
                 'service_id' => (int)$serviceId->first(),
                 'employee_id' => $value['employee_id'],
-                'service_price' => $value['service_price'] ?? 0,
+                'service_price' => $serviceprice ?? 0,
                 'duration_min' => $value['duration_min'] ?? 30,
             ]);
         }
