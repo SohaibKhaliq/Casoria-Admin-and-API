@@ -590,7 +590,7 @@ class BookingsController extends Controller
         return response()->json(['data' => new BookingResource($booking), 'message' => $message, 'status' => true]);
     }
 
-    public function bookingList(Request $request)
+    public function bookingListbak(Request $request)
     {
         $user = Auth::user();
 
@@ -642,6 +642,22 @@ class BookingsController extends Controller
 
         $items = BookingListResource::collection($booking);
 
+        return response()->json([
+            'status' => true,
+            'data' => $items,
+            'message' => __('booking.booking_list'),
+        ], 200);
+    }
+    public function bookingList(Request $request)
+    {
+        $user = Auth::user();
+
+        $perPage = $request->input('per_page', 10); // Default to 10 items per page
+        $booking = Booking::where('user_id', $user->id)
+            ->with('booking_service.service', 'booking_service.employee')
+            ->paginate($perPage);
+
+        $items = BookingListResource::collection($booking->items());
         return response()->json([
             'status' => true,
             'data' => $items,

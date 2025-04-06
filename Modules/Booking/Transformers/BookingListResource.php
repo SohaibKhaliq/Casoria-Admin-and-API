@@ -13,7 +13,7 @@ class BookingListResource extends JsonResource
      * @param  \Illuminate\Http\Request
      * @return array
      */
-    public function toArray($request)
+    public function toArraybak($request)
     {
         $employee_id = optional($this->booking_service->first())->employee_id ?? optional($this->bookingPackages->first())->employee_id;
         $primaryAmount = ($this->booking_service ? $this->booking_service->sum('service_price') : 0) + ($this->bookingPackages ? $this->bookingPackages->sum('package_price') : 0);
@@ -64,6 +64,17 @@ class BookingListResource extends JsonResource
             'tax_amount' => $tax_details['total_tax_amount'],
             'total_amount' => (($primaryAmount + ($this->products ? $this->products->sum('discounted_price') : 0) + $tax_details['total_tax_amount'] + ($this->payment ? $this->payment->tip_amount : 0))) - $couponAmount,
             'coupon_amount' => $couponAmount ?? 0,
+        ];
+    }
+    public function toArray($request)
+    {
+        return [
+            'id' => $this->id,
+            'servicename' => $this->booking_service->first()?->service->name ?? '-',
+            'price' => $this->booking_service->first()?->service_price ?? '0.00',
+            'staffName' => $this->booking_service->first()?->employee->full_name ?? '-',
+            'dateTime' => $this->start_date_time,
+            'isAppointment' => $this->queue_status, // Directly send 'in_queue' or 'not_in_queue'
         ];
     }
 }
