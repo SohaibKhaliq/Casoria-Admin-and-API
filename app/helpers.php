@@ -178,17 +178,20 @@ if (!function_exists('fcm')) {
         return $token['access_token'];
     }
 }
-function timeAgoInt($date)
-{
-    if ($date == null) {
-        return '-';
-    }
-    $datetime = new \DateTime($date);
-    $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
-    $diff_time = \Carbon\Carbon::parse($datetime)->diffInHours();
+if (!function_exists('getUserTimeZone')) {
+    function timeAgoInt($date)
+    {
+        if ($date == null) {
+            return '-';
+        }
+        $datetime = new \DateTime($date);
+        $datetime->setTimezone(new \DateTimeZone(setting('time_zone') ?? 'UTC'));
+        $diff_time = \Carbon\Carbon::parse($datetime)->diffInHours();
 
-    return $diff_time;
+        return $diff_time;
+    }
 }
+
 
 function timeAgo($date)
 {

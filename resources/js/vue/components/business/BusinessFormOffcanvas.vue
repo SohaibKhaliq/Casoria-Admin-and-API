@@ -114,7 +114,6 @@
               <span class="text-danger">{{ errors.description }}</span>
             </div>
 
-            BusinessFormOffcanvas
             <div v-for="field in customefield" :key="field.id">
               <FormElement v-model="custom_fields_data" :name="field.name" :label="field.label" :type="field.type" :required="field.required" :options="field.value" :field_id="field.id"></FormElement>
             </div>

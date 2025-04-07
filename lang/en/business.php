@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'lbl_select_manager' => 'Select Branch Admin',
+    'assign_manager' => 'Select Branch Admin',
     'title' => 'Businesses',
     'singular_title' => 'Business',
     'business_setting' => 'Business Settings',
