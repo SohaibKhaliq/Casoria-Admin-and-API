@@ -144,13 +144,13 @@
                 name: 'is_manager',
                 title: "{{ __('employee.lbl_role') }}"
             },
-            {
-                data: 'email_verified_at',
-                name: 'email_verified_at',
-                orderable: true,
-                searchable: false,
-                title: "{{ __('employee.lbl_verification_status') }}"
-            },
+            // {
+            //     data: 'email_verified_at',
+            //     name: 'email_verified_at',
+            //     orderable: true,
+            //     searchable: false,
+            //     title: "{{ __('employee.lbl_verification_status') }}"
+            // },
             // {
             //     data: 'is_banned',
             //     name: 'is_banned',

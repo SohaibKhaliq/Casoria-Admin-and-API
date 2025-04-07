@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'lbl_is_manager' => 'Crea admin',
     'title' => 'Personale',
     'singular_title' => 'Nome del Personale',
     'lbl_first_name' => 'Nome',

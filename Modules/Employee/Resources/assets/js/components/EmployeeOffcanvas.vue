@@ -108,11 +108,11 @@
             </div>
 
             <InputField class="col-md-6" :label="$t('employee.lbl_about_self')" :placeholder="$t('employee.about_self')" v-model="about_self" :error-message="errors['about_self']" :error-messages="errorMessages['about_self']"></InputField>
-            <InputField class="col-md-6" :label="$t('employee.lbl_expert')" :placeholder="$t('employee.expert')" v-model="expert" :error-message="errors['expert']" :error-messages="errorMessages['expert']"></InputField>
+            <!-- <InputField class="col-md-6" :label="$t('employee.lbl_expert')" :placeholder="$t('employee.expert')" v-model="expert" :error-message="errors['expert']" :error-messages="errorMessages['expert']"></InputField>
             <InputField class="col-md-6" :label="$t('employee.lbl_facebook_link')" :placeholder="$t('employee.facebook_link')" v-model="facebook_link" :error-message="errors['facebook_link']" :error-messages="errorMessages['facebook_link']"></InputField>
             <InputField class="col-md-6" :label="$t('employee.lbl_instagram_link')" :placeholder="$t('employee.instagram_link')" v-model="instagram_link" :error-message="errors['instagram_link']" :error-messages="errorMessages['instagram_link']"></InputField>
             <InputField class="col-md-6" :label="$t('employee.lbl_twitter_link')" :placeholder="$t('employee.Twitter_link')" v-model="twitter_link" :error-message="errors['twitter_link']" :error-messages="errorMessages['twitter_link']"></InputField>
-            <InputField class="col-md-6" :label="$t('employee.lbl_dribbble_link')" :placeholder="$t('employee.dribble_link')" v-model="dribbble_link" :error-message="errors['dribbble_link']" :error-messages="errorMessages['dribbble_link']"></InputField>
+            <InputField class="col-md-6" :label="$t('employee.lbl_dribbble_link')" :placeholder="$t('employee.dribble_link')" v-model="dribbble_link" :error-message="errors['dribbble_link']" :error-messages="errorMessages['dribbble_link']"></InputField> -->
             <div class="form-group">
               <div class="d-flex justify-content-between align-items-center">
                 <label class="form-label" for="category-status">{{ $t('employee.lbl_status') }}</label>
