@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'lbl_create_manager'=> 'Create Business Admin',
     'title' => 'Staffs',
     'singular_title' => 'Staff Name',
     'lbl_first_name' => 'First Name',

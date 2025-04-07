@@ -29,7 +29,7 @@ class BusinessRequest extends FormRequest
             case 'post':
                 return [
                     'name' => 'required|string|max:255',
-                    'business_for' => 'required',
+                    // 'business_for' => 'required',
                     //'manager_id' => 'required',
                     'contact_number' => 'required|string|unique:businesses,contact_number',
                     'contact_email' => 'required|string|unique:businesses,contact_email',
@@ -49,7 +49,7 @@ class BusinessRequest extends FormRequest
 
                 return [
                     'name' => 'required|string',
-                    'business_for' => 'string',
+                    // 'business_for' => 'string',
                     //'manager_id' => 'required',
                     'contact_number' => 'required|string',
                     'contact_email' => 'required|string',
@@ -65,7 +65,7 @@ class BusinessRequest extends FormRequest
                 break;
 
             default:
-                // code...
+                
                 break;
         }
     }
