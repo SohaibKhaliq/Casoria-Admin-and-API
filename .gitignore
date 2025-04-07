@@ -15,7 +15,8 @@ yarn-error.log
 *.cache
 .DS_Store
 vendor/*
-
+public/js/*.js
+public/modules/*
 
 Below Comments For Design Style & Scripts
 !/public/css/.gitkeep
