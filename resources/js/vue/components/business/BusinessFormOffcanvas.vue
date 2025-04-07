@@ -165,7 +165,7 @@ const { getRequest, storeRequest, updateRequest } = useRequest()
 
 const BRANCH_FOR_OPTIONS = reactive(parseSelectData['BRANCH_FOR'] || [])
 
-const PAYMENT_METHODS_OPTIONS = reactive(Array.isArray(parseSelectData['PAYMENT_METHODS']) ? parseSelectData['PAYMENT_METHODS'].filter((method) => method.id !== 'razorpay') : [])
+const PAYMENT_METHODS_OPTIONS = reactive(parseSelectData['PAYMENT_METHODS'])
 
 const singleSelectOption = ref({
   closeOnSelect: true,
