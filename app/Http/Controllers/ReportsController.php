@@ -58,10 +58,10 @@ class ReportsController extends Controller
                 'value' => 'total_tax_amount',
                 'text' => 'Tax Amount',
             ],
-            [
-                'value' => 'total_tip_amount',
-                'text' => 'Tips Amount',
-            ],
+            // [
+            //     'value' => 'total_tip_amount',
+            //     'text' => 'Tips Amount',
+            // ],
             [
                 'value' => 'total_amount',
                 'text' => 'Final Amount',
@@ -405,10 +405,10 @@ class ReportsController extends Controller
                 'value' => 'commission_amount',
                 'text' => 'Commission Amount',
             ],
-            [
-                'value' => 'tip_amount',
-                'text' => 'Tips Amount',
-            ],
+            // [
+            //     'value' => 'tip_amount',
+            //     'text' => 'Tips Amount',
+            // ],
             [
                 'value' => 'payment_type',
                 'text' => 'Payment Type',
