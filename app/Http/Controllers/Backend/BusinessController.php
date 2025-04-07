@@ -63,10 +63,10 @@ class BusinessController extends Controller
         ];
 
         $select_data = [
-            'BRANCH_FOR' => Constant::getTypeDataObject('BRANCH_SERVICE_GENDER'),
+            // 'BRANCH_FOR' => Constant::getTypeDataObject('BRANCH_SERVICE_GENDER'),
             'PAYMENT_METHODS' => Constant::getTypeDataObject('PAYMENT_METHODS'),
-        ];
 
+        ];
         $assets = ['select-picker'];
         $columns = CustomFieldGroup::columnJsonValues(new Business);
         $customefield = CustomField::exportCustomFields(new Business);
