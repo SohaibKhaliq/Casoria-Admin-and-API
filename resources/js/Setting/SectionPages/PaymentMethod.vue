@@ -5,32 +5,9 @@
     </div>
     <div class="form-group">
       <div class="d-flex justify-content-between align-items-center">
-        <label class="form-label" for="payment_method_razorpay">{{ $t('setting_payment_method.lbl_razorpay') }} </label>
-        <div class="form-check form-switch">
-          <input class="form-check-input" :true-value="1" :false-value="0" :value="razor_payment_method"
-            :checked="razor_payment_method == 1 ? true : false" name="razor_payment_method" id="payment_method_razorpay"
-            type="checkbox" v-model="razor_payment_method" />
-        </div>
-      </div>
-    </div>
-    <div v-if="razor_payment_method == 1">
-      <div class="row">
-        <div class="col-md-6">
-          <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_payment_method.lbl_secret_key')" placeholder="" v-model="razorpay_secretkey" :error-message="errors['razorpay_secretkey']" :error-messages="errorMessages['razorpay_secretkey']"></InputField>
-        </div>
-        <div class="col-md-6">
-          <InputField class="col-md-12" type="text" :is-required="true" :label="$t('setting_payment_method.lbl_app_key')" placeholder="" v-model="razorpay_publickey" :error-message="errors['razorpay_publickey']" :error-messages="errorMessages['razorpay_publickey']"></InputField>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="payment_method_stripe">{{ $t('setting_payment_method.lbl_stripe') }}</label>
         <div class="form-check form-switch">
-          <input class="form-check-input" :true-value="1" :false-value="0" :value="str_payment_method"
-            :checked="str_payment_method == 1 ? true : false" name="str_payment_method" id="payment_method_stripe"
-            type="checkbox" v-model="str_payment_method" />
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="str_payment_method" :checked="str_payment_method == 1 ? true : false" name="str_payment_method" id="payment_method_stripe" type="checkbox" v-model="str_payment_method" />
         </div>
       </div>
     </div>
@@ -49,9 +26,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="payment_method_paystack">{{ $t('setting_payment_method.lbl_paystack') }}</label>
         <div class="form-check form-switch">
-          <input class="form-check-input" :true-value="1" :false-value="0" :value="paystack_payment_method"
-            :checked="paystack_payment_method == 1 ? true : false" name="paystack_payment_method"
-            id="payment_method_paystack" type="checkbox" v-model="paystack_payment_method" />
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="paystack_payment_method" :checked="paystack_payment_method == 1 ? true : false" name="paystack_payment_method" id="payment_method_paystack" type="checkbox" v-model="paystack_payment_method" />
         </div>
       </div>
     </div>
@@ -70,9 +45,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="payment_method_paypal">{{ $t('setting_payment_method.lbl_paypal') }}</label>
         <div class="form-check form-switch">
-          <input class="form-check-input" :true-value="1" :false-value="0" :value="paypal_payment_method"
-            :checked="paypal_payment_method == 1 ? true : false" name="paypal_payment_method" id="payment_method_paypal"
-            type="checkbox" v-model="paypal_payment_method" />
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="paypal_payment_method" :checked="paypal_payment_method == 1 ? true : false" name="paypal_payment_method" id="payment_method_paypal" type="checkbox" v-model="paypal_payment_method" />
         </div>
       </div>
     </div>
@@ -89,12 +62,9 @@
 
     <div class="form-group">
       <div class="d-flex justify-content-between align-items-center">
-        <label class="form-label" for="flutterwave_method_paypal">{{ $t('setting_payment_method.lbl_flutterwave')
-          }}</label>
+        <label class="form-label" for="flutterwave_method_paypal">{{ $t('setting_payment_method.lbl_flutterwave') }}</label>
         <div class="form-check form-switch">
-          <input class="form-check-input" :true-value="1" :false-value="0" :value="flutterwave_payment_method"
-            :checked="flutterwave_payment_method == 1 ? true : false" name="flutterwave_payment_method"
-            id="flutterwave_method_paypal" type="checkbox" v-model="flutterwave_payment_method" />
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="flutterwave_payment_method" :checked="flutterwave_payment_method == 1 ? true : false" name="flutterwave_payment_method" id="flutterwave_method_paypal" type="checkbox" v-model="flutterwave_payment_method" />
         </div>
       </div>
     </div>
@@ -113,9 +83,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="cinet_method">{{ $t('setting_payment_method.lbl_cinet') }}</label>
         <div class="form-check form-switch">
-          <input class="form-check-input" :true-value="1" :false-value="0" :value="cinet_payment_method"
-            :checked="cinet_payment_method == 1 ? true : false" name="cinet_payment_method" id="cinet_method"
-            type="checkbox" v-model="cinet_payment_method" />
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="cinet_payment_method" :checked="cinet_payment_method == 1 ? true : false" name="cinet_payment_method" id="cinet_method" type="checkbox" v-model="cinet_payment_method" />
         </div>
       </div>
     </div>
@@ -137,9 +105,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="sadad_method">{{ $t('setting_payment_method.lbl_sadad') }}</label>
         <div class="form-check form-switch">
-          <input class="form-check-input" :true-value="1" :false-value="0" :value="sadad_payment_method"
-            :checked="sadad_payment_method == 1 ? true : false" name="sadad_payment_method" id="sadad_method"
-            type="checkbox" v-model="sadad_payment_method" />
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="sadad_payment_method" :checked="sadad_payment_method == 1 ? true : false" name="sadad_payment_method" id="sadad_method" type="checkbox" v-model="sadad_payment_method" />
         </div>
       </div>
     </div>
@@ -161,9 +127,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="airtelmoney_method">{{ $t('setting_payment_method.lbl_airtelmoney') }}</label>
         <div class="form-check form-switch">
-          <input class="form-check-input" :true-value="1" :false-value="0" :value="airtelmoney_payment_method"
-            :checked="airtelmoney_payment_method == 1 ? true : false" name="airtelmoney_payment_method"
-            id="airtelmoney_method" type="checkbox" v-model="airtelmoney_payment_method" />
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="airtelmoney_payment_method" :checked="airtelmoney_payment_method == 1 ? true : false" name="airtelmoney_payment_method" id="airtelmoney_method" type="checkbox" v-model="airtelmoney_payment_method" />
         </div>
       </div>
     </div>
@@ -173,9 +137,7 @@
           <div class="form-group">
             <label class="form-label" for="is_airtelmoney_status_method">{{ $t('setting_payment_method.lbl_is_live') }}</label>
             <div class="form-check form-switch">
-              <input class="form-check-input" :true-value="1" :false-value="0" :value="airtelmoney_is_status"
-                :checked="airtelmoney_is_status == 1 ? true : false" name="airtelmoney_is_status" id="is_airtelmoney_status_method"
-                type="checkbox" v-model="airtelmoney_is_status" />
+              <input class="form-check-input" :true-value="1" :false-value="0" :value="airtelmoney_is_status" :checked="airtelmoney_is_status == 1 ? true : false" name="airtelmoney_is_status" id="is_airtelmoney_status_method" type="checkbox" v-model="airtelmoney_is_status" />
             </div>
           </div>
         </div>
@@ -192,9 +154,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="phonepay_method">{{ $t('setting_payment_method.lbl_phonepay') }}</label>
         <div class="form-check form-switch">
-          <input class="form-check-input" :true-value="1" :false-value="0" :value="phonepay_payment_method"
-            :checked="phonepay_payment_method == 1 ? true : false" name="phonepay_payment_method" id="phonepay_method"
-            type="checkbox" v-model="phonepay_payment_method" />
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="phonepay_payment_method" :checked="phonepay_payment_method == 1 ? true : false" name="phonepay_payment_method" id="phonepay_method" type="checkbox" v-model="phonepay_payment_method" />
         </div>
       </div>
     </div>
@@ -204,9 +164,7 @@
           <div class="form-group">
             <label class="form-label" for="is_phonepay_status_method">{{ $t('setting_payment_method.lbl_is_live') }}</label>
             <div class="form-check form-switch">
-              <input class="form-check-input" :true-value="1" :false-value="0" :value="phonepay_is_status"
-                :checked="phonepay_is_status == 1 ? true : false" name="phonepay_is_status" id="is_phonepay_status_method"
-                type="checkbox" v-model="phonepay_is_status" />
+              <input class="form-check-input" :true-value="1" :false-value="0" :value="phonepay_is_status" :checked="phonepay_is_status == 1 ? true : false" name="phonepay_is_status" id="is_phonepay_status_method" type="checkbox" v-model="phonepay_is_status" />
             </div>
           </div>
         </div>
@@ -229,9 +187,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <label class="form-label" for="midtrans_method">{{ $t('setting_payment_method.lbl_midtrans') }} </label>
         <div class="form-check form-switch">
-          <input class="form-check-input" :true-value="1" :false-value="0" :value="midtrans_payment_method"
-            :checked="midtrans_payment_method == 1 ? true : false" name="midtrans_payment_method" id="midtrans_method"
-            type="checkbox" v-model="midtrans_payment_method" />
+          <input class="form-check-input" :true-value="1" :false-value="0" :value="midtrans_payment_method" :checked="midtrans_payment_method == 1 ? true : false" name="midtrans_payment_method" id="midtrans_method" type="checkbox" v-model="midtrans_payment_method" />
         </div>
       </div>
     </div>
@@ -241,9 +197,7 @@
           <div class="form-group">
             <label class="form-label" for="is_status_method">{{ $t('setting_payment_method.lbl_is_live') }}</label>
             <div class="form-check form-switch">
-              <input class="form-check-input" :true-value="1" :false-value="0" :value="midtrans_is_status"
-                :checked="midtrans_is_status == 1 ? true : false" name="midtrans_is_status" id="is_status_method"
-                type="checkbox" v-model="midtrans_is_status" />
+              <input class="form-check-input" :true-value="1" :false-value="0" :value="midtrans_is_status" :checked="midtrans_is_status == 1 ? true : false" name="midtrans_is_status" id="is_status_method" type="checkbox" v-model="midtrans_is_status" />
             </div>
           </div>
         </div>
@@ -262,7 +216,7 @@ import CardTitle from '@/Setting/Components/CardTitle.vue'
 import { useField, useForm } from 'vee-validate'
 import { STORE_URL, GET_URL } from '@/vue/constants/setting'
 import InputField from '@/vue/components/form-elements/InputField.vue'
-import * as yup from 'yup';
+import * as yup from 'yup'
 import { useRequest } from '@/helpers/hooks/useCrudOpration'
 import { onMounted } from 'vue'
 import { createRequest } from '@/helpers/utilities'
@@ -273,9 +227,6 @@ const IS_SUBMITED = ref(false)
 const setFormData = (data) => {
   resetForm({
     values: {
-      razor_payment_method: data.razor_payment_method || 0,
-      razorpay_secretkey: data.razorpay_secretkey || '',
-      razorpay_publickey: data.razorpay_publickey || '',
       str_payment_method: data.str_payment_method || 0,
       stripe_secretkey: data.stripe_secretkey || '',
       stripe_publickey: data.stripe_publickey || '',
@@ -308,171 +259,155 @@ const setFormData = (data) => {
       phonepay_saltkey: data.phonepay_saltkey || 0,
       midtrans_payment_method: data.midtrans_payment_method || 0,
       midtrans_is_status: data.midtrans_is_status || 0,
-      midtrans_clientid: data.midtrans_clientid || 0,
+      midtrans_clientid: data.midtrans_clientid || 0
     }
   })
 }
 const validationSchema = yup.object({
-  razorpay_secretkey: yup.string().test('razorpay_secretkey', 'Must be a valid RazorPay key', function (value) {
-    if (this.parent.razor_payment_method == 1 && !value) {
-      return false;
-    }
-    return true
-  }),
-  razorpay_publickey: yup.string().test('razorpay_publickey', 'Must be a valid RazorPay Publickey', function (value) {
-    if (this.parent.razor_payment_method == 1 && !value) {
-
-      return false;
-    }
-    return true
-  }),
   stripe_secretkey: yup.string().test('stripe_secretkey', 'Must be a valid Stripe key', function (value) {
     if (this.parent.str_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
   stripe_publickey: yup.string().test('stripe_publickey', 'Must be a valid Stripe Publickey', function (value) {
     if (this.parent.str_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   paystack_secretkey: yup.string().test('paystack_secretkey', 'Must be a valid Paystack key', function (value) {
     if (this.parent.paystack_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
   paystack_publickey: yup.string().test('paystack_publickey', 'Must be a valid Paystack Publickey', function (value) {
     if (this.parent.paystack_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   paypal_secretkey: yup.string().test('paypal_secretkey', 'Must be a valid Paypal key', function (value) {
     if (this.parent.paypal_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
   paypal_clientid: yup.string().test('paypal_clientid', 'Must be a valid Paypal Publickey', function (value) {
     if (this.parent.paypal_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   flutterwave_secretkey: yup.string().test('flutterwave_secretkey', 'Must be a valid Flutterwave key', function (value) {
     if (this.parent.flutterwave_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
   flutterwave_publickey: yup.string().test('flutterwave_publickey', 'Must be a valid Flutterwave Publickey', function (value) {
     if (this.parent.flutterwave_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   cinet_clientid: yup.string().test('cinet_clientid', 'Must be a valid Cinet Clientid', function (value) {
     if (this.parent.cinet_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   cinet_apikey: yup.string().test('cinet_apikey', 'Must be a valid Cinet Apikey', function (value) {
     if (this.parent.cinet_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
   cinet_secretkey: yup.string().test('cinet_secretkey', 'Must be a valid Cinet Secretkey', function (value) {
     if (this.parent.cinet_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   sadad_clientid: yup.string().test('sadad_clientid', 'Must be a valid Sadad Clientid', function (value) {
     if (this.parent.sadad_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   sadad_secretkey: yup.string().test('sadad_secretkey', 'Must be a valid Sadad Secretkey', function (value) {
     if (this.parent.sadad_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   sadad_domain: yup.string().test('sadad_domain', 'Must be a valid Sadad Domain', function (value) {
     if (this.parent.sadad_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   airtelmoney_clientid: yup.string().test('airtelmoney_clientid', 'Must be a valid airtelmoney Clientid', function (value) {
     if (this.parent.airtelmoney_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   airtelmoney_secretkey: yup.string().test('airtelmoney_secretkey', 'Must be a valid airtelmoney key', function (value) {
     if (this.parent.airtelmoney_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   phonepay_appid: yup.string().test('phonepay_appid', 'Must be a valid Phonepay Appid', function (value) {
     if (this.parent.phonepay_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   phonepay_merchentid: yup.string().test('phonepay_merchentid', 'Must be a valid Phonepay Merchantid', function (value) {
     if (this.parent.phonepay_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   phonepay_saltid: yup.string().test('phonepay_saltid', 'Must be a valid Phonepay Saltid', function (value) {
     if (this.parent.phonepay_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   phonepay_saltkey: yup.string().test('phonepay_saltkey', 'Must be a valid Phonepay Saltkey', function (value) {
     if (this.parent.phonepay_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
   }),
 
   midtrans_clientid: yup.string().test('midtrans_clientid', 'Must be a valid Midtrans Clientid', function (value) {
     if (this.parent.midtrans_payment_method == 1 && !value) {
-      return false;
+      return false
     }
     return true
-  }),
+  })
 })
 const { handleSubmit, errors, resetForm } = useForm({ validationSchema })
 const errorMessages = ref({})
-const { value: razor_payment_method } = useField('razor_payment_method')
-const { value: razorpay_secretkey } = useField('razorpay_secretkey')
-const { value: razorpay_publickey } = useField('razorpay_publickey')
 const { value: str_payment_method } = useField('str_payment_method')
 const { value: stripe_secretkey } = useField('stripe_secretkey')
 const { value: stripe_publickey } = useField('stripe_publickey')
@@ -507,74 +442,104 @@ const { value: midtrans_payment_method } = useField('midtrans_payment_method')
 const { value: midtrans_is_status } = useField('midtrans_is_status')
 const { value: midtrans_clientid } = useField('midtrans_clientid')
 
-watch(() => razor_payment_method.value, (value) => {
-  if (value == '0') {
-    razorpay_secretkey.value = ''
-    razorpay_publickey.value = ''
-  }
-}, { deep: true })
-watch(() => str_payment_method.value, (value) => {
-  if (value == '0') {
-    stripe_secretkey.value = ''
-    stripe_publickey.value = ''
-  }
-}, { deep: true })
-watch(() => paystack_payment_method.value, (value) => {
-  if (value == '0') {
-    paystack_secretkey.value = ''
-    paystack_publickey.value = ''
-  }
-}, { deep: true })
-watch(() => paypal_payment_method.value, (value) => {
-  if (value == '0') {
-    paypal_secretkey.value = ''
-    paypal_clientid.value = ''
-  }
-}, { deep: true })
-watch(() => flutterwave_payment_method.value, (value) => {
-  if (value == '0') {
-    flutterwave_secretkey.value = ''
-    flutterwave_publickey.value = ''
-  }
-}, { deep: true })
+watch(
+  () => str_payment_method.value,
+  (value) => {
+    if (value == '0') {
+      stripe_secretkey.value = ''
+      stripe_publickey.value = ''
+    }
+  },
+  { deep: true }
+)
+watch(
+  () => paystack_payment_method.value,
+  (value) => {
+    if (value == '0') {
+      paystack_secretkey.value = ''
+      paystack_publickey.value = ''
+    }
+  },
+  { deep: true }
+)
+watch(
+  () => paypal_payment_method.value,
+  (value) => {
+    if (value == '0') {
+      paypal_secretkey.value = ''
+      paypal_clientid.value = ''
+    }
+  },
+  { deep: true }
+)
+watch(
+  () => flutterwave_payment_method.value,
+  (value) => {
+    if (value == '0') {
+      flutterwave_secretkey.value = ''
+      flutterwave_publickey.value = ''
+    }
+  },
+  { deep: true }
+)
 
-watch(() => cinet_payment_method.value, (value) => {
-  if (value == '0') {
-    cinet_clientid.value = ''
-    cinet_apikey.value = ''
-    cinet_secretkey.value = ''
-  }
-}, { deep: true })
+watch(
+  () => cinet_payment_method.value,
+  (value) => {
+    if (value == '0') {
+      cinet_clientid.value = ''
+      cinet_apikey.value = ''
+      cinet_secretkey.value = ''
+    }
+  },
+  { deep: true }
+)
 
-watch(() => sadad_payment_method.value, (value) => {
-  if (value == '0') {
-    sadad_clientid.value = ''
-    sadad_secretkey.value = ''
-    sadad_domain.value = ''
-  }
-}, { deep: true })
+watch(
+  () => sadad_payment_method.value,
+  (value) => {
+    if (value == '0') {
+      sadad_clientid.value = ''
+      sadad_secretkey.value = ''
+      sadad_domain.value = ''
+    }
+  },
+  { deep: true }
+)
 
-watch(() => airtelmoney_payment_method.value, (value) => {
-  if (value == '0') {
-    airtelmoney_clientid.value = ''
-    airtelmoney_secretkey.value = ''
-  }
-}, { deep: true })
+watch(
+  () => airtelmoney_payment_method.value,
+  (value) => {
+    if (value == '0') {
+      airtelmoney_clientid.value = ''
+      airtelmoney_secretkey.value = ''
+    }
+  },
+  { deep: true }
+)
 
-watch(() => phonepay_payment_method.value, (value) => {
-  if (value == '0') {
-    phonepay_appid.value = ''
-    phonepay_merchentid.value = ''
-    phonepay_saltid.value = ''
-    phonepay_saltkey.value = ''
-  }
-}, { deep: true })
+watch(
+  () => phonepay_payment_method.value,
+  (value) => {
+    if (value == '0') {
+      phonepay_appid.value = ''
+      phonepay_merchentid.value = ''
+      phonepay_saltid.value = ''
+      phonepay_saltkey.value = ''
+    }
+  },
+  { deep: true }
+)
 
-watch(() => midtrans_payment_method.value, (value) => {
-  if (value == '0') {
-    midtrans_clientid.value = ''
-  }
-}, { deep: true })
+watch(
+  () => midtrans_payment_method.value,
+  (value) => {
+    if (value == '0') {
+      midtrans_clientid.value = ''
+    }
+  },
+  { deep: true }
+)
 // message
 const display_submit_message = (res) => {
   IS_SUBMITED.value = false
@@ -587,7 +552,7 @@ const display_submit_message = (res) => {
 }
 
 //fetch data
-const data = 'razor_payment_method,razorpay_secretkey,razorpay_publickey,str_payment_method,stripe_secretkey,stripe_publickey,paystack_payment_method,paystack_secretkey,paystack_publickey,paypal_payment_method,paypal_secretkey,paypal_clientid,flutterwave_payment_method,flutterwave_secretkey,flutterwave_publickey,cinet_payment_method,cinet_clientid,cinet_apikey,cinet_secretkey,sadad_payment_method,sadad_clientid,sadad_secretkey,sadad_domain,airtelmoney_payment_method,airtelmoney_is_status,airtelmoney_clientid,airtelmoney_secretkey,phonepay_payment_method,phonepay_is_status,phonepay_appid,phonepay_merchentid,phonepay_saltid,phonepay_saltkey,midtrans_payment_method,midtrans_is_status,midtrans_clientid'
+const data = 'str_payment_method,stripe_secretkey,stripe_publickey,paystack_payment_method,paystack_secretkey,paystack_publickey,paypal_payment_method,paypal_secretkey,paypal_clientid,flutterwave_payment_method,flutterwave_secretkey,flutterwave_publickey,cinet_payment_method,cinet_clientid,cinet_apikey,cinet_secretkey,sadad_payment_method,sadad_clientid,sadad_secretkey,sadad_domain,airtelmoney_payment_method,airtelmoney_is_status,airtelmoney_clientid,airtelmoney_secretkey,phonepay_payment_method,phonepay_is_status,phonepay_appid,phonepay_merchentid,phonepay_saltid,phonepay_saltkey,midtrans_payment_method,midtrans_is_status,midtrans_clientid'
 onMounted(() => {
   createRequest(GET_URL(data)).then((response) => {
     setFormData(response)
