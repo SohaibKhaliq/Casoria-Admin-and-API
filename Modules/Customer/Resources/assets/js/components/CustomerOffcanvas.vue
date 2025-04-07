@@ -123,7 +123,7 @@ const fileUpload = async (e) => {
     await readFile(file, (fileB64) => {
       ImageViewer.value = fileB64;
       profileInputRef.value.value = '';
-      validationMessage.value = ''; 
+      validationMessage.value = '';
     });
     feature_image.value = file;
   } else {

@@ -141,12 +141,12 @@
                 title: "{{ __('business.lbl_city') }}",
                 width: '15%',
             },
-            {
-                data: 'address.postal_code',
-                name: 'address.postal_code',
-                title: "{{ __('business.lbl_postal_code') }}",
-                width: '10%',
-            },
+            // {
+            //     data: 'address.postal_code',
+            //     name: 'address.postal_code',
+            //     title: "{{ __('business.lbl_postal_code') }}",
+            //     width: '10%',
+            // },
             {
                 data: 'assign',
                 name: 'assign',
@@ -154,12 +154,12 @@
                 orderable: false,
                 searchable: false
             },
-            {
-                data: 'business_for',
-                name: 'business_for',
-                title: "{{ __('business.lbl_business_for') }}",
-                width: '12%'
-            },
+            // {
+            //     data: 'business_for',
+            //     name: 'business_for',
+            //     title: "{{ __('business.lbl_business_for') }}",
+            //     width: '12%'
+            // },
             {
                 data: 'status',
                 name: 'status',

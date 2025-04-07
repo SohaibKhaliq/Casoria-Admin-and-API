@@ -33,16 +33,6 @@ class ConstantDatabaseSeeder extends Seeder
             ],
             [
                 'type' => 'PAYMENT_METHODS',
-                'name' => 'upi',
-                'value' => 'UPI',
-            ],
-            [
-                'type' => 'PAYMENT_METHODS',
-                'name' => 'razorpay',
-                'value' => 'Razorpay',
-            ],
-            [
-                'type' => 'PAYMENT_METHODS',
                 'name' => 'stripe',
                 'value' => 'Stripe',
             ],

@@ -15,7 +15,10 @@ yarn-error.log
 *.cache
 .DS_Store
 vendor/*
-
+/public/js/*.js
+/public/modules/*
+/public\js\*.js
+/public\modules\*
 
 Below Comments For Design Style & Scripts
 !/public/css/.gitkeep
@@ -47,3 +50,8 @@ Below Comments For Design Style & Scripts
 node_modules
 node_modules
 /storage/media-library/**/*
+
+
+# Ignore compiled JavaScript and CSS files
+/public/js/
+/public/modules/

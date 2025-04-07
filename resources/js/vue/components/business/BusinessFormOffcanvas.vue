@@ -9,23 +9,16 @@
               <div class="col-md-6">
                 <InputField class="col-md-12" :is-required="true" :label="$t('business.lbl_business_name')" :placeholder="$t('business.business_name')" v-model="name" :error-message="errors.name" :error-messages="errorMessages['name']"></InputField>
                 <div class="form-group col-md-12">
-                  <label class="form-label">{{ $t('business.lbl_business_for') }}</label>
-                  <div class="btn-group w-100" role="group" aria-label="Basic example">
-                    <template v-for="(item, index) in BRANCH_FOR_OPTIONS" :key="index">
-                      <input type="radio" class="btn-check" name="business_for" :id="`${item.id}-for`" :value="item.id" autocomplete="off" v-model="business_for" :checked="business_for == item.id" />
-                      <label class="btn btn-outline-primary" :for="`${item.id}-for`">{{ item.text }}</label>
-                    </template>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group col-md-6">
-                <div class="text-center">
-                  <img :src="ImageViewer || defaultImage" alt="feature-image" class="img-fluid mb-2 avatar-140 avatar-rounded" />
-                  <div v-if="validationMessage" class="text-danger mb-2">{{ validationMessage }}</div>
-                  <div class="d-flex align-items-center justify-content-center gap-2">
-                    <input type="file" ref="profileInputRef" class="form-control d-none" id="feature_image" name="feature_image" @change="fileUpload" accept=".jpeg, .jpg, .png, .gif" />
-                    <label class="btn btn-info" for="feature_image">{{ $t('messages.upload') }}</label>
-                    <input type="button" class="btn btn-danger" name="remove" :value="$t('messages.remove')" @click="removeLogo()" v-if="ImageViewer" />
+                  <div class="text-center">
+                    <div class="image-container">
+                      <img :src="ImageViewer || defaultImage" alt="feature-image" class="img-fluid mb-2 avatar-140 avatar-rounded" />
+                    </div>
+                    <div v-if="validationMessage" class="text-danger mb-2">{{ validationMessage }}</div>
+                    <div class="d-flex align-items-center justify-content-center gap-2">
+                      <input type="file" ref="profileInputRef" class="form-control d-none" id="feature_image" name="feature_image" @change="fileUpload" accept=".jpeg, .jpg, .png, .gif" />
+                      <label class="btn btn-info" for="feature_image">{{ $t('messages.upload') }}</label>
+                      <input type="button" class="btn btn-danger" name="remove" :value="$t('messages.remove')" @click="removeLogo()" v-if="ImageViewer" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -114,7 +107,6 @@
               <span class="text-danger">{{ errors.description }}</span>
             </div>
 
-            BusinessFormOffcanvas
             <div v-for="field in customefield" :key="field.id">
               <FormElement v-model="custom_fields_data" :name="field.name" :label="field.label" :type="field.type" :required="field.required" :options="field.value" :field_id="field.id"></FormElement>
             </div>
@@ -256,7 +248,8 @@ const validationSchema = yup.object({
       .required('State is a required field'),
     country: yup.string().required('Country is a required field')
     // manager_id: yup.string().required('Manager is a required field'),
-  })
+  }),
+  business_for: yup.string()
 })
 
 // how to add contact_email validation first letter accept only not digit if first letter then add valid email validation in vue
@@ -278,7 +271,6 @@ const { value: city } = useField('address.city')
 const { value: latitude } = useField('address.latitude')
 const { value: longitude } = useField('address.longitude')
 const { value: status } = useField('status')
-const { value: business_for } = useField('business_for')
 const { value: payment_method } = useField('payment_method')
 const { value: manager_id } = useField('manager_id')
 const { value: service_id } = useField('service_id')
@@ -298,8 +290,6 @@ const updateManagerDetail = (e) => {
       break
   }
 }
-
-business_for.value = 'both'
 
 // Default FORM DATA, Error Message
 const errorMessages = ref({})
@@ -362,7 +352,6 @@ const defaultData = () => {
     description: '',
     manager_id: null,
     status: true,
-    business_for: 'both',
     service_id: [],
     payment_method: ['cash'],
     custom_fields_data: {}
@@ -390,7 +379,6 @@ const setFormData = (data) => {
       },
       status: data.status,
       description: data.description,
-      business_for: data.business_for,
       manager_id: data.manager_id,
       service_id: data.service_id,
       payment_method: data.payment_method,
@@ -488,5 +476,21 @@ const reset_datatable_close_offcanvas = (res) => {
   .offcanvas {
     width: 60%;
   }
+}
+
+/* Adjust the image container for better layout */
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 140px;
+  margin: 0 auto;
+}
+
+.avatar-140 {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 </style>

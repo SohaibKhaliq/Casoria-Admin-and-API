@@ -48,9 +48,7 @@ Route::group(['prefix' => 'app', 'as' => 'backend.', 'middleware' => ['auth']], 
         Route::post('update-status/{id}', [NotificationTemplatesController::class, 'update_status'])->name('update_status');
         Route::post('bulk-action', [NotificationTemplatesController::class, 'bulk_action'])->name('bulk_action');
         Route::get('fetchnotification_data', [NotificationTemplatesController::class, 'fetchNotificationData'])->name('fetchnotification_data');
-   
     });
+
     Route::resource('notification-templates', NotificationTemplatesController::class, ['names' => 'notification-templates']);
-   
-      
 });

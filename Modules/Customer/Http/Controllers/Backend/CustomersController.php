@@ -144,7 +144,10 @@ class CustomersController extends Controller
             ->addColumn('action', function ($data) use ($module_name) {
                 return view('customer::backend.customers.action_column', compact('module_name', 'data'));
             })
-
+            // mobile
+            ->addColumn('phone', function ($data) {
+                return optional($data)->mobile ?? '--';
+            })
             // ->editColumn('image', function ($data) {
             //     return "<img src='".$data->profile_image."'class='avatar avatar-50 rounded-pill'>";
             // })
@@ -176,14 +179,14 @@ class CustomersController extends Controller
             //     return  $data->first_name . ' ' . $data->last_name;
             // })
 
-            ->editColumn('email_verified_at', function ($data) {
-                $checked = '';
-                if ($data->email_verified_at) {
-                    return '<span class="badge bg-soft-success"><i class="fa-solid fa-envelope" style="margin-right: 2px"></i> ' . __('customer.msg_verified') . '</span>';
-                }
+            // ->editColumn('email_verified_at', function ($data) {
+            //     $checked = '';
+            //     if ($data->email_verified_at) {
+            //         return '<span class="badge bg-soft-success"><i class="fa-solid fa-envelope" style="margin-right: 2px"></i> ' . __('customer.msg_verified') . '</span>';
+            //     }
 
-                return '<button  type="button" data-url="' . route('backend.customers.verify-customer', $data->id) . '" data-token="' . csrf_token() . '" class="button-status-change btn btn-text-danger btn-sm  bg-soft-danger"  id="datatable-row-' . $data->id . '"  name="is_verify" value="' . $data->id . '" ' . $checked . '>Verify</button>';
-            })
+            //     return '<button  type="button" data-url="' . route('backend.customers.verify-customer', $data->id) . '" data-token="' . csrf_token() . '" class="button-status-change btn btn-text-danger btn-sm  bg-soft-danger"  id="datatable-row-' . $data->id . '"  name="is_verify" value="' . $data->id . '" ' . $checked . '>Verify</button>';
+            // })
 
             ->editColumn('is_banned', function ($data) {
                 $checked = '';
@@ -223,7 +226,7 @@ class CustomersController extends Controller
             })
 
             // ->filterColumn('user_id', function ($query, $keyword) {
-            //     if (!empty($keyword)) {   
+            //     if (!empty($keyword)) {
             //             $query->whereRaw('CONCAT(first_name, " ", last_name) LIKE ?', ['%' . $keyword . '%']);
             //     }
             // })

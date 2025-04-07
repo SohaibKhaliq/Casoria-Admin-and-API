@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'lbl_select_manager' => 'Select Business Admin',
+    'assign_manager' => 'Select Business Admin',
     'title' => 'Businesses',
     'singular_title' => 'Business',
     'business_setting' => 'Business Settings',

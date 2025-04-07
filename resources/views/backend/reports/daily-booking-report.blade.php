@@ -111,11 +111,11 @@
                 name: 'total_tax_amount',
                 title: "{{ __('report.lbl_tax_amt') }}",
             },
-            {
-                data: 'total_tip_amount',
-                name: 'total_tip_amount',
-                title: "{{ __('report.lbl_tips_amt') }}",
-            },
+            // {
+            //     data: 'total_tip_amount',
+            //     name: 'total_tip_amount',
+            //     title: "{{ __('report.lbl_tips_amt') }}",
+            // },
             {
                 data: 'total_amount',
                 name: 'total_amount',

@@ -19,9 +19,9 @@ use Modules\Promotion\Models\Coupon;
 use Modules\Promotion\Models\UserCouponRedeem;
 use Modules\Tip\Models\TipEarning;
 use Modules\Package\Models\BookingPackageService;
-use Razorpay\Api\Api;
 use Modules\Promotion\Models\Promotion;
 use Carbon\Carbon;
+
 trait PaymentTrait
 {
     public function getpayment_method($data, $booking_id)
@@ -73,42 +73,19 @@ trait PaymentTrait
         $currency = Currency::where('is_primary', 1)->first();
 
         switch ($data['transaction_type']) {
-            case 'razorpay':
-
-                $razorpay_key = $this->getrazorpaykey();
-
-                $responseData = [
-                    'status' => true,
-                    'booking_transaction_id' => $booking_transaction['id'],
-                    'total_amount' => $total_amount,
-                    'currency' => $currency['currency_code'],
-                    'payment_method' => $data['payment_method'],
-                    'public_key' => isset($razorpay_key['razorpay_publickey']) ? $razorpay_key['razorpay_publickey'] : '',
-
-                ];
-
-                break;
-
             case 'stripe':
-
                 $stripe_key = $this->getstripekey();
-
                 $responseData = [
-
                     'booking_transaction_id' => $booking_transaction['id'],
                     'total_amount' => $total_amount,
                     'currency' => $currency['currency_code'],
                     'payment_method' => $data['payment_method'],
                     'public_key' => isset($stripe_key['stripe_secretkey']) ? $stripe_key['stripe_secretkey'] : '',
-
                 ];
-
                 break;
 
             default:
-
                 $responseData = $this->getcashpayments($data, $booking_transaction['id']);
-
                 break;
         }
 
@@ -183,8 +160,7 @@ trait PaymentTrait
     {
         $packages = BookingPackages::where('booking_id', $booking_id)->get();
         foreach ($packages as $key => $value) {
-            $existingUserPackage = UserPackage::where('user_id', $value['user_id'])->where('package_id', $value['package_id'])->exists();
-            ;
+            $existingUserPackage = UserPackage::where('user_id', $value['user_id'])->where('package_id', $value['package_id'])->exists();;
             if (!$existingUserPackage) {
                 $userPackage = UserPackage::create([
                     'sequance' => $key,
@@ -255,7 +231,6 @@ trait PaymentTrait
                             $userPackageService->delete();
                         }
                     }
-
                 }
                 $remainingServices = UserPackageServices::where('user_package_id', $userPackage->id)->count();
                 if ($remainingServices == 0 && $userPackage) {
@@ -300,7 +275,6 @@ trait PaymentTrait
                         $userPackage->type = 'reclaimed';
                         $userPackage->save();
                     }
-
                 }
             }
         }
@@ -325,46 +299,6 @@ trait PaymentTrait
             'data' => new BookingResource($queryData),
             'status' => true,
         ];
-
-        return $responseData;
-    }
-
-    // RAZORPAY PAYMENT DATA
-
-    public function getrazorpaypayments($data, $booking_transaction_id)
-    {
-        $rezorpay_key_data = $this->getrazorpaykey();
-
-        $key_id = $rezorpay_key_data['razorpay_publickey'];
-        $secret = $rezorpay_key_data['razorpay_secretkey'];
-
-        try {
-            $currency = $data['response']['currency'];
-
-            $floatTotalAmount = floatval($data['response']['total_amount']);
-            $totalamount = $floatTotalAmount * 100;
-            $api = new Api($key_id, $secret);
-            $api->payment->fetch($data['response']['razorpay_payment_id'])->capture(['amount' => $totalamount, 'currency' => $currency]);
-            $data = BookingTransaction::where('id', $booking_transaction_id)->update(['external_transaction_id' => $data['response']['razorpay_payment_id'], 'payment_status' => 1]);
-
-            $booking_transaction = BookingTransaction::where('id', $booking_transaction_id)->first();
-            Booking::where('id', $booking_transaction['booking_id'])->update(['status' => 'completed']);
-
-            $queryData = Booking::with('services', 'user')->findOrFail($booking_transaction['booking_id']);
-
-            $responseData = [
-                'message' => __('booking.payment_successfull'),
-                'booking' => new BookingResource($queryData),
-                'status' => true,
-            ];
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-
-            $responseData = [
-                'message' => $message,
-                'status' => false,
-            ];
-        }
 
         return $responseData;
     }
@@ -426,23 +360,6 @@ trait PaymentTrait
         return $session_object;
     }
 
-    //GET RAZORPAY KEY DATA FROM DB
-
-    public function getrazorpaykey()
-    {
-        $rezorpay_key = Setting::where('type', 'razor_payment_method')->get();
-
-        $rezorpay_key_data = [];
-
-        if ($rezorpay_key != '') {
-            foreach ($rezorpay_key as $rezorpay) {
-                $rezorpay_key_data[$rezorpay->name] = $rezorpay->val;
-            }
-        }
-
-        return $rezorpay_key_data;
-    }
-
     //GET STRIPE KEY DATA
 
     public function getstripekey()
@@ -501,7 +418,6 @@ trait PaymentTrait
                         $commission_amount = $commission_value * $total_service_amount / 100;
                         $finalComissionAmount += $commission_amount;
                     }
-
                 }
             }
         }

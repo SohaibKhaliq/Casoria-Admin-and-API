@@ -30,6 +30,8 @@ use Modules\Package\Models\BookingPackageService;
 use Modules\Service\Models\Service;
 use Modules\BussinessHour\Models\BussinessHour;
 use App\Models\Setting;
+use App\Models\BranchEmployee;
+use Modules\Employee\Models\BusinessEmployee;
 
 class BookingsController extends Controller
 {
@@ -141,6 +143,26 @@ class BookingsController extends Controller
         }
 
         $service = Service::findOrFail($request->service_id);
+
+        // New validation: check if the business offers the selected service
+        $business = \App\Models\Business::findOrFail($request->business_id);
+        if (!$business->services()->where('services.id', $service->id)->exists()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Selected business does not offer the selected service.'
+            ], 422);
+        }
+
+        // New validation: check if the chosen employee is assigned for the business
+        if (!BusinessEmployee::where('business_id', $business->id)
+            ->where('employee_id', $request->employee_id)
+            ->exists()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Selected employee is not available for the selected service in this business.'
+            ], 422);
+        }
+
         $business_hours = BussinessHour::where('business_id', $request->business_id)
             ->where('day', strtolower($startDateTime->format('l')))
             ->first();
@@ -395,6 +417,26 @@ class BookingsController extends Controller
         $data = $request->all();
         $startDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $request->start_date_time);
         $service = Service::findOrFail($request->service_id);
+
+        // New validation: check if the business offers the selected service
+        $business = \App\Models\Business::findOrFail($request->business_id);
+        if (!$business->services()->where('services.id', $service->id)->exists()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Selected business does not offer the selected service.'
+            ], 422);
+        }
+
+        // New validation: check if the chosen employee is assigned for the business
+        if (!BusinessEmployee::where('business_id', $business->id)
+            ->where('employee_id', $request->employee_id)
+            ->exists()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Selected employee is not available for the selected service in this business.'
+            ], 422);
+        }
+
         $business_hours = BussinessHour::where('business_id', $request->business_id)
             ->where('day', strtolower($startDateTime->format('l')))
             ->first();
@@ -655,6 +697,7 @@ class BookingsController extends Controller
         $perPage = $request->input('per_page', 10); // Default to 10 items per page
         $booking = Booking::where('user_id', $user->id)
             ->with('booking_service.service', 'booking_service.employee')
+            ->orderBy('created_at', 'desc') // Order by newest records first
             ->paginate($perPage);
 
         $items = BookingListResource::collection($booking->items());
