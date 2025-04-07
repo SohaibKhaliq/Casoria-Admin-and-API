@@ -9,6 +9,7 @@ return [
     'lbl_Email' => 'Email',
     'lbl_phone_number' => 'Phone Number',
     'lbl_gender' => 'Gender',
+    'lbl_phone' => 'Phone',
     'lbl_status' => 'Status',
     'lbl_verification_status' => 'Verification Status',
     'lbl_blocked' => 'Blocked',
