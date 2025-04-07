@@ -655,6 +655,7 @@ class BookingsController extends Controller
         $perPage = $request->input('per_page', 10); // Default to 10 items per page
         $booking = Booking::where('user_id', $user->id)
             ->with('booking_service.service', 'booking_service.employee')
+            ->orderBy('created_at', 'desc') // Order by newest records first
             ->paginate($perPage);
 
         $items = BookingListResource::collection($booking->items());
