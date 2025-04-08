@@ -145,8 +145,7 @@ if (!function_exists('sendNotification')) {
 if (!function_exists('fcm')) {
     function fcm($fields)
     {
-        $otherSetting = \App\Models\Setting::where('type', 'firebase_notification')->where('name', 'firebase_project_id')->first();
-        $projectID = $otherSetting->val ?? null;
+        $projectID = env('FIREBASE_PROJECT_ID',"icasoria-a47ef");
         $access_token = getAccessToken();
         $headers = [
             'Authorization: Bearer ' . $access_token,
