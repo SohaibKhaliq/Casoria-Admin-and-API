@@ -74,7 +74,8 @@ class BookingListResource extends JsonResource
             'price' => $this->booking_service->first()?->service_price ?? '0.00',
             'staffName' => $this->booking_service->first()?->employee->full_name ?? '-',
             'dateTime' => $this->start_date_time,
-            'isAppointment' => $this->queue_status, // Directly send 'in_queue' or 'not_in_queue'
+            'isAppointment' => $this->queue_status !== 'not_in_queue',
+            'status' => $this->status,
         ];
     }
 }
