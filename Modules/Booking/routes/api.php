@@ -26,4 +26,5 @@ Route::group(['middleware' => 'auth:sanctum', 'as' => 'backend.'], function () {
     Route::delete('delete-booking', [BookingsController::class, 'deleteBooking']);
     Route::delete('delete-queue', [BookingsController::class, 'deleteQueue']);
     Route::get('getSlots', [BookingsController::class, 'getSlots']);
+    Route::post('update-booking-status', [BookingsController::class, 'updateStatus']);
 });
