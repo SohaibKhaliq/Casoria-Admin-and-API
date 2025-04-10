@@ -629,7 +629,7 @@ class BookingsController extends Controller
 
         $message = __('booking.status_update');
 
-        return response()->json(['data' => new BookingResource($booking), 'message' => $message, 'status' => true]);
+        return response()->json(['message' => $message, 'status' => true]);
     }
 
     public function bookingListbak(Request $request)
