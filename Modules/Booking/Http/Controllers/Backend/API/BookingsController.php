@@ -896,7 +896,11 @@ class BookingsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['status' => false, 'message' => 'Validation Error', 'errors' => $validator->errors()], 422);
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         $business_id = $request->business_id;
@@ -907,20 +911,30 @@ class BookingsController extends Controller
         $endDate = $currentDate->copy()->addMonth();
 
         while ($currentDate->lte($endDate)) {
-            $dayOfWeek = strtolower($currentDate->format('l')); // Get the day name in lowercase (e.g., monday, tuesday)
+            $dayOfWeek = strtolower($currentDate->format('l'));
             $businessHour = $business_hours->firstWhere('day', $dayOfWeek);
 
-            if ($businessHour && $businessHour->is_holiday == 0) { // Check if it's not a holiday
-                $dates[] = [
-                    'date' => $currentDate->toDateString(),
-                    'day' => ucfirst($dayOfWeek), // Capitalize the first letter of the day
-                ];
+            // If business hour exists, determine availability status based on is_holiday flag
+            if ($businessHour) {
+                $status = ($businessHour->is_holiday == 0);
+            } else {
+                $status = false;
             }
+
+            $dates[] = [
+                'date'  => $currentDate->toDateString(),
+                'day'   => ucfirst($dayOfWeek),
+                'status' => $status
+            ];
 
             $currentDate->addDay();
         }
 
-        return response()->json(['status' => true, 'data' => $dates, 'message' => 'Available service dates fetched successfully.'], 200);
+        return response()->json([
+            'status' => true,
+            'data'   => $dates,
+            'message' => 'Available service dates fetched successfully.'
+        ], 200);
     }
 
     public function getTimeSlots(Request $request)
