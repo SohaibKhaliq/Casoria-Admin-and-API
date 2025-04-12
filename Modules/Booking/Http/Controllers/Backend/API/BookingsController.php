@@ -208,6 +208,28 @@ class BookingsController extends Controller
             ], 422);
         }
 
+        $breaks = [];
+
+        if (!empty($business_hours->breaks)) {
+            if (is_string($business_hours->breaks)) {
+                $breaks = json_decode($business_hours->breaks, true) ?? [];
+            } elseif (is_array($business_hours->breaks)) {
+                $breaks = $business_hours->breaks;
+            }
+        }
+
+        // Check if the booking overlaps with any break
+        foreach ($breaks as $break) {
+            $break_start = Carbon::parse($break['start_break']);
+            $break_end = Carbon::parse($break['end_break']);
+            if ($startDateTime->between($break_start, $break_end) || $endDateTime->between($break_start, $break_end)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'The selected time overlaps with a break period.',
+                ], 422);
+            }
+        }
+
         $data['start_date_time'] = $startDateTime;
         $data['end_date_time'] = $endDateTime;
         $data['queue_status'] = 'not_in_queue';
@@ -864,6 +886,20 @@ class BookingsController extends Controller
             ], 422);
         }
 
+        $breaks = $business_hours->breaks ? json_decode($business_hours->breaks, true) : [];
+
+        // Check if the booking overlaps with any break
+        foreach ($breaks as $break) {
+            $break_start = Carbon::parse($break['start_break']);
+            $break_end = Carbon::parse($break['end_break']);
+            if ($startDateTime->between($break_start, $break_end) || $endDateTime->between($break_start, $break_end)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'The selected time overlaps with a break period.',
+                ], 422);
+            }
+        }
+
         $data = $request->all();
         $data['start_date_time'] = $startDateTime;
         $data['end_date_time'] = $endDateTime;
@@ -951,7 +987,9 @@ class BookingsController extends Controller
         }
 
         $service = Service::findOrFail($request->service_id);
-        $business_hours = BussinessHour::where('business_id', $request->business_id)->first();
+        $business_hours = BussinessHour::where('business_id', $request->business_id)
+            ->where('day', strtolower(Carbon::parse($request->date)->format('l')))
+            ->first();
 
         if (!$business_hours) {
             return response()->json(['status' => false, 'message' => 'No business hours found for the selected date.'], 404);
@@ -961,27 +999,31 @@ class BookingsController extends Controller
             return response()->json(['status' => false, 'message' => 'This business is closed on the selected day.'], 200);
         }
 
-        // Get slot_duration from Settings table
         $slot_duration = Setting::where('name', 'slot_duration')->value('val');
         $start_time = Carbon::parse($business_hours->start_time);
         $end_time = Carbon::parse($business_hours->end_time);
-        $breaks = $business_hours->breaks ? json_decode($business_hours->breaks, true) : []; // Handle empty breaks gracefully
+        $breaks = [];
 
-        // Convert slot_duration from "HH:mm" format to minutes
+        if (!empty($business_hours->breaks)) {
+            if (is_string($business_hours->breaks)) {
+                $breaks = json_decode($business_hours->breaks, true) ?? [];
+            } elseif (is_array($business_hours->breaks)) {
+                $breaks = $business_hours->breaks;
+            }
+        }
+        // return $breaks;
         [$hours, $minutes] = explode(':', $slot_duration);
         $slot_duration_in_minutes = ($hours * 60) + $minutes;
 
-        // Get service duration
         $service_duration_in_minutes = $service->duration_min;
         $service_bookings = BookingService::where('service_id', $request->service_id)
             ->where('employee_id', $request->employee_id)
-            ->whereDate('start_date_time', Carbon::createFromFormat('Y-m-d', $request->date)->format('Y-m-d'))
+            ->whereDate('start_date_time', $request->date)
             ->get();
 
         $slots = [];
         $bookedSlots = [];
 
-        // Mark booked slots based on $service_bookings
         foreach ($service_bookings as $booking) {
             $start = Carbon::parse($booking->start_date_time);
             $end = $start->copy()->addMinutes($booking->duration_min);
@@ -992,20 +1034,18 @@ class BookingsController extends Controller
             }
         }
 
-        // Generate all slots and mark their status
         while ($start_time->lte($end_time)) {
             $slot_start = $start_time->copy();
             $slot_end = $slot_start->copy()->addMinutes($service_duration_in_minutes);
 
-            // Ensure the slot does not exceed the business end time
             if ($slot_end->gt($end_time)) {
                 break;
             }
 
             $is_break = false;
             foreach ($breaks as $break) {
-                $break_start = Carbon::parse($break['start']);
-                $break_end = Carbon::parse($break['end']);
+                $break_start = Carbon::parse($break['start_break']);
+                $break_end = Carbon::parse($break['end_break']);
                 if ($slot_start->between($break_start, $break_end) || $slot_end->between($break_start, $break_end)) {
                     $is_break = true;
                     break;
