@@ -942,6 +942,12 @@ class BookingsController extends Controller
         $business_id = $request->business_id;
         $business_hours = BussinessHour::where('business_id', $business_id)->get();
 
+        // Fetch holiday dates for the given business
+        $holidays = \DB::table('holidays')
+            ->where('business_id', $business_id)
+            ->pluck('date')
+            ->toArray();
+
         $dates = [];
         $currentDate = Carbon::now();
         $endDate = $currentDate->copy()->addMonth();
@@ -950,18 +956,14 @@ class BookingsController extends Controller
             $dayOfWeek = strtolower($currentDate->format('l'));
             $businessHour = $business_hours->firstWhere('day', $dayOfWeek);
 
-            // If business hour exists, determine availability status based on is_holiday flag
-            if ($businessHour) {
-                $status = ($businessHour->is_holiday == 0);
-            } else {
-                $status = false;
+            // Exclude holidays and check business hours
+            if (!in_array($currentDate->toDateString(), $holidays) && $businessHour && $businessHour->is_holiday == 0) {
+                $dates[] = [
+                    'date'  => $currentDate->toDateString(),
+                    'day'   => ucfirst($dayOfWeek),
+                    'status' => true
+                ];
             }
-
-            $dates[] = [
-                'date'  => $currentDate->toDateString(),
-                'day'   => ucfirst($dayOfWeek),
-                'status' => $status
-            ];
 
             $currentDate->addDay();
         }
