@@ -956,8 +956,15 @@ class BookingsController extends Controller
             $dayOfWeek = strtolower($currentDate->format('l'));
             $businessHour = $business_hours->firstWhere('day', $dayOfWeek);
 
-            // Exclude holidays and check business hours
-            if (!in_array($currentDate->toDateString(), $holidays) && $businessHour && $businessHour->is_holiday == 0) {
+            if (in_array($currentDate->toDateString(), $holidays)) {
+                // Add holiday dates with status false
+                $dates[] = [
+                    'date'  => $currentDate->toDateString(),
+                    'day'   => ucfirst($dayOfWeek),
+                    'status' => false
+                ];
+            } elseif ($businessHour && $businessHour->is_holiday == 0) {
+                // Add non-holiday dates with status true
                 $dates[] = [
                     'date'  => $currentDate->toDateString(),
                     'day'   => ucfirst($dayOfWeek),
