@@ -3,10 +3,13 @@
 @section('title')
     {{ __($module_action) }} {{ __($module_title) }}
 @endsection
+
 @section('banner-button')
-    <a href="{{ route("backend.$module_name.index") }}" class="btn btn-soft-dark"><i
-            class="fa-solid fa-calendar-days me-2"></i>{{ __('messages.calender_view') }}</a>
+    <a href="{{ route("backend.$module_name.index") }}" class="btn btn-soft-dark">
+        <i class="fa-solid fa-calendar-days me-2"></i>{{ __('messages.calender_view') }}
+    </a>
 @endsection
+
 @section('content')
     <div class="card">
         <div class="card-header">
@@ -14,9 +17,8 @@
                 <div class="d-flex flex-wrap gap-3">
                     @if (auth()->user()->can('edit_booking') || auth()->user()->can('delete_booking'))
                         <x-backend.quick-action url="{{ route('backend.bookings.bulk_action') }}">
-                            <div class="">
-                                <select name="action_type" class="form-control select2 col-12" id="quick-action-type"
-                                    style="width:100%">
+                            <div>
+                                <select name="action_type" class="form-control select2 col-12" id="quick-action-type" style="width:100%">
                                     <option value="">{{ __('messages.no_action') }}</option>
                                     @can('edit_booking')
                                         <option value="change-status">{{ __('messages.status') }}</option>
@@ -30,9 +32,9 @@
                                 <select name="status" class="form-control select2" id="status" style="width:100px">
                                     @foreach ($booking_status as $key => $value)
                                         @if ($value->name !== 'completed')
-                                            <option value="{{ $value->name }}"
-                                                {{ $filter['status'] == $value->name ? 'selected' : '' }}>
-                                                {{ $value->value }}</option>
+                                            <option value="{{ $value->name }}" {{ $filter['status'] == $value->name ? 'selected' : '' }}>
+                                                {{ $value->value }}
+                                            </option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -43,76 +45,55 @@
                         <button type="button" class="btn btn-secondary" data-modal="export">
                             <i class="fa-solid fa-download"></i> {{ __('messages.export') }}
                         </button>
-                        {{--          <button type="button" class="btn btn-secondary" data-modal="import"> --}}
-                        {{--            <i class="fa-solid fa-upload"></i> Import --}}
-                        {{--          </button> --}}
                     </div>
                 </div>
                 <x-slot name="toolbar">
                     <div>
                         <div class="datatable-filter">
-                            <select name="column_status" id="column_status" class="select2 form-control p-10"
-                                data-filter="select" style="width: 100%">
+                            <select name="column_status" id="column_status" class="select2 form-control p-10" data-filter="select" style="width: 100%">
                                 <option value="">{{ __('messages.all_status') }}</option>
                                 @foreach ($booking_status as $key => $value)
-                                    <option value="{{ $value->name }}"
-                                        {{ $filter['status'] == $value->name ? 'selected' : '' }}>
-                                        {{ $value->value }}</option>
+                                    <option value="{{ $value->name }}" {{ $filter['status'] == $value->name ? 'selected' : '' }}>
+                                        {{ $value->value }}
+                                    </option>
                                 @endforeach
+                                <option value="in_queue" {{ $filter['status'] == 'in_queue' ? 'selected' : '' }}>In Queue</option>
                             </select>
                         </div>
                     </div>
                     <div class="input-group flex-nowrap">
-                        <span class="input-group-text" id="addon-wrapping"><i
-                                class="fa-solid fa-magnifying-glass"></i></span>
-                        <input type="text" class="form-control dt-search" placeholder="{{ __('messages.search') }}..."
-                            aria-label="Search" aria-describedby="addon-wrapping">
+                        <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" class="form-control dt-search" placeholder="{{ __('messages.search') }}..." aria-label="Search" aria-describedby="addon-wrapping">
                     </div>
-                    <button class="btn btn-outline-primary btn-group" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i
-                            class="fa-solid fa-filter"></i> {{ __('messages.advance_filter') }}</button>
+                    <button class="btn btn-outline-primary btn-group" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                        <i class="fa-solid fa-filter"></i> {{ __('messages.advance_filter') }}
+                    </button>
                 </x-slot>
             </x-backend.section-header>
         </div>
         <div class="card-body" id="booking-datatable">
-            <table id="datatable" class="table table-striped border table-responsive">
-            </table>
+            <table id="datatable" class="table table-striped border table-responsive"></table>
         </div>
         <x-backend.advance-filter>
             <x-slot name="title">
-                <h4> {{ __('booking.lbl_advanced_filter') }}</h4>
+                <h4>{{ __('booking.lbl_advanced_filter') }}</h4>
             </x-slot>
             <form action="javascript:void(0)" class="datatable-filter">
                 <div class="form-group">
-                    <label for="form-label"> {{ __('booking.lbl_booking_date') }}</label>
-                    <input type="text" name="booking_date" id="booking_date"
-                        placeholder="{{ __('booking.booking_date') }}" class="booking-date-range form-control" readonly />
+                    <label for="form-label">{{ __('booking.lbl_booking_date') }}</label>
+                    <input type="text" name="booking_date" id="booking_date" placeholder="{{ __('booking.booking_date') }}" class="booking-date-range form-control" readonly />
                 </div>
                 <div class="form-group">
-                    <label for="form-label"> {{ __('booking.lbl_customer_name') }} </label>
-                    <select name="filter_user_id" id="column_user_id" data-placeholder="{{ __('booking.customer_name') }}"
-                        name="column_user_id" data-filter="select" class="select2 form-control"
-                        data-ajax--url="{{ route('backend.get_search_data', ['type' => 'customers']) }}"
-                        data-ajax--cache="true">
-                    </select>
+                    <label for="form-label">{{ __('booking.lbl_customer_name') }}</label>
+                    <select name="filter_user_id" id="column_user_id" data-placeholder="{{ __('booking.customer_name') }}" data-filter="select" class="select2 form-control" data-ajax--url="{{ route('backend.get_search_data', ['type' => 'customers']) }}" data-ajax--cache="true"></select>
                 </div>
                 <div class="form-group">
-                    <label for="form-label"> {{ __('booking.lbl_staff_name') }} </label>
-                    <select name="filter_employee_id" id="column_employee_id"
-                        data-placeholder="{{ __('booking.staff_name') }}" name="column_employee_id" data-filter="select"
-                        class="select2 form-control"
-                        data-ajax--url="{{ route('backend.get_search_data', ['type' => 'employees']) }}"
-                        data-ajax--cache="true">
-                    </select>
+                    <label for="form-label">{{ __('booking.lbl_staff_name') }}</label>
+                    <select name="filter_employee_id" id="column_employee_id" data-placeholder="{{ __('booking.staff_name') }}" data-filter="select" class="select2 form-control" data-ajax--url="{{ route('backend.get_search_data', ['type' => 'employees']) }}" data-ajax--cache="true"></select>
                 </div>
                 <div class="form-group">
-                    <label for="form-label"> {{ __('booking.lbl_services') }} </label>
-                    <select name="filter_service_id" id="column_service_id"
-                        data-placeholder="{{ __('booking.select_service') }}" name="column_service_id[]"
-                        data-filter="select" class="select2 form-control" multiple
-                        data-ajax--url="{{ route('backend.get_search_data', ['type' => 'services']) }}"
-                        data-ajax--cache="true">
-                    </select>
+                    <label for="form-label">{{ __('booking.lbl_services') }}</label>
+                    <select name="filter_service_id[]" id="column_service_id" data-placeholder="{{ __('booking.select_service') }}" data-filter="select" class="select2 form-control" multiple data-ajax--url="{{ route('backend.get_search_data', ['type' => 'services']) }}" data-ajax--cache="true"></select>
                 </div>
                 <button type="reset" class="btn btn-danger" id="reset-filter">{{ __('messages.reset') }}</button>
             </form>
@@ -121,7 +102,6 @@
 @endsection
 
 @push('after-styles')
-    <!-- DataTables Core and Extensions -->
     <link rel="stylesheet" href="{{ asset('vendor/datatable/datatables.min.css') }}">
 @endpush
 
@@ -129,19 +109,20 @@
     <script src="{{ asset('vendor/datatable/datatables.min.js') }}"></script>
     <script src="{{ mix('modules/booking/script.js') }}"></script>
     <script src="{{ asset('js/form-modal/index.js') }}" defer></script>
-    <!-- DataTables Core and Extensions -->
 
     <script type="text/javascript">
-        const range_flatpicker = document.querySelectorAll('.booking-date-range')
+        const range_flatpicker = document.querySelectorAll('.booking-date-range');
         Array.from(range_flatpicker, (elem) => {
             if (typeof flatpickr !== typeof undefined) {
                 flatpickr(elem, {
                     mode: "range",
                     dateFormat: "Y-m-d",
-                })
+                });
             }
-        })
-        const columns = [{
+        });
+
+        const columns = [
+            {
                 name: 'check',
                 data: 'check',
                 title: '<input type="checkbox" class="form-check-input" name="select_all_table" id="select-all-table" onclick="selectAllTable(this)">',
@@ -174,11 +155,6 @@
                 title: "{{ __('booking.lbl_amount') }}",
                 orderable: true,
                 searchable: false,
-                // render: function(data, type, row) {
-
-                //     return currencyFormat(data);
-
-                // }
             },
             {
                 data: 'service_duration',
@@ -205,7 +181,7 @@
                 name: 'updated_at',
                 title: "{{ __('booking.lbl_update_at') }}",
                 orderable: true,
-                visible:false,
+                visible: false,
             },
             {
                 data: 'status',
@@ -214,6 +190,12 @@
                 searchable: true,
                 title: "{{ __('booking.lbl_status') }}",
                 width: '10%',
+                render: function(data, type, row) {
+                    if (row.queue_status === 'in_queue') {
+                        return '<span class="badge bg-warning">In Queue</span>';
+                    }
+                    return data;
+                }
             },
             {
                 data: 'payment_status',
@@ -223,21 +205,19 @@
                 title: "{{ __('booking.lbl_payment_status') }}",
                 width: '10%',
             },
-        ]
-
-        const actionColumn = [{
-            data: 'action',
-            name: 'action',
-            orderable: false,
-            searchable: false,
-            title: "{{ __('booking.lbl_action') }}",
-            width: '10%'
-        }]
+            {
+                data: 'action',
+                name: 'action',
+                orderable: false,
+                searchable: false,
+                title: "{{ __('booking.lbl_action') }}",
+                width: '10%'
+            }
+        ];
 
         let finalColumns = [
             ...columns,
-            ...actionColumn
-        ]
+        ];
 
         document.addEventListener('DOMContentLoaded', (event) => {
             initDatatable({
@@ -255,7 +235,8 @@
                     }
                 }
             })
-        })
+        });
+
         const offcanvasElem = document.querySelector('#offcanvasExample')
         offcanvasElem.addEventListener('shown.bs.offcanvas', function() {
             $('form.datatable-filter .select2').select2({
@@ -286,8 +267,6 @@
         $('#booking_date').on('change', function() {
             window.renderedDataTable.ajax.reload(null, false)
         })
-
-
 
         function resetQuickAction() {
             const actionValue = $('#quick-action-type').val();
