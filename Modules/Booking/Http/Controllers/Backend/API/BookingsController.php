@@ -907,6 +907,10 @@ class BookingsController extends Controller
         $data['queue_status'] = 'in_queue';
         $data['user_id'] = $request->user_id ?? auth()->id();
 
+        // Assign queue priority
+        $maxPriority = Booking::where('queue_status', 'in_queue')->max('queue_priority');
+        $data['queue_priority'] = $maxPriority ? $maxPriority + 1 : 1;
+
         $booking = Booking::create($data);
 
         $message = 'New ' . Str::singular($this->module_title) . ' Added to Queue';
@@ -1091,7 +1095,23 @@ class BookingsController extends Controller
         }
 
         $booking = Booking::findOrFail($request->id);
-        $booking->update(['queue_status' => $request->queue_status]);
+        $oldStatus = $booking->queue_status;
+        $newStatus = $request->queue_status;
+
+        if ($oldStatus === 'not_in_queue' && $newStatus === 'in_queue') {
+            $maxPriority = Booking::where('queue_status', 'in_queue')->max('queue_priority');
+            $booking->update(['queue_status' => 'in_queue', 'queue_priority' => $maxPriority ? $maxPriority + 1 : 1]);
+        } elseif ($oldStatus === 'in_queue' && $newStatus === 'not_in_queue') {
+            $booking->update(['queue_status' => 'not_in_queue', 'queue_priority' => null]);
+
+            // Reorder priorities
+            Booking::where('queue_status', 'in_queue')
+                ->orderBy('queue_priority')
+                ->get()
+                ->each(function ($b, $index) {
+                    $b->update(['queue_priority' => $index + 1]);
+                });
+        }
 
         return response()->json([
             'status' => true,
