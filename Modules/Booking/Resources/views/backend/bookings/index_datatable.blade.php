@@ -198,6 +198,16 @@
                 }
             },
             {
+                data: 'queue_priority',
+                name: 'queue_priority',
+                title: "{{ __('Queue Priority') }}",
+                orderable: true,
+                searchable: false,
+                render: function(data, type, row) {
+                    return row.queue_status === 'in_queue' ? data : '-';
+                }
+            },
+            {
                 data: 'payment_status',
                 name: 'payment_status',
                 orderable: false,
