@@ -284,7 +284,11 @@ class BookingsController extends Controller
 
         if (isset($filter)) {
             if (isset($filter['column_status'])) {
-                $query->where('status', $filter['column_status']);
+                if ($filter['column_status'] === 'in_queue') {
+                    $query->where('queue_status', 'in_queue');
+                } else {
+                    $query->where('status', $filter['column_status']);
+                }
             }
             if (isset($filter['booking_date'])) {
                 try {
@@ -314,7 +318,13 @@ class BookingsController extends Controller
         $booking_status = Constant::getAllConstant()->where('type', 'BOOKING_STATUS')->where('name', '!=', 'completed');
         $booking_colors = Constant::getAllConstant()->where('type', 'BOOKING_STATUS_COLOR');
 
-        $payment_status = Constant::getAllConstant()->where('type', 'PAYMENT_STATUS')->where('status', '=', '1');
+        // Define $payment_status to avoid undefined variable error
+        $payment_status = Constant::getAllConstant()->where('type', 'PAYMENT_STATUS');
+
+        $queue_status = [
+            ['name' => 'in_queue', 'value' => 'In Queue'],
+            ['name' => 'not_in_queue', 'value' => 'Not in Queue'],
+        ];
 
         return $datatable->eloquent($query)
             ->addColumn('check', function ($row) {
@@ -323,7 +333,10 @@ class BookingsController extends Controller
             ->addColumn('action', function ($data) use ($module_name) {
                 return view('booking::backend.bookings.datatable.action_column', compact('module_name', 'data'));
             })
-            ->editColumn('status', function ($data) use ($booking_status, $booking_colors) {
+            ->editColumn('status', function ($data) use ($booking_status, $booking_colors, $queue_status) {
+                if ($data->queue_status === 'in_queue') {
+                    return '<span class="badge bg-warning">In Queue</span>';
+                }
                 return view('booking::backend.bookings.datatable.select_column', compact('data', 'booking_status', 'booking_colors'));
             })
             ->editColumn('payment_status', function ($data) use ($payment_status, $booking_colors) {
