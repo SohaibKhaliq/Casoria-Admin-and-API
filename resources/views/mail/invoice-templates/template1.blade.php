@@ -156,7 +156,7 @@
                         <td class="text-end">{{ \Currency::format($value['service_price']) }}</td>
                     </tr>
                 @endforeach
-                @foreach ($data['extra']['products'] as $key => $value)
+                {{-- @foreach ($data['extra']['products'] as $key => $value)
                     <tr>
                         <td>{{ $value['product_name'] }}</td>
                         <td>{{ $value['product_qty'] }}</td>
@@ -170,37 +170,37 @@
                         <td class="text-end">{{ \Currency::format($price) }}</td>
                         <td class="text-end">{{ \Currency::format($price * $value['product_qty']) }}</td>
                     </tr>
-                @endforeach
-                @foreach ($data['extra']['packages'] as $key => $value)
+                @endforeach --}}
+                {{-- @foreach ($data['extra']['packages'] as $key => $value)
                     <tr>
                         <td>{{ $value['name'] }}</td>
                         <td>1</td>
                         <td class="text-end">{{ \Currency::format($value['package_price']) }}</td>
                         <td class="text-end">{{ \Currency::format($value['package_price']) }}</td>
                     </tr>
-                @endforeach
+                @endforeach --}}
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan="3" class="text-end"><strong>Sub Total:</strong></td>
                     <td class="text-end">
-                        {{ \Currency::format($data['serviceAmount'] + $data['product_price'] + $data['package_price']) }}
+                        {{ \Currency::format($data['serviceAmount']) }}
                     </td>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td colspan="3" class="text-end"><strong>Tips:</strong></td>
                     <td class="text-end">{{ \Currency::format($data['tip_amount']) }}</td>
-                </tr>
+                </tr> --}}
                 <tr>
                     <td colspan="3" class="text-end"><strong>TAX:</strong></td>
                     <td class="text-end">{{ \Currency::format($data['tax_amount']) }}</td>
                 </tr>
-                @if ($data['coupon_discount'])
+                {{-- @if ($data['coupon_discount'])
                     <tr>
                         <td colspan="3" class="text-end"><strong>Coupon Discount:</strong></td>
                         <td class="text-end">{{ \Currency::format($data['coupon_discount']) }}</td>
                     </tr>
-                @endif
+                @endif --}}
                 <tr>
                     <td colspan="3" class="text-end"><strong>Grand Total:</strong></td>
                     <td class="text-end">{{ \Currency::format($data['grand_total']) }}</td>
