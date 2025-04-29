@@ -228,18 +228,22 @@ class ServiceController extends Controller
         return response()->json($services);
     }
 
-    public function getServiceStaff($serviceId)
+    public function getServiceStaff($serviceId, Request $request)
     {
+        $businessId = $request->input('business_id');
+
         $staff = ServiceEmployee::with('staff')
             ->where('service_id', $serviceId)
+            ->whereHas('staff.businesses', function ($query) use ($businessId) {
+                $query->where('business_id', $businessId);
+            })
             ->get()
             ->map(function ($data) {
                 return [
                     'id' => $data->employee_id,
-                    'name' => $data->staff->first_name.' '.$data->staff->last_name,
+                    'name' => $data->staff->first_name . ' ' . $data->staff->last_name,
                     'avatar' => $data->staff->profile_image,
                 ];
-                // return $data;
             });
 
         if ($staff->isEmpty()) {

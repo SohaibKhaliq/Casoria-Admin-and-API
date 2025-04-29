@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.0.2",
         "barryvdh/laravel-dompdf": "^2.0",
+        "plesk/ext-laravel-integration": "*",
         "dompdf/dompdf": "^2.0",
         "guzzlehttp/guzzle": "^7.8",
         "laracasts/flash": "^3.2",

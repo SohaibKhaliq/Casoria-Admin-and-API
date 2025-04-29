@@ -21,7 +21,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('queue:work --tries=3 --stop-when-empty')->withoutOverlapping();
 
-        $schedule->command('migrate:fresh --seed')->hourlyAt(2);
+        // $schedule->command('migrate:fresh --seed')->hourlyAt(2);
     }
 
     /**

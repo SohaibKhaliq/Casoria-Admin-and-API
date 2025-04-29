@@ -37,53 +37,50 @@ if (!function_exists('mail_footer')) {
 if (!function_exists('sendNotification')) {
     function sendNotification($data)
     {
+
+        Log::info('helps/sendNotification');
         $mailable = \Modules\NotificationTemplate\Models\NotificationTemplate::where('type', $data['notification_type'])->with('defaultNotificationTemplateMap')->first();
         if ($mailable != null && $mailable->to != null) {
-            $mails = json_decode($mailable->to);
-
+            $mails = json_decode($mailable  ->to);
+            Log::info('for each mail outside');
             foreach ($mails as $key => $mailTo) {
+                Log::info('for each mail ' . $mailTo);
                 $data['type'] = $data['notification_type'];
                 $booking = isset($data['booking']) ? $data['booking'] : null;
                 $order = isset($data['order']) ? $data['order'] : null;
                 if (isset($booking) && $booking != null) {
-                    $data['id'] = $booking['id'];
-                    // $data['logo'] = $booking['logo'];
-                    $data['description'] = $booking['description'];
-                    $data['user_id'] = $booking['user_id'];
-                    $data['user_name'] = $booking['user_name'];
-                    $data['employee_id'] = $booking['employee_id'];
-                    $data['employee_name'] = $booking['employee_name'];
-                    $data['booking_date'] = $booking['booking_date'];
-                    $data['booking_time'] = $booking['booking_time'];
-                    $data['booking_duration'] = $booking['booking_duration'];
-                    $data['venue_address'] = $booking['venue_address'];
+                    $data['id'] = $booking['id'] ?? null;
+                    $data['description'] = $booking['description'] ?? '';
+                    $data['user_id'] = $booking['user_id'] ?? null;
+                    $data['user_name'] = $booking['user_name'] ?? '';
+                    $data['employee_id'] = $booking['employee_id'] ?? null;
+                    $data['employee_name'] = $booking['employee_name'] ?? '';
+                    $data['booking_date'] = $booking['booking_date'] ?? '';
+                    $data['booking_time'] = $booking['booking_time'] ?? '';
+                    $data['booking_duration'] = $booking['booking_duration'] ?? '';
+                    $data['venue_address'] = $booking['venue_address'] ?? '';
                     $data['notification_group'] = 'booking';
-                    $data['email'] = $booking['email'];
-                    $data['mobile'] = $booking['mobile'];
-                    $data['transaction_type'] = $booking['transaction_type'];
-                    $data['service_name'] = $booking['service_name'];
-                    $data['service_price'] = $booking['service_price'];
-                    $data['serviceAmount'] = $booking['serviceAmount'];
-                    // $data['services_total_amount'] = $data['services_total_amount'];
-                    // $data['product_name'] = $booking['product_name'];
-                    // $data['product_price'] = $booking['product_price'];
-                    // $data['product_qty'] = $booking['product_qty'];
-                    $data['business_name'] = $booking['business_name'];
-                    $data['business_number'] = $booking['business_number'];
-                    $data['business_email'] = $booking['business_email'];
-                    // $data['product_amount'] = $data['product_amount'];
-                    // $data['tip_amount'] = $booking['tip_amount'];
-                    $data['tax_amount'] = $booking['tax_amount'];
-                    $data['grand_total'] = $booking['grand_total'];
-                    $data['discount'] = $booking['coupon_discount'];
+                    $data['email'] = $booking['email'] ?? '';
+                    $data['mobile'] = $booking['mobile'] ?? '';
+                    $data['transaction_type'] = $booking['transaction_type'] ?? '';
+                    $data['service_name'] = $booking['service_name'] ?? '';
+                    $data['service_price'] = $booking['service_price'] ?? 0;
+                    $data['serviceAmount'] = $booking['serviceAmount'] ?? 0;
+                    $data['business_name'] = $booking['business_name'] ?? '';
+                    $data['business_number'] = $booking['business_number'] ?? '';
+                    $data['business_email'] = $booking['business_email'] ?? '';
+                    $data['tax_amount'] = $booking['tax_amount'] ?? 0;
+                    $data['grand_total'] = $booking['grand_total'] ?? 0;
+                    // now safely handle coupon discount
+                    $data['discount'] = $booking['coupon_discount'] ?? 0;
 
                     $data['site_url'] = env('APP_URL');
 
-                    if ($data['type'] == 'complete_booking') {
-                        $data['extra']['services'] = $booking['extra']['services'];
-                        // $data['extra']['products'] = $booking['extra']['products'];
-                        $data['extra']['detail'] = $booking['extra']['detail'];
+                    if ($data['type'] === 'complete_booking' && isset($booking['extra'])) {
+                        $data['extra']['services'] = $booking['extra']['services'] ?? [];
+                        $data['extra']['detail'] = $booking['extra']['detail'] ?? '';
                     }
+
                     unset($data['booking']);
                 } elseif (isset($order) && $order != null) {
                     $data['notification_group'] = 'shop';
@@ -99,11 +96,11 @@ if (!function_exists('sendNotification')) {
 
                 switch ($mailTo) {
                     case 'admin':
-
                         $admin = \App\Models\User::role('admin')->first();
 
                         if (isset($admin->email)) {
                             try {
+                                $data['user_type'] = 'admin';
                                 $admin->notify(new \App\Notifications\CommonNotification($data['notification_type'], $data));
                             } catch (\Exception $e) {
                                 Log::error($e);
@@ -117,6 +114,7 @@ if (!function_exists('sendNotification')) {
                             $employee = \App\Models\User::find($data['employee_id']);
                             if (isset($employee->email)) {
                                 try {
+                                    $data['user_type'] = 'manager';
                                     $employee->notify(new \App\Notifications\CommonNotification($data['notification_type'], $data));
                                 } catch (\Exception $e) {
                                     Log::error($e);
@@ -130,6 +128,7 @@ if (!function_exists('sendNotification')) {
                         if (isset($data['user_id'])) {
                             $user = \App\Models\User::find($data['user_id']);
                             try {
+                                $data['user_type'] = 'user';
                                 $user->notify(new \App\Notifications\CommonNotification($data['notification_type'], $data));
                             } catch (\Exception $e) {
                                 Log::error($e);
@@ -145,37 +144,51 @@ if (!function_exists('sendNotification')) {
 if (!function_exists('fcm')) {
     function fcm($fields)
     {
-        $otherSetting = \App\Models\Setting::where('type', 'firebase_notification')->where('name', 'firebase_project_id')->first();
-        $projectID = $otherSetting->val ?? null;
-        $access_token = getAccessToken();
-        $headers = [
-            'Authorization: Bearer ' . $access_token,
-            'Content-Type: application/json',
-        ];
-        $ch = curl_init('https://fcm.googleapis.com/v1/projects/' . $projectID . '/messages:send');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        try {
+            Log::info('helps/fcm');
+            Log::info($fields);
 
-        $response = curl_exec($ch);
-        Log::info($response);
-        curl_close($ch);
+            $projectID = env('FIREBASE_PROJECT_ID', "icasoria-a47ef");
+            $access_token = getAccessToken();
+            Log::info($access_token);
+            $headers = [
+                'Authorization: Bearer ' . $access_token,
+                'Content-Type: application/json',
+            ];
+            $ch = curl_init('https://fcm.googleapis.com/v1/projects/' . $projectID . '/messages:send');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+            $response = curl_exec($ch);
+            Log::info($response);
+            curl_close($ch);
+        } catch (\Exception $e) {
+            Log::error($e);
+        }
+
+
     }
     function getAccessToken()
     {
-        $directory = storage_path('app/data');
-        $credentialsFiles = File::glob($directory . '/*.json');
-        if (empty($credentialsFiles)) {
-            throw new Exception('No JSON credentials found in the specified directory.');
+        try {
+            $directory = storage_path('app/data');
+            $credentialsFiles = File::glob($directory . '/*.json');
+            if (empty($credentialsFiles)) {
+                throw new Exception('No JSON credentials found in the specified directory.');
+            }
+            $client = new Google_Client;
+            $client->setAuthConfig($credentialsFiles[0]);
+            $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+
+            $token = $client->fetchAccessTokenWithAssertion();
+
+            return $token['access_token'];
+        } catch (\Exception $error) {
+            Log::error($error);
         }
-        $client = new Google_Client;
-        $client->setAuthConfig($credentialsFiles[0]);
-        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
 
-        $token = $client->fetchAccessTokenWithAssertion();
-
-        return $token['access_token'];
     }
 }
 if (!function_exists('getUserTimeZone')) {
@@ -284,7 +297,7 @@ function timeZoneList()
     $data = $offset = $added = [];
     foreach ($list as $abbr => $info) {
         foreach ($info as $zone) {
-            if (! empty($zone['timezone_id']) and ! in_array($zone['timezone_id'], $added) and in_array($zone['timezone_id'], $idents)) {
+            if (!empty($zone['timezone_id']) and !in_array($zone['timezone_id'], $added) and in_array($zone['timezone_id'], $idents)) {
                 $z = new \DateTimeZone($zone['timezone_id']);
                 $c = new \DateTime(null, $z);
                 $zone['time'] = $c->format('H:i a');
@@ -307,7 +320,7 @@ function timeZoneList()
 /*
  * Global helpers file with misc functions.
  */
-if (! function_exists('app_name')) {
+if (!function_exists('app_name')) {
     /**
      * Helper to grab the application name.
      *
@@ -321,7 +334,7 @@ if (! function_exists('app_name')) {
 /**
  * Avatar Find By Gender
  */
-if (! function_exists('default_user_avatar')) {
+if (!function_exists('default_user_avatar')) {
     function default_user_avatar()
     {
         return asset(config('app.avatar_base_path') . 'avatar.png');
@@ -331,7 +344,7 @@ if (! function_exists('default_user_avatar')) {
         return env('APP_NAME') . ' User';
     }
 }
-if (! function_exists('user_avatar')) {
+if (!function_exists('user_avatar')) {
     function user_avatar()
     {
         if (auth()->user()->profile_image ?? null) {
@@ -342,21 +355,21 @@ if (! function_exists('user_avatar')) {
     }
 }
 
-if (! function_exists('default_feature_image')) {
+if (!function_exists('default_feature_image')) {
     function default_feature_image()
     {
         return asset(config('app.image_path') . 'default.png');
     }
 }
 
-if (! function_exists('product_feature_image')) {
+if (!function_exists('product_feature_image')) {
     function product_feature_image()
     {
         return asset(config('app.image_path') . 'default2.png');
     }
 }
 
-if (! function_exists('promotion_image')) {
+if (!function_exists('promotion_image')) {
     function promotion_image()
     {
         return asset(config('app.image_path') . 'No_Image_Available.png');
@@ -365,7 +378,7 @@ if (! function_exists('promotion_image')) {
 /*
  * Global helpers file with misc functions.
  */
-if (! function_exists('user_registration')) {
+if (!function_exists('user_registration')) {
     /**
      * Helper to grab the application name.
      *
@@ -388,7 +401,7 @@ if (! function_exists('user_registration')) {
  * !USAGE
  * return jdd($id);
  */
-if (! function_exists('jdd')) {
+if (!function_exists('jdd')) {
     function jdd($data)
     {
         return response()->json($data, 500);
@@ -402,7 +415,7 @@ if (! function_exists('jdd')) {
  *
  * ------------------------------------------------------------------------
  */
-if (! function_exists('label_case')) {
+if (!function_exists('label_case')) {
     /**
      * Prepare the Column Name for Lables.
      */
@@ -425,7 +438,7 @@ if (! function_exists('label_case')) {
  *
  * ------------------------------------------------------------------------
  */
-if (! function_exists('show_column_value')) {
+if (!function_exists('show_column_value')) {
     /**
      * Return Column values as Raw and formatted.
      *
@@ -479,7 +492,7 @@ if (! function_exists('show_column_value')) {
  *
  * ------------------------------------------------------------------------
  */
-if (! function_exists('fielf_required')) {
+if (!function_exists('fielf_required')) {
     /**
      * Prepare the Column Name for Lables.
      */
@@ -500,7 +513,7 @@ if (! function_exists('fielf_required')) {
  *
  * @var [type]
  */
-if (! function_exists('setting')) {
+if (!function_exists('setting')) {
     function setting($key, $default = null)
     {
         if (is_null($key)) {
@@ -522,7 +535,7 @@ if (! function_exists('setting')) {
  *
  * @var [type]
  */
-if (! function_exists('humanFilesize')) {
+if (!function_exists('humanFilesize')) {
     function humanFilesize($size, $precision = 2)
     {
         $units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -544,7 +557,7 @@ if (! function_exists('humanFilesize')) {
  *
  * ------------------------------------------------------------------------
  */
-if (! function_exists('encode_id')) {
+if (!function_exists('encode_id')) {
     /**
      * Prepare the Column Name for Lables.
      */
@@ -563,7 +576,7 @@ if (! function_exists('encode_id')) {
  *
  * ------------------------------------------------------------------------
  */
-if (! function_exists('decode_id')) {
+if (!function_exists('decode_id')) {
     /**
      * Prepare the Column Name for Lables.
      */
@@ -587,7 +600,7 @@ if (! function_exists('decode_id')) {
  *
  * ------------------------------------------------------------------------
  */
-if (! function_exists('slug_format')) {
+if (!function_exists('slug_format')) {
     /**
      * Format a string to Slug.
      */
@@ -614,7 +627,7 @@ if (! function_exists('slug_format')) {
  *
  * ------------------------------------------------------------------------
  */
-if (! function_exists('icon')) {
+if (!function_exists('icon')) {
     /**
      * Format a string to Slug.
      */
@@ -632,7 +645,7 @@ if (! function_exists('icon')) {
  *
  * ------------------------------------------------------------------------
  */
-if (! function_exists('generate_rgb_code')) {
+if (!function_exists('generate_rgb_code')) {
     /**
      * Prepare the Column Name for Lables.
      */
@@ -656,7 +669,7 @@ if (! function_exists('generate_rgb_code')) {
  *
  * ------------------------------------------------------------------------
  */
-if (! function_exists('date_today')) {
+if (!function_exists('date_today')) {
     /**
      * Return Date with weekday.
      *
@@ -672,7 +685,7 @@ if (! function_exists('date_today')) {
     }
 }
 
-if (! function_exists('language_direction')) {
+if (!function_exists('language_direction')) {
     /**
      * return direction of languages.
      *
@@ -711,7 +724,7 @@ if (! function_exists('language_direction')) {
     }
 }
 
-if (! function_exists('module_exist')) {
+if (!function_exists('module_exist')) {
     /**
      * return value for module exist or not.
      *
@@ -860,7 +873,7 @@ function checkInWishList($product_id, $user_id)
 {
     $product = \Modules\Product\Models\WishList::where('product_id', $product_id)->where('user_id', $user_id)->first();
 
-    if (! $product) {
+    if (!$product) {
         return 0;
     } else {
         return 1;
@@ -871,7 +884,7 @@ function checkInCart($product_variation_id, $user_id)
 {
     $cart = \Modules\Product\Models\Cart::where('user_id', $user_id)->where('product_variation_id', $product_variation_id)->first();
 
-    if (! $cart) {
+    if (!$cart) {
         return 0;
     } else {
         return 1;
@@ -882,7 +895,7 @@ function checkIsLike($review_id, $user_id)
 {
     $review = \Modules\Product\Models\Review::find($review_id);
 
-    if (! $review) {
+    if (!$review) {
         return 0; // Review not found
     }
 
@@ -898,7 +911,7 @@ function checkIsdisLike($review_id, $user_id)
 {
     $review = \Modules\Product\Models\Review::find($review_id);
 
-    if (! $review) {
+    if (!$review) {
         return 0; // Review not found
     }
 
@@ -944,7 +957,7 @@ function getDiscountedPrice($data)
     return $sumOfDiscountedPrices;
 }
 
-if (! function_exists('variationDiscountedPrice')) {
+if (!function_exists('variationDiscountedPrice')) {
     // return discounted price of a variation
     function variationDiscountedPrice($product, $variation, $addTax = false)
     {
@@ -1017,7 +1030,7 @@ function getDiscountAmount($data)
     return $sumOfDiscountedPrices;
 }
 
-if (! function_exists('getSubTotal')) {
+if (!function_exists('getSubTotal')) {
     // return sub total price
     function getSubTotal($carts, $couponDiscount = true, $couponCode = '', $addTax = true)
     {
@@ -1037,7 +1050,7 @@ if (! function_exists('getSubTotal')) {
     }
 }
 
-if (! function_exists('generateVariationOptions')) {
+if (!function_exists('generateVariationOptions')) {
     //  generate combinations based on variations
     function generateVariationOptions($options)
     {
@@ -1050,7 +1063,7 @@ if (! function_exists('generateVariationOptions')) {
             if (isset($variation_ids[$option->variation_id])) {
                 $value_ids = $variation_ids[$option->variation_id];
             }
-            if (! in_array($option->variation_value_id, $value_ids)) {
+            if (!in_array($option->variation_value_id, $value_ids)) {
                 array_push($value_ids, $option->variation_value_id);
             }
             $variation_ids[$option->variation_id] = $value_ids;
@@ -1207,7 +1220,7 @@ function getBookingTaxamount($amount, $couponAmount, $tax_data)
     ];
 }
 
-if (! function_exists('applyExcelStyles')) {
+if (!function_exists('applyExcelStyles')) {
     /**
      * Apply common styles to an Excel worksheet.
      *
@@ -1289,7 +1302,7 @@ if (! function_exists('applyExcelStyles')) {
         $sheet->getPageSetup()->setPrintArea("A1:{$columnCount}{$rowCount}");
     }
 
-    if (! function_exists('datatableTranslations')) {
+    if (!function_exists('datatableTranslations')) {
         function datatableTranslations()
         {
             return [
@@ -1323,7 +1336,7 @@ function dbConnectionStatus(): bool
     }
 }
 
-if (! function_exists('isActive')) {
+if (!function_exists('isActive')) {
     /**
      * Returns 'active' or 'done' class based on the current step.
      *

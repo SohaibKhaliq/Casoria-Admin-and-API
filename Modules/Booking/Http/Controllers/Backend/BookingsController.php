@@ -571,16 +571,15 @@ class BookingsController extends Controller
 
     public function updateStatus($id, Request $request)
     {
-        $booking = Booking::with('services', 'user', 'products', 'packages', 'bookingPackages.services')->findOrFail($id);
+        $booking = Booking::with('services', 'user')->findOrFail($id);
         $status = $request->status;
-
         if (isset($request->action_type) && $request->action_type == 'update-status') {
             $status = $request->value;
         }
-
         $booking->update(['status' => $status]);
 
         $notify_type = null;
+        $notify_message = null;
 
         switch ($status) {
             case 'check_in':
@@ -603,6 +602,14 @@ class BookingsController extends Controller
                 $messageTemplate = 'Booking #[[booking_id]] has been cancelled.';
                 $notify_message = str_replace('[[booking_id]]', $id, $messageTemplate);
                 break;
+            case 'in_queue':
+                $notify_type = 'in_queue_booking';
+                $messageTemplate = 'Booking #[[booking_id]] has been moved to queue.';
+                $notify_message = str_replace('[[booking_id]]', $id, $messageTemplate);
+                break;
+            default:
+                //return invalid status
+                return response()->json(['status' => false, 'message' => 'Invalid status']);
         }
 
         if (isset($notify_type)) {

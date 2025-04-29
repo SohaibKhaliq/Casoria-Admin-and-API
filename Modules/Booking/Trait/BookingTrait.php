@@ -34,7 +34,7 @@ trait BookingTrait
         $serviceData = Booking::where('id', $booking_id)->get();
         Log::info('Booking Service Data', ['serviceData' => $serviceData]);
         // $bookingService->delete();
-        $serviceprice=Service::where('id',$serviceId->first())->first();
+        $serviceprice = Service::where('id', $serviceId->first())->first();
         Log::info('Service Price', ['serviceprice' => $serviceprice]);
         if ($serviceprice) {
             $serviceprice = $serviceprice->default_price;
@@ -47,7 +47,7 @@ trait BookingTrait
                 'sequance' => $key,
                 'start_date_time' => $value['start_date_time'],
                 'booking_id' => $booking_id,
-                'service_id' => (int)$serviceId->first(),
+                'service_id' => (int) $serviceId->first(),
                 'employee_id' => $value['employee_id'],
                 'service_price' => $serviceprice ?? 0,
                 'duration_min' => $value['duration_min'] ?? 30,
@@ -393,6 +393,18 @@ trait BookingTrait
         ];
 
         if ($notify) {
+            // fcm([
+            //     'message' => [
+            //         'topic' => 'all',
+            //         'notification' => [
+            //             'title' => 'Test',
+            //             'body' => 'This is a test message',
+            //         ],
+            //     ],
+            // ]);
+            Log::info('Booking Trait');
+            // sendNotification($data);
+
             BulkNotification::dispatch($data);
         } else {
             return $data;

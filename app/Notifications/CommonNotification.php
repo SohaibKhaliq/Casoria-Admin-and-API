@@ -11,12 +11,15 @@ use Illuminate\Notifications\Notification;
 use Modules\NotificationTemplate\Models\NotificationTemplate;
 use Modules\NotificationTemplate\Models\NotificationTemplateContentMapping;
 use Spatie\WebhookServer\WebhookCall;
+use Illuminate\Support\Facades\Log;
 
 class CommonNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $type;
+
+    public $userType;
 
     public $data;
 
@@ -40,6 +43,8 @@ class CommonNotification extends Notification implements ShouldQueue
         $this->type = $type;
         $this->data = $data;
 
+        $this->userType = $data['user_type'];
+
         $userType = $data['user_type'];
         $notifications = NotificationTemplate::where('type', $this->type)
             ->with('defaultNotificationTemplateMap')
@@ -50,11 +55,14 @@ class CommonNotification extends Notification implements ShouldQueue
         $templateData = $notify_data->where('user_type', $userType)->first();
         $templateDetail = $templateData->mail_template_detail ?? null;
         foreach ($this->data as $key => $value) {
-            $templateDetail = str_replace('[[ '.$key.' ]]', $this->data[$key], $templateDetail);
+            $templateDetail = str_replace('[[ ' . $key . ' ]]', $this->data[$key], $templateDetail);
         }
         $this->data['type'] = $templateData->subject ?? 'None';
         $this->data['message'] = $templateDetail ?? __('messages.default_notification_body');
         $this->appData = $notifications->channels;
+
+        Log::info('Data Here');
+        Log::info($this->data);
     }
 
     /**
@@ -102,49 +110,78 @@ class CommonNotification extends Notification implements ShouldQueue
 
     public function toFcm($notifiable)
     {
+        Log::info('toFcm Called' . $this->userType);
+        try {
+            if ($this->userType == 'user') {
+                Log::info('if statement called');
 
-        $msg = strip_tags($this->data['message']);
-        if (! isset($msg) && $msg == '') {
-            $msg = __('message.notification_body');
-        }
-        $type = 'booking';
-        if (isset($this->data['type']) && $this->data['type'] !== '') {
-            $type = $this->data['type'];
-        }
+                $msg = strip_tags($this->data['message']);
 
-        $heading = $this->data['type'] ?? '';
+                Log::info('msg' . $msg);
 
-        $additionalData = json_encode($this->data);
+                if (!isset($msg) && $msg == '') {
+                    $msg = __('message.notification_body');
 
-        return fcm([
-            'message' => [
-                'topic' => 'user_'.$notifiable->id,
-                'notification' => [
-                    'title' => $heading,
-                    'body' => $msg,
-                ],
-                'data' => [
-                    'sound' => 'default',
-                    'story_id' => 'story_12345',
-                    'type' => $type,
-                    'additional_data' => $additionalData,
-                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                ],
-                'android' => [
-                    'priority' => 'high',
-                    'notification' => [
-                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                    ],
-                ],
-                'apns' => [
-                    'payload' => [
-                        'aps' => [
-                            'category' => 'NEW_MESSAGE_CATEGORY',
+                    Log::info('!is set msg' . $msg);
+                }
+                $type = 'booking';
+                if (isset($this->data['type']) && $this->data['type'] !== '') {
+                    $type = $this->data['type'];
+
+                    Log::info('type' . $type);
+                }
+
+                $heading = $this->data['type'] ?? '';
+
+                Log::info('heading' . $heading);
+
+                $additionalData = json_encode($this->data);
+
+                Log::info('additionalData' . $additionalData);
+                Log::info('notifiable->id' . $notifiable->id);
+
+                $fields = [
+                    'message' => [
+                        'topic' => 'user_'.$notifiable->id,
+                        'notification' => [
+                            'title' => $heading,
+                            'body' => $msg,
+                        ],
+                        'data' => [
+                            'sound' => 'default',
+                            'story_id' => 'story_12345',
+                            'type' => $type,
+                            'additional_data' => $additionalData,
+                            'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                        ],
+                        'android' => [
+                            'priority' => 'high',
+                            'notification' => [
+                                'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                            ],
+                        ],
+                        'apns' => [
+                            'payload' => [
+                                'aps' => [
+                                    'category' => 'NEW_MESSAGE_CATEGORY',
+                                ],
+                            ],
                         ],
                     ],
-                ],
-            ],
-        ]);
+                ];
+
+                Log::info('fields');
+                Log::info($fields);
+
+                return fcm($fields);
+            } else {
+                Log::info('else statement called');
+
+            }
+        } catch (\Exception $th) {
+            Log::error($th);
+        }
+
     }
 
     /**
@@ -174,7 +211,7 @@ class CommonNotification extends Notification implements ShouldQueue
         $key = setting('custom_webhook_content_key');
         $url = setting('custom_webhook_url');
         $secrate_key = setting('app_name');
-        $msg = 'Subject: '.$this->subject."\nDescription: ".strip_tags($this->notification_message)."\n".'Link: '.$this->notification_link;
+        $msg = 'Subject: ' . $this->subject . "\nDescription: " . strip_tags($this->notification_message) . "\n" . 'Link: ' . $this->notification_link;
 
         return WebhookCall::create()
             ->url($url)

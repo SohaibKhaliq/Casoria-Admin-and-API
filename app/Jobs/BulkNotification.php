@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class BulkNotification implements ShouldQueue
 {
@@ -31,6 +32,7 @@ class BulkNotification implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('BulkNotification');
         sendNotification($this->data);
     }
 }
