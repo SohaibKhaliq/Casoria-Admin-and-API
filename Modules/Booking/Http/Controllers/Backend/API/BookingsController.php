@@ -620,7 +620,77 @@ class BookingsController extends Controller
             $status = $request->value;
         }
 
+        $oldStatus = $booking->status;
         $booking->update(['status' => $status]);
+
+        if ($oldStatus === 'pending' && $status === 'check_in') {
+            // Cancel all queue bookings for the same time, business, and employee
+            Booking::where('queue_status', 'in_queue')
+                ->where('business_id', $booking->business_id)
+                ->where('employee_id', $booking->employee_id)
+                ->where('start_date_time', $booking->start_date_time)
+                ->update(['queue_status' => 'not_in_queue', 'status' => 'cancelled']);
+
+            // Notify affected users
+            $queueBookings = Booking::where('queue_status', 'not_in_queue')
+                ->where('status', 'cancelled')
+                ->get();
+
+            foreach ($queueBookings as $queueBooking) {
+                $this->sendNotificationOnBookingUpdate(
+                    'queue_cancelled',
+                    'Your queue booking has been cancelled due to another booking.',
+                    $queueBooking
+                );
+            }
+        }
+
+        if ($status === 'cancelled') {
+            // Check for overlapping bookings
+            $overlappingBooking = Booking::where('status', 'pending')
+                ->where('business_id', $booking->business_id)
+                ->where('employee_id', $booking->employee_id)
+                ->where('start_date_time', $booking->start_date_time)
+                ->first();
+
+            if (!$overlappingBooking) {
+                // Process the queue
+                $queueBooking = Booking::where('queue_status', 'in_queue')
+                    ->where('business_id', $booking->business_id)
+                    ->where('employee_id', $booking->employee_id)
+                    ->orderBy('queue_priority')
+                    ->first();
+
+                if ($queueBooking) {
+                    $serviceDuration = $queueBooking->services->sum('duration_min');
+                    $endTime = Carbon::parse($queueBooking->start_date_time)->addMinutes($serviceDuration);
+
+                    $isSlotAvailable = !Booking::where('business_id', $queueBooking->business_id)
+                        ->where('employee_id', $queueBooking->employee_id)
+                        ->where(function ($query) use ($queueBooking, $endTime) {
+                            $query->whereBetween('start_date_time', [$queueBooking->start_date_time, $endTime])
+                                ->orWhereBetween('end_date_time', [$queueBooking->start_date_time, $endTime]);
+                        })
+                        ->exists();
+
+                    if ($isSlotAvailable) {
+                        $queueBooking->update(['status' => 'pending', 'queue_status' => 'not_in_queue']);
+                        $this->sendNotificationOnBookingUpdate(
+                            'queue_to_pending',
+                            'Your queue booking has been moved to pending.',
+                            $queueBooking
+                        );
+                    } else {
+                        $queueBooking->update(['queue_status' => 'not_in_queue', 'status' => 'cancelled']);
+                        $this->sendNotificationOnBookingUpdate(
+                            'queue_cancelled',
+                            'Your queue booking has been cancelled due to unavailability.',
+                            $queueBooking
+                        );
+                    }
+                }
+            }
+        }
 
         $notify_type = null;
 
